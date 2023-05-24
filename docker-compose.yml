@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  server:
+    container_name: server
+    build: ./server
+    ports:
+      - '3010:3010'
+    volumes:
+      - ./server:/usr/src/app/server
+    depends_on:
+      - mongo
+  client:
+    container_name: client
+    build: ./client
+    volumes:
+      - ./client:/usr/src/app/client
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    tty: true
+    depends_on:
+      - server
+  mongo:
+    hostname: mongo
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - /home/theo/mongo-backup:/data/db
