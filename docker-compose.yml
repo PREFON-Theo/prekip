@@ -1,29 +1,44 @@
 version: "3.8"
 services:
-  server:
-    container_name: server
-    build: ./server
-    ports:
-      - '3010:3010'
-    volumes:
-      - ./server:/usr/src/app/server
-    depends_on:
-      - mongo
+
   client:
     container_name: client
-    build: ./client
-    volumes:
-      - ./client:/usr/src/app/client
+    build: 
+      context: client
+      dockerfile: Dockerfile
     ports:
       - '3000:3000'
     stdin_open: true
     tty: true
     depends_on:
       - server
+    networks:
+      - mern-network
+
+  server:
+    container_name: server
+    build:  
+      context: server
+      dockerfile: Dockerfile
+    ports:
+      - '4000:4000'
+    depends_on:
+      - mongo
+    networks:
+      - mern-network
+
   mongo:
     hostname: mongo
+    container_name: mongo
     image: mongo:latest
     ports:
-      - '27017:27017'
+      - '27018:27017'
     volumes:
       - /home/theo/mongo-backup:/data/db
+    networks:
+      - mern-network
+
+
+networks:
+  mern-network:
+    driver: bridge

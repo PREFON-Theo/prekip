@@ -11,7 +11,9 @@ const Signin = () => {
         axios.post('/register', {
             username, password
         });
+        //axios.get('/test')
     }
+
 
     return (
         <>
