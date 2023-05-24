@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
+    volumes:
+      - ./client:/front
     stdin_open: true
     tty: true
     depends_on:
@@ -22,6 +24,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - '4000:4000'
+    volumes:
+      - ./server:/home/node
     depends_on:
       - mongo
     networks:
