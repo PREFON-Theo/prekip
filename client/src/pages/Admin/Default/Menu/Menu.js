@@ -4,7 +4,7 @@ import styles from "./Menu.module.scss"
 const Menu = () => {
     return (
         <>
-        menu
+        Menu
         </>
     );
 }

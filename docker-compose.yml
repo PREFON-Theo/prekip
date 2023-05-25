@@ -10,6 +10,7 @@ services:
       - '3000:3000'
     volumes:
       - ./client:/front
+    restart: always
     stdin_open: true
     tty: true
     depends_on:
@@ -25,7 +26,7 @@ services:
     ports:
       - '4000:4000'
     volumes:
-      - ./server:/home/node
+      - ./server:/api
     depends_on:
       - mongo
     networks:
