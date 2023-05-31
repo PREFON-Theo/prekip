@@ -20,8 +20,11 @@ function App() {
         <Router>
           <Routes>
 
-            <Route path='/' element={<Main/>}/>
-            <Route path='/compte/:subpage?' element={<Account/>}/>
+            <Route path='/' element={<Main/>}>
+              <Route path='compte' element={<Account/>}>
+              </Route>
+
+            </Route>
             <Route path='/admin' element={<Admin/>}/>
             <Route path='*' element={<NotFound/>}/>
             {/*<Route path='/calendrier' element={</>}/> TODO*/}

@@ -3,9 +3,13 @@ import styles from "./Main.module.scss"
 import Menu from '../Default/Menu/Menu';
 import Footer from '../Default/Footer/Footer';
 import Login from '../../Auth/Login';
+import Homepage from "../Main/Homepage/Homepage"
 import axios from 'axios';
 
+import { Routes, Route } from 'react-router-dom';
+
 import Dialog from '@mui/material/Dialog';
+import Account from './Account/Account';
 
 
 const Main = () => {
@@ -34,14 +38,17 @@ const handleCloseLoginForm = () => {
     return (
         <>
             <Menu handleOpenLoginForm={handleOpenLoginForm}/>
+
             <div className={styles.container}>
-                <p>main</p>
+                <Routes>
+                    <Route index element={<Homepage/>}/>
+                    <Route path="compte" element={<Account/>}/>
+                </Routes>
             </div>
+
             <Footer/>
 
             <div className={styles.login_form}>
-
-
                 <Dialog
                     open={openLoginForm}
                     onClose={handleCloseLoginForm}
