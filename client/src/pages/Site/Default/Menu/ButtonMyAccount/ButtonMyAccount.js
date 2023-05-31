@@ -74,23 +74,28 @@ const ButtonMyAccount = ({user}) => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         {!!user ? 
-          <>
+        <div>
+
             <MenuItem onClick={handleClose}>
-              <Avatar /> Mon compte
+              <ListItemIcon>
+                <Avatar fontSize="small" />
+              </ListItemIcon>
+              <Link to={'/compte'} style={{color: '#000', textDecoration: 'none'}}>
+                Mon compte
+              </Link>
             </MenuItem>
             <Divider />
             <MenuItem onClick={handleClose}>
               <ListItemIcon sx={{color: 'red'}}>
                 <Logout fontSize="small" />
               </ListItemIcon>
-              <Link to={'/logout'} style={{color: 'red', textDecoration: 'none'}} className={styles.link_logout}>
+              <Link to={'/logout'} style={{color: 'red', textDecoration: 'none'}}>
                 Déconnexion
               </Link>
             </MenuItem>
+        </div>
           
-          </>
           :
-          <>
             <MenuItem onClick={handleClose}>
               <ListItemIcon sx={{color: 'green'}}>
                 <Login fontSize="small" />
@@ -99,7 +104,6 @@ const ButtonMyAccount = ({user}) => {
                 Connexion
               </Link>
             </MenuItem>
-          </>
       }
 
       </Menu>
