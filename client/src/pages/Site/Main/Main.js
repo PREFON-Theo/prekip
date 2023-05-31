@@ -2,9 +2,6 @@ import { React, useEffect, useState } from 'react'
 import styles from "./Main.module.scss"
 import Menu from '../Default/Menu/Menu';
 import Footer from '../Default/Footer/Footer';
-
-import Homepage from './Homepage/Homepage';
-import Second from './Second/Second';
 import axios from 'axios';
 
 
@@ -16,7 +13,6 @@ useEffect(() => {
 
     const fetchUser =  async () => {
         const { data } = await axios.get('/users');
-        console.log(data)
         setUsersList(data)
     }
     fetchUser();
@@ -26,7 +22,9 @@ useEffect(() => {
     return (
         <>
         <Menu/>
-        <p>main</p>
+        <div className={styles.container}>
+            <p>main</p>
+        </div>
         <Footer/>
         </>
     );
