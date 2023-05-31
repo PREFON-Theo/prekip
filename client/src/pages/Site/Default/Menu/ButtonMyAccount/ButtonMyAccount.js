@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import PersonIcon from '@mui/icons-material/Person';
+import { useContext } from 'react';
+
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -8,20 +10,33 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Logout from '@mui/icons-material/Logout';
-import Login from '@mui/icons-material/Login';
+
 import { Link } from "react-router-dom"
 import styles from "./ButtonMyAccount.module.scss"
 
-const ButtonMyAccount = ({user}) => {
+import axios from 'axios';
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
+
+const ButtonMyAccount = () => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  const {setUser} = useContext(UserContext);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLogoutSubmit = async () => {
+    axios.post('/logout');
+    setUser(null)
+    alert('Logout successful');
+    /* [Alert] : Vous êtes déconnecté */
+}
 
   return (
     <>
@@ -73,7 +88,6 @@ const ButtonMyAccount = ({user}) => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {!!user ? 
         <div>
 
             <MenuItem onClick={handleClose}>
@@ -89,22 +103,11 @@ const ButtonMyAccount = ({user}) => {
               <ListItemIcon sx={{color: 'red'}}>
                 <Logout fontSize="small" />
               </ListItemIcon>
-              <Link to={'/logout'} style={{color: 'red', textDecoration: 'none'}}>
+              <a onClick={handleLogoutSubmit} style={{color: 'red', textDecoration: 'none'}}>
                 Déconnexion
-              </Link>
+              </a>
             </MenuItem>
         </div>
-          
-          :
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon sx={{color: 'green'}}>
-                <Login fontSize="small" />
-              </ListItemIcon>
-              <Link to={'/auth'} style={{color: 'green', textDecoration: 'none'}} className={styles.link_login}>
-                Connexion
-              </Link>
-            </MenuItem>
-      }
 
       </Menu>
     </>
