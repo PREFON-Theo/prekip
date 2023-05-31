@@ -4,11 +4,14 @@ import {UserContext} from "../../../../utils/Context/UserContext/UserContext"
 import { Link, useParams } from "react-router-dom"
 import ButtonMyAccount from './ButtonMyAccount/ButtonMyAccount';
 import MenuItemLink from "./MenuItemLink/MenuItemLink"
-
-import logo from "../../../../utils/assets/Logo PREKIP.png"
 import SearchItem from './SearchItem/SearchItem';
 
-const MenuFct = () => {
+import logo from "../../../../utils/assets/Logo PREKIP.png"
+
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+
+const MenuFct = ({handleOpenLoginForm}) => {
   const {user} = useContext(UserContext)
 
 
@@ -50,7 +53,17 @@ const MenuFct = () => {
               </div>
             </>
           )}
-          <ButtonMyAccount user={user}/>
+          {!!user ? 
+          <ButtonMyAccount/>
+          :
+            <MenuItem>
+
+              <Button onClick={() => handleOpenLoginForm(true)} variant="outlined" color="success" className={styles.link_login}>
+                Connexion
+              </Button>
+
+            </MenuItem>
+          }
         </div>
 
       </nav>

@@ -41,8 +41,8 @@ const MenuItemLink = ({title,list}) => {
                   <span>
 
                     {list?.map((item, index) => (
-                      <Link to={item.link}  style={{textDecoration: "none"}}>
-                        <MenuItem onClick={handleClose} key={index} sx={{color: "#000"}}>
+                      <Link to={item.link} key={index} style={{textDecoration: "none"}}>
+                        <MenuItem onClick={handleClose} sx={{color: "#000"}}>
                           {item.title}
                         </MenuItem>
                       </Link>
