@@ -10,6 +10,7 @@ import logo from "../../../../utils/assets/Logo PREKIP.png"
 
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
+import MenuItemLinkDropdown from './MenuItemLink/MenuItemLinkDropdown';
 
 const MenuFct = ({handleOpenLoginForm}) => {
   const {user} = useContext(UserContext)
@@ -39,10 +40,10 @@ const MenuFct = ({handleOpenLoginForm}) => {
 
           <div className={styles.middle}>
             <div className={styles.item_middlemenu}>
-              <MenuItemLink title="Rubrique" list={content}/>
+              <MenuItemLinkDropdown title="Rubrique" list={content}/>
             </div>
             <div className={styles.item_middlemenu}>
-              <MenuItemLink title="Calendrier"/>
+              <MenuItemLink title="Calendrier"link="/calendar"/>
             </div>
           </div>
 

@@ -10,6 +10,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import Dialog from '@mui/material/Dialog';
 import Account from './Account/Account';
+import Calendar from './Calendar/Calendar';
 
 
 const Main = () => {
@@ -19,11 +20,15 @@ const Main = () => {
 useEffect(() => {
 
     const fetchUser =  async () => {
-        const { data } = await axios.get('/users');
+        const { data } = await axios.get('/users')
         setUsersList(data)
     }
     fetchUser();
 }, []);
+
+/*useEffect(() => {
+    console.log(usersList)
+}, [usersList])*/
 
 const [openLoginForm, setOpenLoginForm] = useState(false);
 const handleCloseLoginForm = () => {
@@ -43,6 +48,7 @@ const handleCloseLoginForm = () => {
                 <Routes>
                     <Route index element={<Homepage/>}/>
                     <Route path="compte" element={<Account/>}/>
+                    <Route path="calendar" element={<Calendar/>}/>
                 </Routes>
             </div>
 

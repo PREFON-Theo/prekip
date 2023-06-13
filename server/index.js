@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require("cookie-parser")
 
 const User = require('./models/User');
+const Events = require('./models/Events');
 require('dotenv').config();
 
 const bcryptSecret = bcrypt.genSaltSync(10);
@@ -27,6 +28,7 @@ app.use(cors({
     origin: process.env.CLIENT_URL
 }))
 
+/* User Table */
 
 app.get('/users', async (req, res) => {
     const getUser = await User.find()
@@ -86,6 +88,25 @@ app.get('/profil', (req, res) => {
     else {
         res.json(null)
     }
+})
+
+/* Event table */
+app.post('/events', async (req, res) => {
+    const {title, description, startDate, finishDate, owner, type} = req.body
+    const eventCreation = await Events.create({
+        title,
+        description,
+        startDate,
+        finishDate,
+        owner,
+        type,
+    })
+    res.json(eventCreation)
+})
+
+app.get('/events', async (req, res) => {
+    const getEvents = await Events.find()
+    res.json(getEvents);
 })
 
 

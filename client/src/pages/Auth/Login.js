@@ -19,11 +19,17 @@ const Login = ({setOpenLoginForm}) => {
     const handleLoginSubmit = async () => {
         try {
             const {data} = await axios.post('/login', {email, password})
-            setUser(data);
-            alert('Login successful');
-            setOpenLoginForm(false);
-            setRedirect(true)
-            console.log('Login successful');
+            console.log(data)
+            if(data === 'Not found') {
+                alert('Login denied');
+            }
+            else {
+                setUser(data);
+                alert('Login successful');
+                setOpenLoginForm(false);
+                setRedirect(true)
+                console.log('Login successful');
+            }
             /* [Alert] : Vous êtes connecté */
         }
         catch (err) {
@@ -48,7 +54,7 @@ const Login = ({setOpenLoginForm}) => {
                         <TextField value={email} sx={{marginRight: '1vw'}} label="Adresse mail" variant="outlined" onChange={e => setEmail(e.target.value)}/>
                     </div>
                     <div className={styles.input_password}>
-                        <TextField value={password} sx={{marginRight: '1vw'}} label="Mot de passe" variant="outlined" onChange={e => setPassword(e.target.value)}/>
+                        <TextField value={password} sx={{marginRight: '1vw'}} type="password" label="Mot de passe" variant="outlined" onChange={e => setPassword(e.target.value)}/>
                     </div>
                     <div className={styles.button}>
                         <Button variant="contained" color='success' onClick={handleLoginSubmit}>Connexion</Button>

@@ -8,32 +8,45 @@ import NotFound from './pages/Errors/404/NotFound';
 
 import Account from './pages/Site/Main/Account/Account';
 import { UserContextProvider } from './utils/Context/UserContext/UserContext';
+import Calendar from './pages/Site/Main/Calendar/Calendar';
 
+import { createTheme, ThemeProvider } from '@mui/material';
+import { frFR as coreFrFR } from '@mui/material/locale';
+import { frFR } from '@mui/x-date-pickers/locales';
 
 axios.defaults.baseURL = 'http://localhost:4000'
 axios.defaults.withCredentials = true;
 
-function App() {
+const theme = createTheme (
+  frFR,
+  coreFrFR,
+)
+
+const App = () => {
   return (
     <>
-      <UserContextProvider>
-        <Router>
-          <Routes>
+      <ThemeProvider theme={theme}>
+        <UserContextProvider>
+          <Router>
+            <Routes>
 
-            <Route path='/' element={<Main/>}>
-              <Route path='compte' element={<Account/>}>
+              <Route path='/' element={<Main/>}>
+                <Route path='compte' element={<Account/>}>
+                </Route>
+                <Route path='/calendar' element={<Calendar/>}/>
+
               </Route>
+              <Route path='/admin' element={<Admin/>}/>
+              <Route path='*' element={<NotFound/>}/>
+              {/*<Route path='/calendrier' element={</>}/> TODO*/}
+              {/*<Route path='/rubrique/:subpage?' element={</>}/> TODO*/}
 
-            </Route>
-            <Route path='/admin' element={<Admin/>}/>
-            <Route path='*' element={<NotFound/>}/>
-            {/*<Route path='/calendrier' element={</>}/> TODO*/}
-            {/*<Route path='/rubrique/:subpage?' element={</>}/> TODO*/}
+            </Routes>
 
-          </Routes>
+          </Router>
+        </UserContextProvider>
 
-        </Router>
-      </UserContextProvider>
+      </ThemeProvider>
     </>
   );
 }
