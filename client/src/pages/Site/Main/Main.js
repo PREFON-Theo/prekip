@@ -63,7 +63,7 @@ const handleCloseLoginForm = () => {
                 >
                     <Login setOpenLoginForm={setOpenLoginForm}/>
                     
-                </Dialog>              
+                </Dialog>
             </div>
         </>
     );

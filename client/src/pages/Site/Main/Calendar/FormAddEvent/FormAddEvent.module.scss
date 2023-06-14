@@ -1,0 +1,30 @@
+div.container {
+    width: auto;
+    height: auto;
+    margin: auto;
+    padding: 5vh 5vw;
+    background-color: rgba(210, 210, 210, 0.13);
+    text-align: center;
+
+    h1 {
+
+    }
+
+    div.container_inputs {
+        margin-bottom: 5vh;
+
+        div.input_mail, .input_password, .input_dates {
+            margin-bottom: 2vh;
+        }
+
+        div.input_dates {
+            display: flex;
+
+            >div:first-child {
+                margin-right: 2vh;
+            }
+        }
+
+    }
+
+}

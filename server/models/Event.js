@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose
 
 
-const EventsSchema = Schema({
+const EventSchema = Schema({
     title: String,
     description: String,
     startDate: Date,
@@ -11,7 +11,7 @@ const EventsSchema = Schema({
     owner: String,
 })
 
-const EventsModel = mongoose.model('Events', EventsSchema);
+const EventModel = mongoose.model('Event', EventSchema);
 
 
-module.exports = EventsModel;
+module.exports = EventModel;

@@ -6,7 +6,8 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require("cookie-parser")
 
 const User = require('./models/User');
-const Events = require('./models/Events');
+const Event = require('./models/Event');
+//const Article = require('./models/Article');
 require('dotenv').config();
 
 const bcryptSecret = bcrypt.genSaltSync(10);
@@ -28,13 +29,18 @@ app.use(cors({
     origin: process.env.CLIENT_URL
 }))
 
-/* User Table */
 
+/*--------------------------------------*/
+/*--------------User Table--------------*/
+/*--------------------------------------*/
+
+//Get All Users - OK
 app.get('/users', async (req, res) => {
     const getUser = await User.find()
     res.json(getUser);
 })
 
+//Inscription - OK
 app.post('/register', async (req, res) => {
     const {username, email, password} = req.body
     const userCreation = await User.create({
@@ -45,6 +51,7 @@ app.post('/register', async (req, res) => {
     res.json(userCreation)
 })
 
+//Connexion - OK
 app.post('/login', async (req, res) => {
     const {email, password} = req.body;
     try {
@@ -59,7 +66,7 @@ app.post('/login', async (req, res) => {
                 })
             }
             else {
-                res.json('error password')
+                res.json('Error password')
             }
         }
         else {
@@ -67,11 +74,12 @@ app.post('/login', async (req, res) => {
         }   
     }
     catch (e) {
-        alert("error")
+        res.status(400).json(e)
     }
     
 })
 
+//Déconnexion - OK
 app.post('/logout', async (req, res) => {
     res.cookie('token', '').json('ok');
 })
@@ -90,24 +98,96 @@ app.get('/profil', (req, res) => {
     }
 })
 
-/* Event table */
-app.post('/events', async (req, res) => {
-    const {title, description, startDate, finishDate, owner, type} = req.body
-    const eventCreation = await Events.create({
-        title,
-        description,
-        startDate,
-        finishDate,
-        owner,
-        type,
-    })
-    res.json(eventCreation)
-})
+/*---------------------------------------*/
+/*--------------Event Table--------------*/
+/*---------------------------------------*/
 
+//Get All - OK
 app.get('/events', async (req, res) => {
-    const getEvents = await Events.find()
+    const getEvents = await Event.find()
     res.json(getEvents);
 })
 
+//Get one - OK
+app.get('/event/:id', async (req, res) => {
+    try {
+        const EventInfo = await Event.findOne({_id: req.params.id})
+        res.status(200).json(EventInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
+//Add one event - OK
+app.post('/event', async (req, res) => {
+    try {
+        const {title, description, startDate, finishDate, owner, type} = req.body
+        const eventCreation = await Event.create({
+            title,
+            description,
+            startDate,
+            finishDate,
+            owner,
+            type,
+        })
+        res.status(200).json(eventCreation)
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+    
+})
+
+//Update on event - OK
+app.patch('/event/:id', (req, res) => {
+    try {
+        Event.updateOne({_id: req.params.id}, req.body).then(() => {
+            res.status(200).json({
+                message: "Updated"
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+})
+
+//Delete on event - OK
+app.delete('/event/:id', (req, res) => {
+    try {
+        Event.deleteOne({_id: req.params.id}).then(() => {
+            res.status(200).json({
+                message: "Deleted"
+            })
+        }).catch((error) => {
+            res.status(400).json({
+                error: error
+            });
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+});
+
+/*---------------------------------------*/
+/*----------------Article----------------*/
+/*---------------------------------------*/
+/*app.post('/article', (req,res) => {
+    try {
+        Article.create({})
+
+    }
+    catch (e) {
+
+    }
+})*/
 
 app.listen('4000', console.log("Running on port 4000"));
