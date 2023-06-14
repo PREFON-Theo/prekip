@@ -17,12 +17,16 @@ div.container {
             margin-bottom: 2vh;
         }
 
-        div.input_dates {
+        div.input_mail, .input_dates {
             display: flex;
-
-            >div:first-child {
-                margin-right: 2vh;
+            justify-content: space-between;
+            >div {
+                width: 49%;
             }
+        }
+
+        div.input_password>div {
+            width: 100%;
         }
 
     }

@@ -19,7 +19,6 @@ const Login = ({setOpenLoginForm}) => {
     const handleLoginSubmit = async () => {
         try {
             const {data} = await axios.post('/login', {email, password})
-            console.log(data)
             if(data === 'Not found') {
                 alert('Login denied');
             }

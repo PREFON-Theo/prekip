@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser")
 
 const User = require('./models/User');
 const Event = require('./models/Event');
+const EventType = require('./models/EventType');
 //const Article = require('./models/Article');
 require('dotenv').config();
 
@@ -161,6 +162,85 @@ app.patch('/event/:id', (req, res) => {
 app.delete('/event/:id', (req, res) => {
     try {
         Event.deleteOne({_id: req.params.id}).then(() => {
+            res.status(200).json({
+                message: "Deleted"
+            })
+        }).catch((error) => {
+            res.status(400).json({
+                error: error
+            });
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+});
+
+
+
+/*---------------------------------------*/
+/*--------------Event Table--------------*/
+/*---------------------------------------*/
+
+//Get All - OK
+app.get('/event-types', async (req, res) => {
+    const getEventTypes = await EventType.find()
+    res.json(getEventTypes);
+})
+
+//Get one - OK
+app.get('/event-type/:id', async (req, res) => {
+    try {
+        const EventTypeInfo = await EventType.findOne({_id: req.params.id})
+        res.status(200).json(EventTypeInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
+//Add one event type  - OK
+app.post('/event-type', async (req, res) => {
+    try {
+        const {title, description, parent, color} = req.body
+        const eventCreation = await EventType.create({
+            title,
+            description,
+            parent,
+            color
+        })
+        res.status(200).json(eventCreation)
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+    
+})
+
+//Update on event type  - OK
+app.patch('/event-type/:id', (req, res) => {
+    try {
+        EventType.updateOne({_id: req.params.id}, req.body).then(() => {
+            res.status(200).json({
+                message: "Updated"
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+})
+
+//Delete on event type - OK
+app.delete('/event-type/:id', (req, res) => {
+    try {
+        EventType.deleteOne({_id: req.params.id}).then(() => {
             res.status(200).json({
                 message: "Deleted"
             })

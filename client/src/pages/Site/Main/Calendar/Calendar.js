@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import styles from "./Calendar.module.scss"
 import "./Calendar.css"
 
@@ -13,37 +13,46 @@ import FormEditEvent from "./FormEditEvent/FormEditEvent"
 
 import Dialog from '@mui/material/Dialog';
 
-const typeOfEvent = {
+import { UserContext } from "../../../../utils/Context/UserContext/UserContext"
+
+const mmtypeOfEvent = {
   Teletravail: "grey",
   Global: "red",
   Personnel: "blue"
 }
 
+const eventTypes = await axios.get('/event-types')
+const listEvenTypes = eventTypes.data
+
 
 const Calendar = () => {
 
   
+  const { user } = useContext(UserContext)
+
   const [events, setEvents] = useState([])
   const [openAddEvent, setOpenAddEvent] = useState(false)
   const [dayInformations, setDayInformations] = useState()
   const [openEvent, setOpenEvent] = useState(false)
   const [idEventToEdit, setIdEventToEdit] = useState("")
+
+  
   
   useEffect(() => {
     const fetchData = async () => {
       setEvents([])
       axios
-        .get('events')
-        .then((res) => {
-          //console.log(res.data[0]._id)
-          res.data.map((item) => (
-            setEvents((eve) => [...eve, {
+      .get('events')
+      .then((res) => {
+        //console.log(res.data[0]._id)
+        res.data.map((item) => (
+          setEvents((eve) => [...eve, {
               eventId: item._id,
-              title: item.title,
+              title: `${item.title} par ${item.owner.username}`,
               start: item.startDate,
               end: item.finishDate,
               description: item.description,
-              color: typeOfEvent[item.type]
+              color: listEvenTypes.filter((i) => i._id === item.type)[0].color 
             }])
             ))
           })
@@ -51,21 +60,15 @@ const Calendar = () => {
         fetchData();
         
       },[])
-      
-  useEffect(() => {
-    //document.getElementsByClassName('fc-daygrid-day-frame').cursor = 'pointer';
-  }, [])
+
 
   const handleFormAddEvent = (day) => {
-    console.log(day)
     setDayInformations(day)
     setOpenAddEvent(true)
-    /* add axios */
   }
 
 
   const handleEditFormEvent = (day) => {
-    console.log(day.event._def.extendedProps.eventId)
     setIdEventToEdit(day.event._def.extendedProps.eventId)
     setOpenEvent(true)
   }
@@ -81,7 +84,7 @@ const Calendar = () => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <FormEditEvent idEventToEdit={idEventToEdit}/>
+            <FormEditEvent idEventToEdit={idEventToEdit} eventTypes={listEvenTypes}/>
           </Dialog>
         </div>
 
@@ -92,7 +95,7 @@ const Calendar = () => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <FormAddEvent dayInformations={dayInformations}/>  
+            <FormAddEvent dayInformations={dayInformations} eventTypes={listEvenTypes}/>  
           </Dialog>
         </div>
 
