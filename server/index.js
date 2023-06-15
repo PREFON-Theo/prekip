@@ -41,6 +41,22 @@ app.get('/users', async (req, res) => {
     res.json(getUser);
 })
 
+//Update on event - OK
+app.patch('/user/:id', (req, res) => {
+    try {
+        User.updateOne({_id: req.params.id}, req.body).then(() => {
+            res.status(200).json({
+                message: "Updated"
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+})
+
 //Inscription - OK
 app.post('/register', async (req, res) => {
     const {username, email, password} = req.body
@@ -123,7 +139,7 @@ app.get('/event/:id', async (req, res) => {
 //Add one event - OK
 app.post('/event', async (req, res) => {
     try {
-        const {title, description, startDate, finishDate, owner, type} = req.body
+        const {title, description, startDate, finishDate, owner, type, usersTagged} = req.body
         const eventCreation = await Event.create({
             title,
             description,
@@ -131,6 +147,7 @@ app.post('/event', async (req, res) => {
             finishDate,
             owner,
             type,
+            usersTagged
         })
         res.status(200).json(eventCreation)
     }

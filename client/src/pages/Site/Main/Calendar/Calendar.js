@@ -15,11 +15,6 @@ import Dialog from '@mui/material/Dialog';
 
 import { UserContext } from "../../../../utils/Context/UserContext/UserContext"
 
-const mmtypeOfEvent = {
-  Teletravail: "grey",
-  Global: "red",
-  Personnel: "blue"
-}
 
 const eventTypes = await axios.get('/event-types')
 const listEvenTypes = eventTypes.data
@@ -86,7 +81,7 @@ const Calendar = () => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <FormEditEvent idEventToEdit={idEventToEdit} eventTypes={listEvenTypes}/>
+            <FormEditEvent idEventToEdit={idEventToEdit} eventTypes={listEvenTypes} user={user} userList={listOfUsers}/>
           </Dialog>
         </div>
 
@@ -97,7 +92,7 @@ const Calendar = () => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <FormAddEvent dayInformations={dayInformations} eventTypes={listEvenTypes}/>  
+            <FormAddEvent dayInformations={dayInformations} eventTypes={listEvenTypes} user={user} userList={listOfUsers}/>  
           </Dialog>
         </div>
 

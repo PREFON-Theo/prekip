@@ -15,23 +15,26 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import axios from 'axios';
 
-const FormAddEvent = ({dayInformations, eventTypes}) => {
+
+import ListItemText from '@mui/material/ListItemText';
+import Checkbox from '@mui/material/Checkbox';
+import OutlinedInput from '@mui/material/OutlinedInput';
+
+
+const FormAddEvent = ({dayInformations, eventTypes, user, userList}) => {
   const [eventInfo, setEventInfo] = useState({
     title: '',
     description: '',
     startDate: dayjs(dayInformations.dateStr),
     finishDate: '',
     type: '',
-    owner: '',
+    owner: user._id,
+    usersTagged: []
   })
-
-
-  useEffect(() => {
-  }, [eventInfo])
-
+  
   const handleAddEvent = async () => {
     try {
-        await axios.post('/event', eventInfo).then((res) => console.log("New Event"))
+        await axios.post('/event', eventInfo).then((res) => console.log("New Event: ", res))
         //[Alert] : Evenement ajouté
     }
     catch (err) {
@@ -76,6 +79,32 @@ const FormAddEvent = ({dayInformations, eventTypes}) => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker format="DD/MM/YYYY HH:mm:ss" ampm={false} label="Date de fin" minDate={dayjs(dayInformations.dateStr)} value={dayjs(eventInfo.finishDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, finishDate: e}) )} />
             </LocalizationProvider>
+          </div>
+
+          <div className={styles.tag_users}>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Utilisateurs dans l'évènement</InputLabel>
+                <Select
+                  labelId="demo-multiple-checkbox-label"
+                  id="demo-multiple-checkbox"
+                  multiple
+                  value={eventInfo.usersTagged}
+                  onChange={e => setEventInfo(prevValues => ({...prevValues, usersTagged: e.target.value}))}
+                  input={<OutlinedInput sx={{width: '460px', margin: '0 auto'}} label="Utilisateurs dans l'évènement" />}
+                  renderValue={(selected) => selected.map((item, index) => (
+                    index === 0 ? userList.filter((u) => u._id === item)[0].username : `, ${userList.filter((u) => u._id === item)[0].username}`
+                  ))}
+                >
+                  {userList.map((item, index) => (
+                    <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>
+                      <Checkbox checked={eventInfo.usersTagged.filter((u) => u === item._id).length > 0 ? true : false} />
+                      <ListItemText primary={item.username} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
           </div>
 
           <div className={styles.button}>

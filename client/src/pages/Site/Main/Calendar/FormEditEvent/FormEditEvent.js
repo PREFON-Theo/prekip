@@ -15,41 +15,58 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import axios from 'axios';
 
-const FormEditEvent = ({idEventToEdit, eventTypes}) => {
+import ListItemText from '@mui/material/ListItemText';
+import Checkbox from '@mui/material/Checkbox';
+import OutlinedInput from '@mui/material/OutlinedInput';
+
+
+const FormEditEvent = ({idEventToEdit, eventTypes, user, userList}) => {
   const [eventInfo, setEventInfo] = useState({
     title: '',
     description: '',
     startDate: '',
     finishDate: '',
     type: '',
-    owner: '',
+    owner: user._id,
+    usersTagged: []
   })
 
-  useEffect(() => {
-    const fetchData = () => {
-      axios.get('/event/' + idEventToEdit).then((res) => 
-        //console.log(res)
-        setEventInfo({
-          title: res.data.title,
-          description: res.data.description,
-          startDate: res.data.startDate,
-          finishDate: res.data.finishDate,
-          type: res.data.type,
-          owner: res.data.owner,
-        })
-      )
+  const fetchData = () => {
+    axios.get('/event/' + idEventToEdit).then((res) => 
+      //console.log(res)
+      setEventInfo({
+        title: res.data.title,
+        description: res.data.description,
+        startDate: res.data.startDate,
+        finishDate: res.data.finishDate,
+        type: res.data.type,
+        owner: res.data.owner,
+        usersTagged: res.data.usersTagged
+      })
+    )
+    console.log("Fetched")
 
-    };
+  };
+
+  useEffect(() => {
     fetchData();
   }, [])
 
 
-  useEffect(() => {
-  }, [eventInfo])
+  /*useEffect(() => {
+  }, [eventInfo])*/
 
   const handleUpdateEvent = async () => {
     try {
-        await axios.patch('/event/' + idEventToEdit, eventInfo).then(() => console.log("Updated")).catch((e) => alert(e))
+      console.log(user._id)
+      console.log(eventInfo.owner)
+      if(user._id === eventInfo.owner){
+
+        await axios.patch('/event/' + idEventToEdit, eventInfo).then(() => console.log("Updated")).then(() => fetchData()).catch((e) => alert(e))
+      }
+      else {
+        console.log("Unauthorized")
+      }
         //[Alert] : Updated
     }
     catch (err) {
@@ -62,7 +79,7 @@ const FormEditEvent = ({idEventToEdit, eventTypes}) => {
     <>
       <div className={styles.container}>
           <h1>
-            Informations de cet évènement :
+            Informations de cet évènement de {userList.filter((use) => use._id === eventInfo.owner)[0].username}:
           </h1>
         <div className={styles.container_inputs}>
           <div className={styles.input_mail}>
@@ -94,6 +111,32 @@ const FormEditEvent = ({idEventToEdit, eventTypes}) => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker format="DD/MM/YYYY HH:mm:ss" ampm={false} label="Date de fin" value={dayjs(eventInfo.finishDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, finishDate: e}) )} />
             </LocalizationProvider>
+          </div>
+
+          <div className={styles.tag_users}>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Utilisateurs dans l'évènement</InputLabel>
+                <Select
+                  labelId="demo-multiple-checkbox-label"
+                  id="demo-multiple-checkbox"
+                  multiple
+                  value={eventInfo.usersTagged}
+                  onChange={e => setEventInfo(prevValues => ({...prevValues, usersTagged: e.target.value}))}
+                  input={<OutlinedInput sx={{width: '460px', margin: '0 auto'}} label="Utilisateurs dans l'évènement" />}
+                  renderValue={(selected) => selected.map((item, index) => (
+                    index === 0 ? userList.filter((u) => u._id === item)[0].username : `, ${userList.filter((u) => u._id === item)[0].username}`
+                  ))}
+                >
+                  {userList.map((item, index) => (
+                    <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>
+                      <Checkbox checked={eventInfo.usersTagged.filter((u) => u === item._id).length > 0 ? true : false} />
+                      <ListItemText primary={item.username} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
           </div>
 
           <div className={styles.button}>

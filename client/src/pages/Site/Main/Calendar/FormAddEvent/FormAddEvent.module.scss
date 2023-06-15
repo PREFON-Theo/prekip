@@ -13,7 +13,7 @@ div.container {
     div.container_inputs {
         margin-bottom: 5vh;
 
-        div.input_mail, .input_password, .input_dates {
+        div.input_mail, .input_password, .input_dates, .tag_users {
             margin-bottom: 2vh;
         }
 
@@ -29,6 +29,17 @@ div.container {
             width: 100%;
         }
 
+    }
+    .tag_users {
+        .user_tagged_container {
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            > button {
+                margin: 10px 10px 10px 0;
+            }
+
+        }
     }
 
 }

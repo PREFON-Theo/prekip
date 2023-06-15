@@ -9,6 +9,7 @@ const EventSchema = Schema({
     finishDate: Date,
     type: String,
     owner: String,
+    usersTagged: Array,
 })
 
 const EventModel = mongoose.model('Event', EventSchema);
