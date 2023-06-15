@@ -24,6 +24,8 @@ const mmtypeOfEvent = {
 const eventTypes = await axios.get('/event-types')
 const listEvenTypes = eventTypes.data
 
+const usersList = await axios.get('/users')
+const listOfUsers = usersList.data
 
 const Calendar = () => {
 
@@ -48,7 +50,7 @@ const Calendar = () => {
         res.data.map((item) => (
           setEvents((eve) => [...eve, {
               eventId: item._id,
-              title: `${item.title} par ${item.owner.username}`,
+              title: `${item.title} par ${listOfUsers.filter((u) => u._id === item.owner)[0].username}`,
               start: item.startDate,
               end: item.finishDate,
               description: item.description,
