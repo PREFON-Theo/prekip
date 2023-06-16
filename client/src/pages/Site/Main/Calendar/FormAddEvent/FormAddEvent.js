@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styles from "./FormAddEvent.module.scss"
 
 import TextField from '@mui/material/TextField';
@@ -15,13 +15,13 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import axios from 'axios';
 
-
+import ListSubheader from '@mui/material/ListSubheader';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import OutlinedInput from '@mui/material/OutlinedInput';
 
 
-const FormAddEvent = ({dayInformations, eventTypes, user, userList}) => {
+const FormAddEvent = ({dayInformations, eventTypes, user, userList, handleCloseForm, handleOpenAlert, changeAlertValues}) => {
   const [eventInfo, setEventInfo] = useState({
     title: '',
     description: '',
@@ -34,11 +34,16 @@ const FormAddEvent = ({dayInformations, eventTypes, user, userList}) => {
   
   const handleAddEvent = async () => {
     try {
-        await axios.post('/event', eventInfo).then((res) => console.log("New Event: ", res))
-        //[Alert] : Evenement ajouté
+        await axios
+          .post('/event', eventInfo)
+          .then(() => console.log("Added"))
+          .then(() => handleOpenAlert())
+          .then(() => handleCloseForm())
+          .then(() => changeAlertValues('success', 'Evenement ajouté'))
+          .catch((e) => changeAlertValues('error', e))
     }
     catch (err) {
-        alert("Add failed")
+      changeAlertValues('error', err)
     }
   }
 
@@ -63,7 +68,12 @@ const FormAddEvent = ({dayInformations, eventTypes, user, userList}) => {
                   onChange={e => setEventInfo(prevValues => ({...prevValues, type: e.target.value}) )}
                 >
                   {eventTypes.map((item, index) => (
-                    <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
+                    item.parent === "" 
+                    ? 
+                      <ListSubheader key={index} >{item.title}</ListSubheader>
+                    :
+                      <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
+
                   ))}
                 </Select>
               </FormControl>
