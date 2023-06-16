@@ -6,6 +6,9 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require("cookie-parser")
 
 const User = require('./models/User');
+const Event = require('./models/Event');
+const EventType = require('./models/EventType');
+//const Article = require('./models/Article');
 require('dotenv').config();
 
 const bcryptSecret = bcrypt.genSaltSync(10);
@@ -28,11 +31,33 @@ app.use(cors({
 }))
 
 
+/*--------------------------------------*/
+/*--------------User Table--------------*/
+/*--------------------------------------*/
+
+//Get All Users - OK
 app.get('/users', async (req, res) => {
     const getUser = await User.find()
     res.json(getUser);
 })
 
+//Update on event - OK
+app.patch('/user/:id', (req, res) => {
+    try {
+        User.updateOne({_id: req.params.id}, req.body).then(() => {
+            res.status(200).json({
+                message: "Updated"
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+})
+
+//Inscription - OK
 app.post('/register', async (req, res) => {
     const {username, email, password} = req.body
     const userCreation = await User.create({
@@ -43,6 +68,7 @@ app.post('/register', async (req, res) => {
     res.json(userCreation)
 })
 
+//Connexion - OK
 app.post('/login', async (req, res) => {
     const {email, password} = req.body;
     try {
@@ -57,7 +83,7 @@ app.post('/login', async (req, res) => {
                 })
             }
             else {
-                res.json('error password')
+                res.json('Error password')
             }
         }
         else {
@@ -65,11 +91,12 @@ app.post('/login', async (req, res) => {
         }   
     }
     catch (e) {
-        alert("error")
+        res.status(400).json(e)
     }
     
 })
 
+//Déconnexion - OK
 app.post('/logout', async (req, res) => {
     res.cookie('token', '').json('ok');
 })
@@ -88,5 +115,176 @@ app.get('/profil', (req, res) => {
     }
 })
 
+/*---------------------------------------*/
+/*--------------Event Table--------------*/
+/*---------------------------------------*/
+
+//Get All - OK
+app.get('/events', async (req, res) => {
+    const getEvents = await Event.find()
+    res.json(getEvents);
+})
+
+//Get one - OK
+app.get('/event/:id', async (req, res) => {
+    try {
+        const EventInfo = await Event.findOne({_id: req.params.id})
+        res.status(200).json(EventInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
+//Add one event - OK
+app.post('/event', async (req, res) => {
+    try {
+        const {title, description, startDate, finishDate, owner, type, usersTagged} = req.body
+        const eventCreation = await Event.create({
+            title,
+            description,
+            startDate,
+            finishDate,
+            owner,
+            type,
+            usersTagged
+        })
+        res.status(200).json(eventCreation)
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+    
+})
+
+//Update on event - OK
+app.patch('/event/:id', (req, res) => {
+    try {
+        Event.updateOne({_id: req.params.id}, req.body).then(() => {
+            res.status(200).json({
+                message: "Updated"
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+})
+
+//Delete on event - OK
+app.delete('/event/:id', (req, res) => {
+    try {
+        Event.deleteOne({_id: req.params.id}).then(() => {
+            res.status(200).json({
+                message: "Deleted"
+            })
+        }).catch((error) => {
+            res.status(400).json({
+                error: error
+            });
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+});
+
+
+
+/*---------------------------------------*/
+/*--------------Event Table--------------*/
+/*---------------------------------------*/
+
+//Get All - OK
+app.get('/event-types', async (req, res) => {
+    const getEventTypes = await EventType.find()
+    res.json(getEventTypes);
+})
+
+//Get one - OK
+app.get('/event-type/:id', async (req, res) => {
+    try {
+        const EventTypeInfo = await EventType.findOne({_id: req.params.id})
+        res.status(200).json(EventTypeInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
+//Add one event type  - OK
+app.post('/event-type', async (req, res) => {
+    try {
+        const {title, description, parent, color} = req.body
+        const eventCreation = await EventType.create({
+            title,
+            description,
+            parent,
+            color
+        })
+        res.status(200).json(eventCreation)
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+    
+})
+
+//Update on event type  - OK
+app.patch('/event-type/:id', (req, res) => {
+    try {
+        EventType.updateOne({_id: req.params.id}, req.body).then(() => {
+            res.status(200).json({
+                message: "Updated"
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+})
+
+//Delete on event type - OK
+app.delete('/event-type/:id', (req, res) => {
+    try {
+        EventType.deleteOne({_id: req.params.id}).then(() => {
+            res.status(200).json({
+                message: "Deleted"
+            })
+        }).catch((error) => {
+            res.status(400).json({
+                error: error
+            });
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+});
+
+/*---------------------------------------*/
+/*----------------Article----------------*/
+/*---------------------------------------*/
+/*app.post('/article', (req,res) => {
+    try {
+        Article.create({})
+
+    }
+    catch (e) {
+
+    }
+})*/
 
 app.listen('4000', console.log("Running on port 4000"));

@@ -3,9 +3,14 @@ import styles from "./Main.module.scss"
 import Menu from '../Default/Menu/Menu';
 import Footer from '../Default/Footer/Footer';
 import Login from '../../Auth/Login';
+import Homepage from "../Main/Homepage/Homepage"
 import axios from 'axios';
 
+import { Routes, Route } from 'react-router-dom';
+
 import Dialog from '@mui/material/Dialog';
+import Account from './Account/Account';
+import Calendar from './Calendar/Calendar';
 
 
 const Main = () => {
@@ -15,11 +20,15 @@ const Main = () => {
 useEffect(() => {
 
     const fetchUser =  async () => {
-        const { data } = await axios.get('/users');
+        const { data } = await axios.get('/users')
         setUsersList(data)
     }
     fetchUser();
 }, []);
+
+/*useEffect(() => {
+    console.log(usersList)
+}, [usersList])*/
 
 const [openLoginForm, setOpenLoginForm] = useState(false);
 const handleCloseLoginForm = () => {
@@ -34,14 +43,18 @@ const handleCloseLoginForm = () => {
     return (
         <>
             <Menu handleOpenLoginForm={handleOpenLoginForm}/>
+
             <div className={styles.container}>
-                <p>main</p>
+                <Routes>
+                    <Route index element={<Homepage/>}/>
+                    <Route path="compte" element={<Account/>}/>
+                    <Route path="calendar" element={<Calendar/>}/>
+                </Routes>
             </div>
+
             <Footer/>
 
             <div className={styles.login_form}>
-
-
                 <Dialog
                     open={openLoginForm}
                     onClose={handleCloseLoginForm}
@@ -50,7 +63,7 @@ const handleCloseLoginForm = () => {
                 >
                     <Login setOpenLoginForm={setOpenLoginForm}/>
                     
-                </Dialog>              
+                </Dialog>
             </div>
         </>
     );

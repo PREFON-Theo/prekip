@@ -1,0 +1,45 @@
+div.container {
+    width: auto;
+    height: auto;
+    margin: auto;
+    padding: 5vh 5vw;
+    background-color: rgba(210, 210, 210, 0.13);
+    text-align: center;
+
+    h1 {
+
+    }
+
+    div.container_inputs {
+        margin-bottom: 5vh;
+
+        div.input_mail, .input_password, .input_dates, .tag_users {
+            margin-bottom: 2vh;
+        }
+
+        div.input_mail, .input_dates {
+            display: flex;
+            justify-content: space-between;
+            >div {
+                width: 49%;
+            }
+        }
+
+        div.input_password>div {
+            width: 100%;
+        }
+
+    }
+    .tag_users {
+        .user_tagged_container {
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            > button {
+                margin: 10px 10px 10px 0;
+            }
+
+        }
+    }
+
+}
