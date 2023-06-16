@@ -8,7 +8,7 @@ const cookieParser = require("cookie-parser")
 const User = require('./models/User');
 const Event = require('./models/Event');
 const EventType = require('./models/EventType');
-//const Article = require('./models/Article');
+const Article = require('./models/Article');
 require('dotenv').config();
 
 const bcryptSecret = bcrypt.genSaltSync(10);
@@ -30,10 +30,11 @@ app.use(cors({
     origin: process.env.CLIENT_URL
 }))
 
-
+//////////////////////////////////////////
 /*--------------------------------------*/
 /*--------------User Table--------------*/
 /*--------------------------------------*/
+//////////////////////////////////////////
 
 //Get All Users - OK
 app.get('/users', async (req, res) => {
@@ -41,7 +42,7 @@ app.get('/users', async (req, res) => {
     res.json(getUser);
 })
 
-//Update on event - OK
+//Update one event - OK
 app.patch('/user/:id', (req, res) => {
     try {
         User.updateOne({_id: req.params.id}, req.body).then(() => {
@@ -115,9 +116,11 @@ app.get('/profil', (req, res) => {
     }
 })
 
+///////////////////////////////////////////
 /*---------------------------------------*/
 /*--------------Event Table--------------*/
 /*---------------------------------------*/
+///////////////////////////////////////////
 
 //Get All - OK
 app.get('/events', async (req, res) => {
@@ -159,7 +162,7 @@ app.post('/event', async (req, res) => {
     
 })
 
-//Update on event - OK
+//Update one event - OK
 app.patch('/event/:id', (req, res) => {
     try {
         Event.updateOne({_id: req.params.id}, req.body).then(() => {
@@ -175,7 +178,7 @@ app.patch('/event/:id', (req, res) => {
     }
 })
 
-//Delete on event - OK
+//Delete one event - OK
 app.delete('/event/:id', (req, res) => {
     try {
         Event.deleteOne({_id: req.params.id}).then(() => {
@@ -196,10 +199,11 @@ app.delete('/event/:id', (req, res) => {
 });
 
 
-
+///////////////////////////////////////////
 /*---------------------------------------*/
 /*--------------Event Table--------------*/
 /*---------------------------------------*/
+///////////////////////////////////////////
 
 //Get All - OK
 app.get('/event-types', async (req, res) => {
@@ -238,7 +242,7 @@ app.post('/event-type', async (req, res) => {
     
 })
 
-//Update on event type  - OK
+//Update one event type  - OK
 app.patch('/event-type/:id', (req, res) => {
     try {
         EventType.updateOne({_id: req.params.id}, req.body).then(() => {
@@ -254,7 +258,7 @@ app.patch('/event-type/:id', (req, res) => {
     }
 })
 
-//Delete on event type - OK
+//Delete one event type - OK
 app.delete('/event-type/:id', (req, res) => {
     try {
         EventType.deleteOne({_id: req.params.id}).then(() => {
@@ -274,17 +278,92 @@ app.delete('/event-type/:id', (req, res) => {
     }
 });
 
+///////////////////////////////////////////
 /*---------------------------------------*/
-/*----------------Article----------------*/
+/*--------------- Article ---------------*/
 /*---------------------------------------*/
-/*app.post('/article', (req,res) => {
+///////////////////////////////////////////
+
+//Get All - OK
+app.get('/articles', async (req, res) => {
+    const getArticles = await Article.find()
+    res.json(getArticles);
+})
+
+//Get one - OK
+app.get('/article/:id', async (req, res) => {
     try {
-        Article.create({})
-
+        const ArticleInfo = await Article.findOne({_id: req.params.id})
+        res.status(200).json(ArticleInfo)
     }
-    catch (e) {
-
+    catch (e){
+        res.status(400).json(e)
     }
-})*/
+})
+
+
+//Create - OK
+app.post('/article', async (req, res) => {
+    try {
+        const {title, preview, content, category, author, image} = req.body
+        const articleCreation = await Article.create({
+            title,
+            preview,
+            content,
+            category,
+            author,
+            image,
+        })
+        res.status(200).json(articleCreation)
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+    
+})
+
+
+
+//Update one event - OK
+app.patch('/article/:id', (req, res) => {
+    try {
+        Article.updateOne({_id: req.params.id}, req.body).then(() => {
+            res.status(200).json({
+                message: "Updated"
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+})
+
+//Delete one article - 
+app.delete('/article/:id', (req, res) => {
+    try {
+        Article.deleteOne({_id: req.params.id}).then(() => {
+            res.status(200).json({
+                message: "Deleted"
+            })
+        }).catch((error) => {
+            res.status(400).json({
+                error: error
+            });
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+});
+
+
+
+
 
 app.listen('4000', console.log("Running on port 4000"));

@@ -11,6 +11,8 @@ import { Routes, Route } from 'react-router-dom';
 import Dialog from '@mui/material/Dialog';
 import Account from './Account/Account';
 import Calendar from './Calendar/Calendar';
+import NewArticle from './Article/NewArticle/NewArticle';
+import ArticlePage from './Article/ArticlePage/ArticlePage';
 
 
 const Main = () => {
@@ -49,6 +51,8 @@ const handleCloseLoginForm = () => {
                     <Route index element={<Homepage/>}/>
                     <Route path="compte" element={<Account/>}/>
                     <Route path="calendar" element={<Calendar/>}/>
+                    <Route path='new-article' element={<NewArticle/>}/>
+                    <Route path='article/:id' element={<ArticlePage/>}/>
                 </Routes>
             </div>
 

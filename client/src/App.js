@@ -14,6 +14,9 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import { frFR as coreFrFR } from '@mui/material/locale';
 import { frFR } from '@mui/x-date-pickers/locales';
 
+import NewArticle from './pages/Site/Main/Article/NewArticle/NewArticle';
+import ArticlePage from './pages/Site/Main/Article/ArticlePage/ArticlePage';
+
 axios.defaults.baseURL = 'http://localhost:4000'
 axios.defaults.withCredentials = true;
 
@@ -34,11 +37,12 @@ const App = () => {
                 <Route path='compte' element={<Account/>}>
                 </Route>
                 <Route path='/calendar' element={<Calendar/>}/>
+                <Route path='/new-article' element={<NewArticle/>}/>
+                <Route path='/article/:id' element={<ArticlePage/>}/>
 
               </Route>
               <Route path='/admin' element={<Admin/>}/>
               <Route path='*' element={<NotFound/>}/>
-              {/*<Route path='/calendrier' element={</>}/> TODO*/}
               {/*<Route path='/rubrique/:subpage?' element={</>}/> TODO*/}
 
             </Routes>

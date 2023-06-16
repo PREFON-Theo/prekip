@@ -10,6 +10,7 @@ import logo from "../../../../utils/assets/Logo PREKIP.png"
 
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
 import MenuItemLinkDropdown from './MenuItemLink/MenuItemLinkDropdown';
 
 const MenuFct = ({handleOpenLoginForm}) => {
@@ -48,6 +49,10 @@ const MenuFct = ({handleOpenLoginForm}) => {
           </div>
 
           <div className={styles.right}>
+            <Button variant="contained" color="success" className={styles.link_login}>
+
+              <AddIcon/>Ajouter un article
+            </Button>
             <SearchItem/>
             {!!user && (
               <>
