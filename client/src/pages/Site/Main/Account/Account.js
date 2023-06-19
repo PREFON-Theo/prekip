@@ -4,7 +4,7 @@ import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 import { Navigate, Link, Routes, Route } from 'react-router-dom';
 import Second from "../Second/Second"
 
-const Account = () => {
+const Account = ({ handleOpenAlert, changeAlertValues }) => {
   const {user, ready} = useContext(UserContext)
 
   if(!ready) {

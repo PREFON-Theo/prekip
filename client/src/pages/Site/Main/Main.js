@@ -15,7 +15,7 @@ import NewArticle from './Article/NewArticle/NewArticle';
 import ArticlePage from './Article/ArticlePage/ArticlePage';
 
 
-const Main = () => {
+const Main = ({ handleOpenAlert, changeAlertValues }) => {
 
     const [usersList, setUsersList] = useState([])
 
@@ -48,11 +48,11 @@ const handleCloseLoginForm = () => {
 
             <div className={styles.container}>
                 <Routes>
-                    <Route index element={<Homepage/>}/>
-                    <Route path="compte" element={<Account/>}/>
-                    <Route path="calendar" element={<Calendar/>}/>
-                    <Route path='new-article' element={<NewArticle/>}/>
-                    <Route path='article/:id' element={<ArticlePage/>}/>
+                    <Route index element={<Homepage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path="compte" element={<Account handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path="calendar" element={<Calendar handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='new-article' element={<NewArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='article/:id' element={<ArticlePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 </Routes>
             </div>
 

@@ -5,6 +5,7 @@ import axios from 'axios';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
+import { Button } from '@mui/material';
 
 
 const usersList = await axios.get('/users')
@@ -12,7 +13,7 @@ const listOfUsers = usersList.data
 
 const parse = require('html-react-parser');
 
-const ArticlePage = () => {
+const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
   const { id } = useParams();
   const [article, setArticle] = useState(
     {
@@ -47,6 +48,11 @@ const ArticlePage = () => {
   /*useEffect(() => {
     console.log(new Date(article.created_at).toDateString())
   }, [article])*/
+
+  /*const handleClick = () => {
+    handleOpenAlert(true)
+    changeAlertValues('success', "Bravo vous savez cliquer")
+  }*/
 
   return (
     <>

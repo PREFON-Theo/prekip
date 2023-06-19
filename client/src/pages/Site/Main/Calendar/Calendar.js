@@ -15,13 +15,6 @@ import Dialog from '@mui/material/Dialog';
 
 import { UserContext } from "../../../../utils/Context/UserContext/UserContext"
 
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
 
 const eventTypes = await axios.get('/event-types')
 const listEvenTypes = []
@@ -39,7 +32,7 @@ for(const i in eventTypes.data){
 const usersList = await axios.get('/users')
 const listOfUsers = usersList.data
 
-const Calendar = () => {
+const Calendar = ({ handleOpenAlert, changeAlertValues }) => {
 
   
   const { user } = useContext(UserContext)
@@ -49,13 +42,6 @@ const Calendar = () => {
   const [dayInformations, setDayInformations] = useState()
   const [openEvent, setOpenEvent] = useState(false)
   const [idEventToEdit, setIdEventToEdit] = useState("")
-
-  const [openAlert, setOpenAlert] = useState(false);
-
-  const [alertMsg, setAlertMsg] = useState('');
-  const [alertType, setAlertType] = useState('');
-
-
   
   
   useEffect(() => {
@@ -102,22 +88,7 @@ const Calendar = () => {
     setOpenEvent(false)
   }
 
-  const handleCloseAlert = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpenAlert(false);
-  };
-
-  const handleOpenAlert = () => {
-    setOpenAlert(true);
-  };
-
-  const changeAlertValues = (type, msg) => {
-    setAlertMsg(msg)
-    setAlertType(type)
-  }
+  
 
 
   return (
@@ -141,13 +112,6 @@ const Calendar = () => {
             />
           </Dialog>
         </div>
-
-        <Snackbar open={openAlert} autoHideDuration={3000} onClose={handleCloseAlert}>
-          <Alert onClose={handleCloseAlert} severity={alertType} sx={{ width: '100%' }}>
-            {alertMsg}
-          </Alert>
-        </Snackbar>
-
         <div className={styles.new_event_form}>
           <Dialog
             open={openAddEvent}

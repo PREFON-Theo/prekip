@@ -1,7 +1,7 @@
 import React, { useContext, useState  } from 'react'
 import styles from "./Menu.module.scss"
 import {UserContext} from "../../../../utils/Context/UserContext/UserContext"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 import ButtonMyAccount from './ButtonMyAccount/ButtonMyAccount';
 import MenuItemLink from "./MenuItemLink/MenuItemLink"
 import SearchItem from './SearchItem/SearchItem';
@@ -49,10 +49,16 @@ const MenuFct = ({handleOpenLoginForm}) => {
           </div>
 
           <div className={styles.right}>
-            <Button variant="contained" color="success" className={styles.link_login}>
+            <Link to='/new-article'>
+              <Button 
+                variant="contained" 
+                color="success" 
+                className={styles.link_login}
+                >
 
-              <AddIcon/>Ajouter un article
-            </Button>
+                <AddIcon/>Ajouter un article
+              </Button>
+              </Link>
             <SearchItem/>
             {!!user && (
               <>

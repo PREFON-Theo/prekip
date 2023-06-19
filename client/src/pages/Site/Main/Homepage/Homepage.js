@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from "./Homepage.module.scss"
 
-const Homepage = () => {
+const Homepage = ({ handleOpenAlert, changeAlertValues }) => {
     return (
         <>
         homepage
