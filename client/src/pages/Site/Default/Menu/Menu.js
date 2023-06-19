@@ -1,7 +1,7 @@
 import React, { useContext, useState  } from 'react'
 import styles from "./Menu.module.scss"
 import {UserContext} from "../../../../utils/Context/UserContext/UserContext"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 import ButtonMyAccount from './ButtonMyAccount/ButtonMyAccount';
 import MenuItemLink from "./MenuItemLink/MenuItemLink"
 import SearchItem from './SearchItem/SearchItem';
@@ -10,6 +10,7 @@ import logo from "../../../../utils/assets/Logo PREKIP.png"
 
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
 import MenuItemLinkDropdown from './MenuItemLink/MenuItemLinkDropdown';
 
 const MenuFct = ({handleOpenLoginForm}) => {
@@ -48,6 +49,16 @@ const MenuFct = ({handleOpenLoginForm}) => {
           </div>
 
           <div className={styles.right}>
+            <Link to='/new-article'>
+              <Button 
+                variant="contained" 
+                color="success" 
+                className={styles.link_login}
+                >
+
+                <AddIcon/>Ajouter un article
+              </Button>
+              </Link>
             <SearchItem/>
             {!!user && (
               <>
