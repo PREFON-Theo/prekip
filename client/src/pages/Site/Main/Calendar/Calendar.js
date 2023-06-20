@@ -43,29 +43,41 @@ const Calendar = ({ handleOpenAlert, changeAlertValues }) => {
   const [openEvent, setOpenEvent] = useState(false)
   const [idEventToEdit, setIdEventToEdit] = useState("")
   
-  
+  const fetchData = async () => {
+    setEvents([])
+    axios
+    .get('events')
+    .then((res) => {
+      //console.log(res.data[0]._id)
+      res.data.map((item) => (
+        setEvents((eve) => [...eve, {
+            eventId: item._id,
+            title: listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Absences" 
+            ? 
+              `Absence ${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''} de ${listOfUsers.filter((u) => u._id === item.owner)[0].username}` 
+            : 
+              listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Equipe"
+            ?
+              `${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''} de ${listOfUsers.filter((u) => u._id === item.owner)[0].username}` 
+            : 
+              listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Global"
+            ? 
+            `${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''}` 
+            :
+              "Autre",
+            start: item.startDate,
+            end: item.finishDate,
+            description: item.description,
+            color: listEvenTypes.filter((i) => i._id === item.type)[0]?.color || "orange"
+        }])
+      ))
+    })
+  };
+
+
   useEffect(() => {
-    const fetchData = async () => {
-      setEvents([])
-      axios
-      .get('events')
-      .then((res) => {
-        //console.log(res.data[0]._id)
-        res.data.map((item) => (
-          setEvents((eve) => [...eve, {
-              eventId: item._id,
-              title: `${item.title} par ${listOfUsers.filter((u) => u._id === item.owner)[0].username}`,
-              start: item.startDate,
-              end: item.finishDate,
-              description: item.description,
-              color: listEvenTypes.filter((i) => i._id === item.type)[0].color 
-            }])
-            ))
-          })
-        };
-        fetchData();
-        
-      },[])
+    fetchData();
+  },[])
 
 
   const handleFormAddEvent = (day) => {
@@ -88,7 +100,9 @@ const Calendar = ({ handleOpenAlert, changeAlertValues }) => {
     setOpenEvent(false)
   }
 
-  
+  const actualisateData = () => {
+    fetchData();
+  }
 
 
   return (
@@ -109,6 +123,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues }) => {
               handleCloseForm={handleCloseEditFormEvent}
               handleOpenAlert={handleOpenAlert}
               changeAlertValues={changeAlertValues}
+              actualisateData={actualisateData}
             />
           </Dialog>
         </div>
@@ -127,6 +142,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues }) => {
               handleCloseForm={handleCloseFormAddEvent}
               handleOpenAlert={handleOpenAlert}
               changeAlertValues={changeAlertValues}
+              actualisateData={actualisateData}
 
             />  
           </Dialog>
