@@ -14,6 +14,9 @@ require('dotenv').config();
 const bcryptSecret = bcrypt.genSaltSync(10);
 const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
 
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
+
 mongoose.set('strictQuery', false);
 mongoose
     .connect(process.env.MONGO_URL)
@@ -29,6 +32,7 @@ app.use(cors({
     credentials: true,
     origin: process.env.CLIENT_URL
 }))
+app.use('/uploads', express.static('uploads'))
 
 //////////////////////////////////////////
 /*--------------------------------------*/
@@ -201,7 +205,7 @@ app.delete('/event/:id', (req, res) => {
 
 ///////////////////////////////////////////
 /*---------------------------------------*/
-/*--------------Event Table--------------*/
+/*-----------Event Types Table-----------*/
 /*---------------------------------------*/
 ///////////////////////////////////////////
 
@@ -280,7 +284,7 @@ app.delete('/event-type/:id', (req, res) => {
 
 ///////////////////////////////////////////
 /*---------------------------------------*/
-/*--------------- Article ---------------*/
+/*------------ Article Table ------------*/
 /*---------------------------------------*/
 ///////////////////////////////////////////
 
@@ -303,8 +307,11 @@ app.get('/article/:id', async (req, res) => {
 
 
 //Create - OK
-app.post('/article', async (req, res) => {
+app.post('/article', upload.single('file'), async (req, res) => {
     try {
+        const file = req.file.path
+
+        console.log(file)
         const {title, preview, content, category, author, image} = req.body
         const articleCreation = await Article.create({
             title,
@@ -313,6 +320,9 @@ app.post('/article', async (req, res) => {
             category,
             author,
             image,
+            file,
+            created_at: new Date(),
+            updated_at: new Date(),
         })
         res.status(200).json(articleCreation)
     }
@@ -329,7 +339,17 @@ app.post('/article', async (req, res) => {
 //Update one event - OK
 app.patch('/article/:id', (req, res) => {
     try {
-        Article.updateOne({_id: req.params.id}, req.body).then(() => {
+        const {title, preview, content, category, author, image, file} = req.body
+        Article.updateOne({_id: req.params.id}, {
+            title,
+            preview,
+            content,
+            category,
+            author,
+            image,
+            file,
+            updated_at: new Date(),
+        }).then(() => {
             res.status(200).json({
                 message: "Updated"
             })

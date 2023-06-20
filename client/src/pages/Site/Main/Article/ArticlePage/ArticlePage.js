@@ -39,6 +39,8 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
         content: res.data.content,
         category: res.data.category,
         author: res.data.author,
+        file: res.data.file,
+        image: res.data.image,
         authorName: listOfUsers.filter((usr) => usr._id === res.data.author)[0]?.username,
         created_at: new Date(res.data.created_at).toLocaleDateString('fr-FR'),
         updated_at: new Date(res.data.updated_at).toLocaleDateString('fr-FR')
@@ -73,10 +75,24 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
 
         <div className={styles.article_preview}>{article.preview}</div>
 
+
         <div className={styles.article_author_informations}>
           Par {article.authorName}, le {article.created_at} {article.created_at !== article.updated_at ? ` et modifié le ${article.updated_at}`: <></>}
         </div>
 
+        {
+        article.image 
+        ? 
+          <img src={`http://localhost:4000/${article.image}`} alt="file" />
+        :
+          <></>
+        }
+
+        <a href={`http://localhost:4000/${article.file}`} >
+          <div className={styles.file_to_download}>
+            {article.file}
+          </div>
+        </a>
         <div className={styles.content}>{parse(article.content)}</div>
 
       </div>
