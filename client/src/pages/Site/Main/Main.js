@@ -10,20 +10,27 @@ import { Routes, Route } from 'react-router-dom';
 
 import Dialog from '@mui/material/Dialog';
 import Account from './Account/Account';
+import Calendar from './Calendar/Calendar';
+import NewArticle from './Article/NewArticle/NewArticle';
+import ArticlePage from './Article/ArticlePage/ArticlePage';
 
 
-const Main = () => {
+const Main = ({ handleOpenAlert, changeAlertValues }) => {
 
     const [usersList, setUsersList] = useState([])
 
 useEffect(() => {
 
     const fetchUser =  async () => {
-        const { data } = await axios.get('/users');
+        const { data } = await axios.get('/users')
         setUsersList(data)
     }
     fetchUser();
 }, []);
+
+/*useEffect(() => {
+    console.log(usersList)
+}, [usersList])*/
 
 const [openLoginForm, setOpenLoginForm] = useState(false);
 const handleCloseLoginForm = () => {
@@ -41,8 +48,11 @@ const handleCloseLoginForm = () => {
 
             <div className={styles.container}>
                 <Routes>
-                    <Route index element={<Homepage/>}/>
-                    <Route path="compte" element={<Account/>}/>
+                    <Route index element={<Homepage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path="compte" element={<Account handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path="calendar" element={<Calendar handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='new-article' element={<NewArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='article/:id' element={<ArticlePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 </Routes>
             </div>
 
@@ -57,7 +67,7 @@ const handleCloseLoginForm = () => {
                 >
                     <Login setOpenLoginForm={setOpenLoginForm}/>
                     
-                </Dialog>              
+                </Dialog>
             </div>
         </>
     );
