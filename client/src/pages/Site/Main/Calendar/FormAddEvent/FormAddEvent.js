@@ -187,7 +187,7 @@ const FormAddEvent = ({dayInformations, eventTypes, user, userList, handleCloseF
                         multiple
                         value={eventInfo.usersTagged}
                         onChange={e => setEventInfo(prevValues => ({...prevValues, usersTagged: e.target.value}))}
-                        input={<OutlinedInput sx={{width: '460px', margin: '0 auto'}} label="Utilisateurs dans l'évènement" />}
+                        input={<OutlinedInput sx={{width: '100%'}} label="Utilisateurs dans l'évènement" />}
                         renderValue={(selected) => selected.map((item, index) => (
                           index === 0 ? userList.filter((u) => u._id === item)[0].username : `, ${userList.filter((u) => u._id === item)[0].username}`
                         ))}
