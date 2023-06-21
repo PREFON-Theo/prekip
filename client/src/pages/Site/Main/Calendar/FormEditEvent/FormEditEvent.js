@@ -60,7 +60,7 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
     eventInfo.usersTagged.map((item, index) => (
       usersTaggedNamed.push(userList.filter((us) => us._id === item)[0].username)
     ))
-    eventInfo.startDate != '' ? 
+    eventInfo.startDate !== '' ? 
       setTypeOfAbs(
         eventInfo.startDate?.hour() <= 9 && eventInfo.finishDate?.hour() >= 18 ?
       1
@@ -94,7 +94,24 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
       else {
         changeAlertValues('error', "Unauthorized")
       }
-        //[Alert] : Updated
+    }
+    catch (err) {
+      changeAlertValues('error', err)
+    }
+  }
+
+  const handleDeleteEvent = async () => {
+    try {
+      if(user._id === eventInfo.owner){
+        axios
+          .delete('/event/' + idEventToEdit)
+          .then(() => console.log(`Event ${idEventToEdit} deleted`))
+          .then(() => handleOpenAlert())
+          .then(() => handleCloseForm())
+          .then(() => changeAlertValues('success', 'Evenement supprimé'))
+          .then(() => actualisateData())
+          .catch((e) => changeAlertValues('error', e))
+      }
     }
     catch (err) {
       changeAlertValues('error', err)
@@ -194,6 +211,7 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
                     </div>
                     <div className={styles.button}>
                       <Button variant="contained" color='warning' onClick={handleUpdateEvent}>Modifier l'évènement</Button>
+                      <Button variant="contained" color='error' onClick={handleDeleteEvent}>Supprimer l'évènement</Button>
                     </div>
                   </>
                 :
@@ -238,6 +256,7 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
                         </div>                
                         <div className={styles.button}>
                           <Button variant="contained" color='warning' onClick={handleUpdateEvent}>Modifier l'évènement</Button>
+                          <Button variant="contained" color='error' onClick={handleDeleteEvent}>Supprimer l'évènement</Button>
                         </div>
                       </>
                   :
@@ -292,7 +311,7 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
                               multiple
                               value={eventInfo.usersTagged}
                               onChange={e => setEventInfo(prevValues => ({...prevValues, usersTagged: e.target.value}))}
-                              input={<OutlinedInput sx={{width: '460px', margin: '0 auto'}} label="Utilisateurs dans l'évènement" />}
+                              input={<OutlinedInput sx={{width: '100%'}} label="Utilisateurs dans l'évènement" />}
                               renderValue={(selected) => selected.map((item, index) => (
                                 index === 0 ? userList.filter((u) => u._id === item)[0].username : `, ${userList.filter((u) => u._id === item)[0].username}`
                               ))}
@@ -311,6 +330,7 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
                         
                       <div className={styles.button}>
                         <Button variant="contained" color='warning' onClick={handleUpdateEvent}>Modifier l'évènement</Button>
+                        <Button variant="contained" color='error' onClick={handleDeleteEvent}>Supprimer l'évènement</Button>
                       </div>
                     </>
                   :
@@ -390,7 +410,7 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
                           multiple
                           value={eventInfo.usersTagged}
                           disabled
-                          input={<OutlinedInput sx={{width: '460px', margin: '0 auto'}} label="Utilisateurs dans l'évènement" />}
+                          input={<OutlinedInput sx={{width: '100%', color: "#00000061"}} label="Utilisateurs dans l'évènement" />}
                           renderValue={(selected) => selected.map((item, index) => (
                             index === 0 ? userList.filter((u) => u._id === item)[0].username : `, ${userList.filter((u) => u._id === item)[0].username}`
                           ))}

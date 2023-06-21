@@ -161,6 +161,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues }) => {
             end: "dayGridMonth, timeGridWeek, timeGridDay"
           }}
           firstDay={1}
+          allDayContent={''}
           buttonText={{
             today: "Aujourd'hui",
             month:    'Par mois',
