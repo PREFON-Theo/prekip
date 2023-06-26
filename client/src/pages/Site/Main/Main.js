@@ -35,22 +35,22 @@ useEffect(() => {
 const [openLoginForm, setOpenLoginForm] = useState(false);
 const handleCloseLoginForm = () => {
     setOpenLoginForm(false);
-  };
-  const handleOpenLoginForm = () => {
+};
+const handleOpenLoginForm = () => {
     setOpenLoginForm(true);
-  };
+};
 
 
 
     return (
         <>
-            <Menu handleOpenLoginForm={handleOpenLoginForm}/>
+            <Menu handleOpenLoginForm={handleOpenLoginForm}  handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>
 
             <div className={styles.container}>
                 <Routes>
                     <Route index element={<Homepage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path="compte" element={<Account handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-                    <Route path="calendar" element={<Calendar handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path="calendar" element={<Calendar handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues} handleOpenLoginForm={handleOpenLoginForm}/>}/>
                     <Route path='new-article' element={<NewArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='article/:id' element={<ArticlePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 </Routes>
@@ -65,7 +65,7 @@ const handleCloseLoginForm = () => {
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
                 >
-                    <Login setOpenLoginForm={setOpenLoginForm}/>
+                    <Login setOpenLoginForm={setOpenLoginForm} handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>
                     
                 </Dialog>
             </div>

@@ -30,7 +30,7 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
     startDate: '',
     finishDate: '',
     type: '',
-    owner: user._id,
+    owner: '',
     usersTagged: []
   })
   const [parentType, setParentType] = useState('')
@@ -155,12 +155,13 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
     <>
       <div className={styles.container}>
         <h1>
-          Informations de cet évènement de {userList.filter((use) => use._id === eventInfo.owner)[0].username}:
+          Informations de cet évènement de {userList.filter((use) => use._id === eventInfo.owner)[0]?.username}:
         </h1>
         <div className={styles.container_inputs}>
 
           {
-            user._id === eventInfo.owner ?
+
+            user && user._id === eventInfo.owner ?
 
               parentType === undefined ?
                 <div style={{marginBottom: '2vh'}}>Sélectionnez un type d'évènement</div>

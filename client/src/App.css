@@ -1,3 +1,7 @@
+html {
+  overflow-x: hidden;
+}
+
 .App {
   text-align: center;
 }
@@ -47,3 +51,4 @@
   max-height: 300px;
   overflow-x: auto;
 }
+

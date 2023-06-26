@@ -14,6 +14,7 @@ import FormEditEvent from "./FormEditEvent/FormEditEvent"
 import Dialog from '@mui/material/Dialog';
 
 import { UserContext } from "../../../../utils/Context/UserContext/UserContext"
+import FormNotConnected from './FormNotConnected/FormNotConnected'
 
 
 const eventTypes = await axios.get('/event-types')
@@ -32,7 +33,7 @@ for(const i in eventTypes.data){
 const usersList = await axios.get('/users')
 const listOfUsers = usersList.data
 
-const Calendar = ({ handleOpenAlert, changeAlertValues }) => {
+const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) => {
 
   
   const { user } = useContext(UserContext)
@@ -41,6 +42,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues }) => {
   const [openAddEvent, setOpenAddEvent] = useState(false)
   const [dayInformations, setDayInformations] = useState()
   const [openEvent, setOpenEvent] = useState(false)
+  const [openNotConnected, setOpenNotConnected] = useState(false)
   const [idEventToEdit, setIdEventToEdit] = useState("")
   
   const fetchData = async () => {
@@ -48,7 +50,6 @@ const Calendar = ({ handleOpenAlert, changeAlertValues }) => {
     axios
     .get('events')
     .then((res) => {
-      //console.log(res.data[0]._id)
       res.data.map((item) => (
         setEvents((eve) => [...eve, {
             eventId: item._id,
@@ -81,27 +82,19 @@ const Calendar = ({ handleOpenAlert, changeAlertValues }) => {
 
 
   const handleFormAddEvent = (day) => {
-    setDayInformations(day)
-    setOpenAddEvent(true)
+    if(user) {
+      setDayInformations(day)
+      setOpenAddEvent(true)
+    }
+    else {
+      setOpenNotConnected(true)
+    }
   }
 
 
   const handleEditFormEvent = (day) => {
     setIdEventToEdit(day.event._def.extendedProps.eventId)
     setOpenEvent(true)
-  }
-
-  const handleCloseFormAddEvent = () => {
-    setOpenAddEvent(false)
-  }
-
-
-  const handleCloseEditFormEvent = () => {
-    setOpenEvent(false)
-  }
-
-  const actualisateData = () => {
-    fetchData();
   }
 
 
@@ -120,10 +113,10 @@ const Calendar = ({ handleOpenAlert, changeAlertValues }) => {
               eventTypes={listEvenTypes}
               user={user}
               userList={listOfUsers}
-              handleCloseForm={handleCloseEditFormEvent}
+              handleCloseForm={() => setOpenEvent(false)}
               handleOpenAlert={handleOpenAlert}
               changeAlertValues={changeAlertValues}
-              actualisateData={actualisateData}
+              actualisateData={() => fetchData()}
             />
           </Dialog>
         </div>
@@ -139,11 +132,24 @@ const Calendar = ({ handleOpenAlert, changeAlertValues }) => {
               eventTypes={listEvenTypes}
               user={user}
               userList={listOfUsers}
-              handleCloseForm={handleCloseFormAddEvent}
+              handleCloseForm={() => setOpenAddEvent(false)}
               handleOpenAlert={handleOpenAlert}
               changeAlertValues={changeAlertValues}
-              actualisateData={actualisateData}
+              actualisateData={() => fetchData()}
 
+            />  
+          </Dialog>
+        </div>
+        <div className={styles.form_not_connected}>
+          <Dialog
+            open={openNotConnected}
+            onClose={() => setOpenNotConnected(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <FormNotConnected
+              handleCloseForm={() => setOpenNotConnected(false)}
+              handleOpenLoginForm={handleOpenLoginForm}
             />  
           </Dialog>
         </div>

@@ -17,7 +17,7 @@ import styles from "./ButtonMyAccount.module.scss"
 import axios from 'axios';
 import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
-const ButtonMyAccount = () => {
+const ButtonMyAccount = ({handleOpenAlert, changeAlertValues}) => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -34,8 +34,8 @@ const ButtonMyAccount = () => {
   const handleLogoutSubmit = async () => {
     axios.post('/logout');
     setUser(null)
-    alert('Logout successful');
-    /* [Alert] : Vous êtes déconnecté */
+    handleOpenAlert();
+    changeAlertValues('success', "Vous êtes déconnecté");
 }
 
   return (
@@ -49,7 +49,6 @@ const ButtonMyAccount = () => {
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
         >
-          {/* <Avatar sx={{ width: 32, height: 32 }}>M</Avatar> */}
           <PersonIcon/>
         </IconButton>
       </Tooltip>
