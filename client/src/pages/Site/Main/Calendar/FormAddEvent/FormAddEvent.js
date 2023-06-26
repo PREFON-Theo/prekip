@@ -189,13 +189,13 @@ const FormAddEvent = ({dayInformations, eventTypes, user, userList, handleCloseF
                         onChange={e => setEventInfo(prevValues => ({...prevValues, usersTagged: e.target.value}))}
                         input={<OutlinedInput sx={{width: '100%'}} label="Utilisateurs dans l'évènement" />}
                         renderValue={(selected) => selected.map((item, index) => (
-                          index === 0 ? userList.filter((u) => u._id === item)[0].username : `, ${userList.filter((u) => u._id === item)[0].username}`
+                          index === 0 ? `${userList.filter((u) => u._id === item)[0].firstname} ${userList.filter((u) => u._id === item)[0].lastname}`  : `, ${userList.filter((u) => u._id === item)[0].firstname} ${userList.filter((u) => u._id === item)[0].lastname}`
                         ))}
                       >
                         {userList.map((item, index) => (
                           <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>
                             <Checkbox checked={eventInfo.usersTagged.filter((u) => u === item._id).length > 0 ? true : false} />
-                            <ListItemText primary={item.username} />
+                            <ListItemText primary={`${item.firstname} ${item.lastname}`} />
                           </MenuItem>
                         ))}
                       </Select>

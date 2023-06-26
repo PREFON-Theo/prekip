@@ -65,7 +65,7 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
             {!!user && (
               <>
                 <div className={styles.account}>
-                  <span>Bonjour, {user.username}</span> 
+                  <span>Bonjour, {user.firstname} {user.lastname}</span> 
                 </div>
               </>
             )}

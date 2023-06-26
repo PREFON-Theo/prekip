@@ -10,10 +10,9 @@ import Button from '@mui/material/Button';
 
 const Login = ({setOpenLoginForm, handleOpenAlert, changeAlertValues}) => {
     const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
-    const {setUser, ready} = useContext(UserContext)
+    const {setUser} = useContext(UserContext)
 
     
     const handleLoginSubmit = async () => {

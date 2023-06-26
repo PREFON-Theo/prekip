@@ -45,6 +45,9 @@ app.get('/users', async (req, res) => {
 //Update one event - OK
 app.patch('/user/:id', (req, res) => {
     try {
+        if(req.body.password !== ""){
+            req.body.password = bcrypt.hashSync(req.body.password, bcryptSecret)
+        }
         User.updateOne({_id: req.params.id}, req.body).then(() => {
             res.status(200).json({
                 message: "Updated"
@@ -60,11 +63,16 @@ app.patch('/user/:id', (req, res) => {
 
 //Inscription - OK
 app.post('/register', async (req, res) => {
-    const {username, email, password} = req.body
+    const {firstname, lastname, email, password, role, joiningDate, leavingDate, valid} = req.body
     const userCreation = await User.create({
-        username,
+        firstname,
+        lastname,
         email,
         password:bcrypt.hashSync(password, bcryptSecret),
+        role,
+        joiningDate,
+        leavingDate,
+        valid
     })
     res.json(userCreation)
 })
@@ -107,12 +115,31 @@ app.get('/profil', (req, res) => {
     if(token) {
         jwt.verify(token, jwtSecret, {}, async (err, user) => {
             if (err) throw err;
-            const {_id, email, username} = await User.findById(user.id); 
-            res.json({_id, email, username})
+            const {_id, firstname, lastname, email, password, role, joiningDate, leavingDate, valid} = await User.findById(user.id); 
+            res.json({_id, firstname, lastname, email, password, role, joiningDate, leavingDate, valid})
         })
     }
     else {
         res.json(null)
+    }
+})
+
+app.delete('/user/:id', (req, res) => {
+    try {
+        User.deleteOne({_id: req.params.id}).then(() => {
+            res.status(200).json({
+                message: "Deleted"
+            })
+        }).catch((error) => {
+            res.status(400).json({
+                error: error
+            });
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
     }
 })
 

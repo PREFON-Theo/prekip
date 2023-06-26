@@ -3,9 +3,14 @@ const { Schema } = mongoose
 
 
 const UserSchema = Schema({
-    username: String,
+    firstname: String,
+    lastname: String,
     email: {type: String, unique: true},
-    password: String
+    password: String,
+    role: String,
+    joiningDate: Date,
+    leavingDate: Date,
+    valid: Boolean
 })
 
 const UserModel = mongoose.model('User', UserSchema);
