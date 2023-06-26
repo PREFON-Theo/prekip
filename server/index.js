@@ -290,6 +290,28 @@ app.get('/articles', async (req, res) => {
     res.json(getArticles);
 })
 
+
+//Get x last articles - OK
+app.get('/last-articles/:length', async (req, res) => {
+    const getArticles = await Article.find().sort({created_at: -1}).limit(req.params.length)
+    res.json(getArticles)
+})
+
+
+//Get the last articles - 
+app.get('/last-article', async (req, res) => {
+    const getArticles = await Article.find().sort({created_at: -1}).limit(1)
+    res.json(getArticles)
+})
+
+
+//Get 4 last articles with img - 
+app.get('/last-articles-img', async (req, res) => {
+    const getArticles = await Article.find({image: { $exists: true }}).sort({created_at: -1}).limit(4)
+    res.json(getArticles)
+})
+
+
 //Get one - OK
 app.get('/article/:id', async (req, res) => {
     try {

@@ -13,7 +13,7 @@ import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import MenuItemLinkDropdown from './MenuItemLink/MenuItemLinkDropdown';
 
-const MenuFct = ({handleOpenLoginForm}) => {
+const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => {
   const {user} = useContext(UserContext)
 
 
@@ -49,16 +49,18 @@ const MenuFct = ({handleOpenLoginForm}) => {
           </div>
 
           <div className={styles.right}>
-            <Link to='/new-article'>
-              <Button 
-                variant="contained" 
-                color="success" 
-                className={styles.link_login}
-                >
+           {!!user && (
+              <Link to='/new-article'>
+                <Button 
+                  variant="contained" 
+                  color="success" 
+                  className={styles.link_login}
+                  >
 
-                <AddIcon/>Ajouter un article
-              </Button>
+                  <AddIcon/>Ajouter un article
+                </Button>
               </Link>
+            )}
             <SearchItem/>
             {!!user && (
               <>
@@ -68,15 +70,15 @@ const MenuFct = ({handleOpenLoginForm}) => {
               </>
             )}
             {!!user ? 
-            <ButtonMyAccount/>
+            <ButtonMyAccount handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>
             :
-              <MenuItem>
+              //<MenuItem>
 
-                <Button onClick={() => handleOpenLoginForm(true)} variant="outlined" color="success" className={styles.link_login}>
+                <Button onClick={() => handleOpenLoginForm(true)} variant="contained" color="success" className={styles.link_login}>
                   Connexion
                 </Button>
 
-              </MenuItem>
+              //</MenuItem>
             }
           </div>
 

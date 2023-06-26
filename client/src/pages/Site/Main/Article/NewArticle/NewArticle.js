@@ -18,6 +18,7 @@ import Button from '@mui/material/Button';
 
 const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
   const {user} = useContext(UserContext);
+
   const [article, setArticle] = useState({
     title: '',
     category: '',
@@ -39,6 +40,12 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
   useEffect(() => {
     setArticle(prev => ({...prev, author: user?._id}))
   }, [user])
+
+  if(!user){
+    handleOpenAlert()
+    changeAlertValues("error", "Vous n'êtes pas connecté")
+    return <Navigate replace to="/"/>
+  }
 
   const handleAddArticle = () => {
     try {

@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 
-const Login = ({setOpenLoginForm}) => {
+const Login = ({setOpenLoginForm, handleOpenAlert, changeAlertValues}) => {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -20,24 +20,24 @@ const Login = ({setOpenLoginForm}) => {
         try {
             const {data} = await axios.post('/login', {email, password})
             if(data === 'Not found') {
-                alert('Login denied');
+                handleOpenAlert();
+                changeAlertValues('error', "Informations incorrectes");
             }
             else {
                 setUser(data);
-                alert('Login successful');
+                handleOpenAlert();
+                changeAlertValues('success', "Vous êtes connecté");
                 setOpenLoginForm(false);
                 setRedirect(true)
-                console.log('Login successful');
             }
-            /* [Alert] : Vous êtes connecté */
         }
         catch (err) {
-            alert("login failed")
+            handleOpenAlert();
+            changeAlertValues('error', "Erreur de connection");
         }
     }
     
     if(redirect) {
-        /* [Alert] : Vous êtes déjà connecté */
         return <Navigate to={'/'}/>
     }
 

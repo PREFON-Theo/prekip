@@ -12,17 +12,23 @@ div.container {
     div.container_inputs {
         margin-bottom: 5vh;
 
-        div.input_mail {
+        div.input_mail, .input_password {
             margin-bottom: 2vh;
-        }
 
-        div.input_password {
-            margin-bottom: 2vh;
-            
+            >div {
+                margin: 0;
+                width: 100%;
+            }
+
+            input {
+                width: 100%;
+            }
         }
 
         div.button {
-
+            button {
+                width: 100%;
+            }
         }
 
     }
