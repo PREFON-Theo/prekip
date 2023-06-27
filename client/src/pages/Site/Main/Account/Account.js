@@ -45,24 +45,34 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
       setDisplayErrorPassword(false);
       if(password !== ''){
         if(password === confirmPassword) {
-          axios.patch(`/user/${user?._id}`, {
-            ...userInfor,
-            password: password
-          })
-          .then(() => handleOpenAlert())
-          .then(() => changeAlertValues("success", "Informations modifiées"))
-          .then(() => setUser(userInfor))
-
+          if(user._id){
+            axios.patch(`/user/${user?._id}`, {
+              ...userInfor,
+              password: password
+            })
+            .then(() => handleOpenAlert())
+            .then(() => changeAlertValues("success", "Informations modifiées"))
+            .then(() => setUser({
+              firstname: userInfor.firstname,
+              lastname: userInfor.lastname
+            }))
+          }
         }
         else {
           setDisplayErrorPassword(true);
         }
       }
       else {
-        axios.patch(`/user/${user?._id}`, userInfor)
-        .then(() => handleOpenAlert())
-        .then(() => changeAlertValues("success", "Informations modifiées"))
-        .then(() => setUser(userInfor))
+        console.log(userInfor)
+        if(user._id){
+          axios.patch(`/user/${user?._id}`, userInfor)
+          .then(() => handleOpenAlert())
+          .then(() => changeAlertValues("success", "Informations modifiées"))
+          .then(() => setUser({
+            firstname: userInfor.firstname,
+            lastname: userInfor.lastname
+          }))
+        }
       }
       
     }

@@ -45,7 +45,7 @@ app.get('/users', async (req, res) => {
 //Update one event - OK
 app.patch('/user/:id', (req, res) => {
     try {
-        if(req.body.password !== ""){
+        if(req.body.password){
             req.body.password = bcrypt.hashSync(req.body.password, bcryptSecret)
         }
         User.updateOne({_id: req.params.id}, req.body).then(() => {
