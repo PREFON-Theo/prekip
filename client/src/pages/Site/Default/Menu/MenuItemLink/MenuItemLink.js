@@ -13,7 +13,7 @@ const MenuItemLink = ({title, link}) => {
               id="basic-button"
               sx={{color: 'black', textTransform: 'none'}}
               >
-                <Link to='/calendar'>
+                <Link to={link}>
                   {title}
                 </Link>
             </Button>

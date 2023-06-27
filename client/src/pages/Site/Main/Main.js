@@ -13,6 +13,7 @@ import Account from './Account/Account';
 import Calendar from './Calendar/Calendar';
 import NewArticle from './Article/NewArticle/NewArticle';
 import ArticlePage from './Article/ArticlePage/ArticlePage';
+import StatsPrefon from './StatsPrefon/StatsPrefon';
 
 
 const Main = ({ handleOpenAlert, changeAlertValues }) => {
@@ -53,6 +54,7 @@ const handleOpenLoginForm = () => {
                     <Route path="calendar" element={<Calendar handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues} handleOpenLoginForm={handleOpenLoginForm}/>}/>
                     <Route path='new-article' element={<NewArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='article/:id' element={<ArticlePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='stats' element={<StatsPrefon/>}/>
                 </Routes>
             </div>
 

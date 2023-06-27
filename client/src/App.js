@@ -19,6 +19,8 @@ import NewArticle from './pages/Site/Main/Article/NewArticle/NewArticle';
 import ArticlePage from './pages/Site/Main/Article/ArticlePage/ArticlePage';
 import Signin from './pages/Auth/Signin'
 
+import StatsPrefon from './pages/Site/Main/StatsPrefon/StatsPrefon';
+
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
@@ -77,6 +79,7 @@ const App = () => {
                 <Route path='/calendar' element={<Calendar handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path='/new-article' element={<NewArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path='/article/:id' element={<ArticlePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path='/stats' element={<StatsPrefon/>}/>
 
               </Route>
               <Route path='/admin' element={<Admin/>}/>

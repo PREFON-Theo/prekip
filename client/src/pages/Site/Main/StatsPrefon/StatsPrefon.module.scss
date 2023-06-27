@@ -1,0 +1,42 @@
+.container {
+  width: 100%;
+  margin: 50px;
+
+  .title {
+    font-size: 50px;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .stats {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    .stat_item {
+      min-width: 300px;
+      text-align: center;
+      margin: 30px;
+
+      .item_number {
+        font-size: 70px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+      .item_text {
+        margin-bottom: 20px;
+
+      }
+
+      .more {
+        text-align: right;
+        a {
+          color: rgba(0, 0, 0, 0.223);
+          text-decoration: none;
+        }
+      }
+    }
+
+  }
+}
