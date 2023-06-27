@@ -39,7 +39,7 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
         content: res.data.content,
         category: res.data.category,
         author: res.data.author,
-        authorName: listOfUsers.filter((usr) => usr._id === res.data.author)[0]?.username,
+        authorName: `${listOfUsers.filter((usr) => usr._id === res.data.author)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === res.data.author)[0]?.lastname}`,
         created_at: new Date(res.data.created_at).toLocaleDateString('fr-FR'),
         updated_at: new Date(res.data.updated_at).toLocaleDateString('fr-FR')
       }));

@@ -17,6 +17,7 @@ import { frFR } from '@mui/x-date-pickers/locales';
 
 import NewArticle from './pages/Site/Main/Article/NewArticle/NewArticle';
 import ArticlePage from './pages/Site/Main/Article/ArticlePage/ArticlePage';
+import Signin from './pages/Auth/Signin'
 
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
@@ -79,6 +80,7 @@ const App = () => {
 
               </Route>
               <Route path='/admin' element={<Admin/>}/>
+              <Route path='/register' element={<Signin/>}/>
               <Route path='*' element={<NotFound/>}/>
               {/*<Route path='/rubrique/:subpage?' element={</>}/> TODO*/}
 

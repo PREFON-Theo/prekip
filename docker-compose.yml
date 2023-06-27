@@ -29,6 +29,7 @@ services:
       - ./server:/usr/src/api
     depends_on:
       - mongo
+    restart: always
     networks:
       - mern-network
 
