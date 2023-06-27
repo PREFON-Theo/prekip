@@ -58,7 +58,7 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
 
   useEffect(() => {
     eventInfo.usersTagged.map((item, index) => (
-      usersTaggedNamed.push(`${userList.filter((us) => us._id === item)[0].firstname} ${userList.filter((us) => us._id === item)[0].lastname}`)
+      usersTaggedNamed.push(`${userList.filter((us) => us._id === item)[0]?.firstname} ${userList.filter((us) => us._id === item)[0]?.lastname}`)
     ))
     eventInfo.startDate !== '' ? 
       setTypeOfAbs(
@@ -314,13 +314,13 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
                               onChange={e => setEventInfo(prevValues => ({...prevValues, usersTagged: e.target.value}))}
                               input={<OutlinedInput sx={{width: '100%'}} label="Utilisateurs dans l'évènement" />}
                               renderValue={(selected) => selected.map((item, index) => (
-                                index === 0 ? `${userList.filter((u) => u._id === item)[0].firstname} ${userList.filter((u) => u._id === item)[0].lastname}`  : `, ${userList.filter((u) => u._id === item)[0].firstname} ${userList.filter((u) => u._id === item)[0].lastname}`
+                                index === 0 ? `${userList.filter((u) => u._id === item)[0]?.firstname} ${userList.filter((u) => u._id === item)[0]?.lastname}`  : `, ${userList.filter((u) => u._id === item)[0]?.firstname} ${userList.filter((u) => u._id === item)[0]?.lastname}`
                               ))}
                             >
                               {userList.map((item, index) => (
                                 <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>
                                   <Checkbox checked={eventInfo.usersTagged.filter((u) => u === item._id).length > 0 ? true : false} />
-                                  <ListItemText primary={`${item.firstname} ${item.lastname}`} />
+                                  <ListItemText primary={`${item?.firstname} ${item?.lastname}`} />
                                 </MenuItem>
                               ))}
                             </Select>
@@ -413,7 +413,7 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
                           disabled
                           input={<OutlinedInput sx={{width: '100%', color: "#00000061"}} label="Utilisateurs dans l'évènement" />}
                           renderValue={(selected) => selected.map((item, index) => (
-                            index === 0 ? `${userList.filter((u) => u._id === item)[0].firstname} ${userList.filter((u) => u._id === item)[0].lastname}`  : `, ${userList.filter((u) => u._id === item)[0].firstname} ${userList.filter((u) => u._id === item)[0].lastname}`
+                            index === 0 ? `${userList.filter((u) => u._id === item)[0]?.firstname} ${userList.filter((u) => u._id === item)[0]?.lastname}`  : `, ${userList.filter((u) => u._id === item)[0]?.firstname} ${userList.filter((u) => u._id === item)[0]?.lastname}`
                           ))}
                         >
                         </Select>

@@ -9,6 +9,8 @@ const User = require('./models/User');
 const Event = require('./models/Event');
 const EventType = require('./models/EventType');
 const Article = require('./models/Article');
+const Stats = require('./models/Stats');
+const StatsType = require('./models/StatsType');
 require('dotenv').config();
 
 const bcryptSecret = bcrypt.genSaltSync(10);
@@ -412,6 +414,162 @@ app.delete('/article/:id', (req, res) => {
 });
 
 
+///////////////////////////////////////////
+/*---------------------------------------*/
+/*--------------Stats Table--------------*/
+/*---------------------------------------*/
+///////////////////////////////////////////
+
+//Get All - TODO
+app.get('/stats', async (req, res) => {
+    const getStats = await Stats.find()
+    res.json(getStats);
+})
+
+//Get one - TODO
+app.get('/stat/:id', async (req, res) => {
+    try {
+        const StatInfo = await Stats.findOne({_id: req.params.id})
+        res.status(200).json(StatInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
+//Add one stat - TODO
+app.post('/stat', async (req, res) => {
+    try {
+        const {value, text, link, currency, type} = req.body
+        const statCreation = await Stats.create({
+            value,
+            text,
+            link,
+            currency,
+            type
+        })
+        res.status(200).json(statCreation)
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+    
+})
+
+//Update one stat - TODO
+app.patch('/stat/:id', (req, res) => {
+    try {
+        Stats.updateOne({_id: req.params.id}, req.body).then(() => {
+            res.status(200).json({
+                message: "Updated"
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+})
+
+//Delete one stat - TODO
+app.delete('/stat/:id', (req, res) => {
+    try {
+        Stats.deleteOne({_id: req.params.id}).then(() => {
+            res.status(200).json({
+                message: "Deleted"
+            })
+        }).catch((error) => {
+            res.status(400).json({
+                error: error
+            });
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+});
+
+
+///////////////////////////////////////////
+/*---------------------------------------*/
+/*------------Stats type Table-----------*/
+/*---------------------------------------*/
+///////////////////////////////////////////
+
+//Get All - TODO
+app.get('/stat-types', async (req, res) => {
+    const getStatTypes = await StatsType.find()
+    res.json(getStatTypes);
+})
+
+//Get one - TODO
+app.get('/stat-type/:id', async (req, res) => {
+    try {
+        const StatTypeInfo = await StatsType.findOne({_id: req.params.id})
+        res.status(200).json(StatTypeInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
+//Add one stat-type  - TODO
+app.post('/stat-type', async (req, res) => {
+    try {
+        const {title} = req.body
+        const StatCreation = await StatsType.create({
+            title
+        })
+        res.status(200).json(StatCreation)
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+    
+})
+
+//Update one stat-type  - TODO
+app.patch('/stat-type/:id', (req, res) => {
+    try {
+        StatsType.updateOne({_id: req.params.id}, req.body).then(() => {
+            res.status(200).json({
+                message: "Updated"
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+})
+
+//Delete one stat-type - TODO
+app.delete('/stat-type/:id', (req, res) => {
+    try {
+        StatsType.deleteOne({_id: req.params.id}).then(() => {
+            res.status(200).json({
+                message: "Deleted"
+            })
+        }).catch((error) => {
+            res.status(400).json({
+                error: error
+            });
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+});
 
 
 

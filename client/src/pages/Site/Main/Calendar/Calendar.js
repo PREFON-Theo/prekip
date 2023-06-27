@@ -55,11 +55,11 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
             eventId: item._id,
             title: listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Absences" 
             ? 
-              `Absence ${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''} de ${listOfUsers.filter((u) => u._id === item.owner)[0].firstname} ${listOfUsers.filter((u) => u._id === item.owner)[0].lastname}` 
+              `Absence ${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''} de ${listOfUsers.filter((u) => u._id === item.owner)[0]?.firstname} ${listOfUsers.filter((u) => u._id === item.owner)[0]?.lastname}` 
             : 
               listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Equipe"
             ?
-              `${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''} de ${listOfUsers.filter((u) => u._id === item.owner)[0].firstname} ${listOfUsers.filter((u) => u._id === item.owner)[0].lastname}` 
+              `${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''} de ${listOfUsers.filter((u) => u._id === item.owner)[0]?.firstname} ${listOfUsers.filter((u) => u._id === item.owner)[0]?.lastname}` 
             : 
               listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Global"
             ? 
