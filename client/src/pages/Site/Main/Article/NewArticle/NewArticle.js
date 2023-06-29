@@ -38,6 +38,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
     preview: '',
     content : '',
     author: '',
+    file: '',
   })
   const [editorState, setEditorState] = useState(
     () => EditorState.createEmpty(),
@@ -69,6 +70,13 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
         changeAlertValues('warning', "Il manque des informations pour ajouter l'article")
       }
       else {
+        const formData = new FormData()
+        formData.append('title', article.title)
+        formData.append('preview', article.preview)
+        formData.append('content', article.content)
+        formData.append('category', article.category)
+        formData.append('author', article.author)
+        formData.append('file', article.file)
         axios
           .post('/article', {
             title: article.title,
@@ -91,6 +99,11 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
       handleOpenAlert()
       changeAlertValues('error', err)
     }
+  }
+
+  const changeInputFiles = (e) => {
+    let arrFiles = [...e.target.files]
+    console.log(typeof arrFiles)
   }
 
   return (
@@ -131,6 +144,22 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
             onChange={e => setArticle(prevValues => ({...prevValues, preview: e.target.value}) )}
           />
         </div>
+
+        <Button
+          variant="contained"
+          component="label"
+        >
+          Upload File
+          <input
+            type="file"
+            onChange={(e) => setArticle(prevValues => ({...prevValues, file: e.target.files[0]}))}
+            hidden
+            // accept='.pdf'
+          />
+
+        </Button>
+
+        {/* <div>{article.file?.name}</div> */}
 
         <div className={styles.content}>
           <Editor

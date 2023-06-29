@@ -136,6 +136,7 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
 
         <div className={styles.article_preview}>{article.preview}</div>
 
+
         <div className={styles.article_author_informations}>
           <div className={styles.author}>
             Par {article.authorName}, le {article.created_at} {article.created_at !== article.updated_at ? ` et modifié le ${article.updated_at}`: <></>}
@@ -152,6 +153,19 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
           </div>
         </div>
 
+        {
+        article.image 
+        ? 
+          <img src={`http://localhost:4000/${article.image}`} alt="file" />
+        :
+          <></>
+        }
+
+        <a href={`http://localhost:4000/${article.file}`} >
+          <div className={styles.file_to_download}>
+            {article.file}
+          </div>
+        </a>
         <div className={styles.content}>{parse(article.content)}</div>
 
         
