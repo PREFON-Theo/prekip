@@ -1,6 +1,13 @@
 .breadcrumbs {
     margin: 4vh;
-    text-align: left;
+    
+    display: flex;
+    justify-content: space-between;
+
+    .link_to_rubrique {
+      text-decoration: none;
+      color: rgba(0, 0, 0, 0.6);
+    }
 }
 
 .container {

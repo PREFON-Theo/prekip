@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react'
-import styles from "./NewArticle.module.scss"
-import { Navigate } from 'react-router-dom';
+import styles from "./EditArticle.module.scss"
+import { Navigate, useParams, redirect } from 'react-router-dom';
 
 
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState } from 'draft-js';
+import { EditorState, ContentState, convertFromHTML } from 'draft-js';
 import { convertToHTML } from 'draft-convert'
+
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 
@@ -20,47 +21,81 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 
 const rubriquesRaw = await axios.get("/rubrique-types")
-const rubriqueList = []
-Object.values(rubriquesRaw)[0].filter((rub) => rub.parent === '').map((item) => {
-  rubriqueList.push(item)
-  Object.values(rubriquesRaw)[0].filter((rubC) => rubC.parent === item._id).map((itemC) => {
-    rubriqueList.push(itemC)
-  })
-})
+const rubriqueList = rubriquesRaw.data
+//let articleGet = false;
 
-
-const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
+const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
   const {user, ready} = useContext(UserContext);
+  const { id } = useParams();
+  let articleRaw = {}
+
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+
+  const fetchArticle = async () => { 
+    articleRaw = await axios.get(`/article/${id}`)
+    //console.log("author: ", articleRaw.data.author)
+    setArticle({
+      title: articleRaw.data?.title,
+      category: articleRaw.data?.category,
+      preview: articleRaw.data?.preview,
+      content : articleRaw.data?.content,
+    })
+    
+    setEditorState(
+      EditorState.createWithContent(
+        ContentState.createFromBlockArray(
+          convertFromHTML(articleRaw.data?.content)
+        )
+      )
+    )
+
+    //articleGet = true;
+    //console.log(articleGet)
+  }
+  
+  useEffect(() => {
+    fetchArticle();
+  }, [])
+
+  
+  const [articlePosted, setArticlePosted] = useState(false);
+  
 
   const [article, setArticle] = useState({
     title: '',
     category: '',
     preview: '',
     content : '',
-    author: '',
   })
-  const [editorState, setEditorState] = useState(
-    () => EditorState.createEmpty(),
-  );
-  const [idArticle, setIdArticle] = useState(null);
-  const [articlePosted, setArticlePosted] = useState(false);
+  
 
   useEffect(() => {
     let html = convertToHTML(editorState.getCurrentContent());
     setArticle(prevValues => ({...prevValues, content: html}))
   }, [editorState]);
 
-  useEffect(() => {
-    setArticle(prev => ({...prev, author: user?._id}))
-  }, [user])
 
   if(ready) {
+    //console.log(ready)
+    //console.log(articleGet)
     if(!user){
       handleOpenAlert()
       changeAlertValues("error", "Vous n'êtes pas connecté")
       return <Navigate replace to="/"/>
     }
+    /*if(articleGet){
+      console.log(articleRaw)
+      if (user?._id !== articleRaw.data?.author){
+        console.log(user?._id)
+        console.log("author: ", articleRaw.data?.author)
+        handleOpenAlert()
+        changeAlertValues("error", "Vous n'êtes pas authorisé à modifier cet article")
+        return <Navigate replace to="/"/>
+      }
+    }*/
   }
+
+
 
   const handleAddArticle = () => {
     try {
@@ -69,22 +104,20 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
         changeAlertValues('warning', "Il manque des informations pour ajouter l'article")
       }
       else {
+        //if(user?._id !== articleRaw.data?.author){
         axios
-          .post('/article', {
+          .patch(`/article/${id}`, {
             title: article.title,
             preview: article.preview,
             category: article.category,
             content: article.content,
-            created_at: new Date(),
             updated_at: new Date(),
-            author: user._id,
           })
-          .then((res) => setIdArticle(res.data._id))
           .then(() => handleOpenAlert())
-          .then(() => changeAlertValues('success', 'Article ajouté'))
+          .then(() => changeAlertValues('success', 'Article modifié'))
           .then(() => {setArticlePosted(true)})
-          .catch((e) => changeAlertValues('error', e)) 
-      }
+        }
+      //}
 
     }
     catch (err) {
@@ -95,9 +128,9 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
   return (
     <>
-      {articlePosted ? <Navigate to={`/article/${idArticle}`} /> : <></>}
+      {articlePosted ? <Navigate to={`/article/${id}`} /> : <></>}
       <div className={styles.container}>
-        <h2>Ajouter un article</h2>
+        <h2>Modifier l'article</h2>
         <div className={styles.title}>
           <TextField
             required
@@ -111,12 +144,17 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={article.type}
+              value={article.category}
               label="Catégorie de l'article"
               onChange={e => setArticle(prevValues => ({...prevValues, category: e.target.value}) )}
             >
               {rubriqueList.map((item, index) => (
-                <MenuItem key={index} value={item._id} sx={{textAlign: 'left', paddingLeft: item.parent === '' ? '' : "30px", fontWeight : item.parent === '' ? 'bold' : ''}}>{item.title}</MenuItem>
+                item.parent === "" 
+                ? 
+                  <MenuItem key={index} value={item._id} sx={{textAlign: 'left', fontWeight: 'bold'}}>{item.title}</MenuItem>
+                :
+                  <MenuItem key={index} value={item._id} sx={{textAlign: 'left', paddingLeft: "30px"}}>{item.title}</MenuItem>
+
               ))}
             </Select>
           </FormControl>
@@ -137,19 +175,18 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
             toolbarClassName="toolbarClassName"
             wrapperClassName="wrapperClassName"
             editorClassName="editorClassName"
+            defaultEditorState={article.content}
             editorState={editorState}
             onEditorStateChange={setEditorState}
             placeholder='Reseignez votre article ici'
           />
         </div>
-        
-        <div className={styles.button_submit}>
-          <Button variant="contained" color='primary' onClick={handleAddArticle}>Ajouter l'article</Button>
-        </div>
-
+          <div className={styles.button_submit}>
+            <Button variant="contained" color='warning' onClick={handleAddArticle}>Modifier l'article</Button>
+          </div>
       </div>
     </>
   )
 }
 
-export default NewArticle;
+export default EditArticle;

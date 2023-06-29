@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import styles from "./Account.module.scss"
 import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 import { Navigate, Link, Routes, Route } from 'react-router-dom';
-import Second from "../Second/Second"
 
 import { TextField } from '@mui/material';
 import { Button } from '@mui/material';

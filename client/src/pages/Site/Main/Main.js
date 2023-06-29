@@ -14,6 +14,9 @@ import Calendar from './Calendar/Calendar';
 import NewArticle from './Article/NewArticle/NewArticle';
 import ArticlePage from './Article/ArticlePage/ArticlePage';
 import StatsPrefon from './StatsPrefon/StatsPrefon';
+import Rubrique from './Rubrique/Rubrique';
+import NotFound from '../../Errors/404/NotFound';
+import EditArticle from './Article/EditArticle/EditArticle';
 
 
 const Main = ({ handleOpenAlert, changeAlertValues }) => {
@@ -54,7 +57,10 @@ const handleOpenLoginForm = () => {
                     <Route path="calendar" element={<Calendar handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues} handleOpenLoginForm={handleOpenLoginForm}/>}/>
                     <Route path='new-article' element={<NewArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='article/:id' element={<ArticlePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='edit-article/:id' element={<EditArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='stats' element={<StatsPrefon/>}/>
+                    <Route path='rubrique/:element' element={<Rubrique/>}/>
+                    <Route path='/*' element={<NotFound/>}/>
                 </Routes>
             </div>
 
