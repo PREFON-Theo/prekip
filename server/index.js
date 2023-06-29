@@ -12,6 +12,7 @@ const Article = require('./models/Article');
 const Stats = require('./models/Stats');
 const StatsType = require('./models/StatsType');
 const RubriqueType = require('./models/RubriqueType');
+const Like = require('./models/Like');
 require('dotenv').config();
 
 const bcryptSecret = bcrypt.genSaltSync(10);
@@ -353,7 +354,7 @@ app.get('/article/:id', async (req, res) => {
     }
 })
 
-//Get articles by category - TODO
+//Get articles by category - OK
 app.get('/article-category/:id', async (req, res) => {
     try {
         const ArticleInfo = await Article.find({category: req.params.id})
@@ -684,6 +685,98 @@ app.delete('/rubrique-type/:id', (req, res) => {
     }
 });
 
+
+
+///////////////////////////////////////////
+/*---------------------------------------*/
+/*---------------Like Table--------------*/
+/*---------------------------------------*/
+///////////////////////////////////////////
+
+//Get All - OK
+app.get('/likes', async (req, res) => {
+    const GetLikes = await Like.find()
+    res.json(GetLikes);
+})
+
+//Get likes of user - OK
+app.get('/likes-of-user/:userId', async (req, res) => {
+    try {
+        const LikeInfo = await Like.find({user_id: req.params.userId})
+        res.status(200).json(LikeInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
+//Get likes of article - OK
+app.get('/likes-of-article/:articleId', async (req, res) => {
+    try {
+        const LikeInfo = await Like.find({article_id: req.params.articleId})
+        res.status(200).json(LikeInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
+//Add one event - OK
+app.post('/like', async (req, res) => {
+    try {
+        const {user_id, article_id} = req.body
+        const likeCreation = await Like.create({
+            user_id,
+            article_id,
+        })
+        res.status(200).json(likeCreation)
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+})
+
+
+//Delete one like - OK
+app.delete('/likes/:userId/:articleId', (req, res) => {
+    try {
+        Like.deleteMany({
+            user_id: req.params.userId,
+            article_id: req.params.articleId
+        }).then(() => {
+            res.status(200).json({
+                message: "Deleted"
+            })
+        }).catch((error) => {
+            res.status(400).json({
+                error: error
+            });
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+});
+
+//Delete one like - OK
+app.delete('/like/:id', (req, res) => {
+    try {
+        Like.deleteOne({_id: req.params.id}).then(() => {
+            res.status(200).json({
+                message: "Deleted"
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+});
 
 
 app.listen('4000', console.log("Running on port 4000"));

@@ -33,13 +33,34 @@
     }
 
     .article_author_informations {
+      display: flex;
+      justify-content: space-between;
+
+      .author {
         font-size: small;
         color: rgb(138, 138, 138);
+        margin: auto 0;
+      }
 
     }
 
     .article_content {
         font-size: large;
+    }
+
+    .likes {
+      display: flex;
+      justify-content: flex-end;
+
+      .number {
+        vertical-align: middle;
+        margin: auto 0;
+      }
+
+    }
+
+    .comments {
+      margin-top: 200px;
     }
 
 }
