@@ -11,6 +11,7 @@ import { UserContext } from '../../../../../utils/Context/UserContext/UserContex
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
 
 
 const usersList = await axios.get('/users')
@@ -154,7 +155,22 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
         <div className={styles.content}>{parse(article.content)}</div>
 
         
-        <div className={styles.comments}></div>
+        <div className={styles.comments}>
+          <div className={styles.add_com}>
+            <TextField id="outlined-basic" label="Ajoutez votre commentaire..." variant="outlined" sx={{width: '100%', marginBottom: '20px'}}/>
+            <Button variant='contained' color='primary'>Ajouter</Button>
+          </div>
+
+          {/* <div className={styles.list_com}> */}
+            <div className={styles.item_com}>
+              <div className={styles.text}>
+                <div className={styles.t}>J'adore ça</div>
+                <div className={styles.a}>Par Jacques le 18/04/2023</div>
+              </div>
+              <div className={styles.second}></div>
+            </div>
+          {/* </div> */}
+        </div>
 
       </div>
     </>
