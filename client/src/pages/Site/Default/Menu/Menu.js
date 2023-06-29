@@ -12,19 +12,13 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import MenuItemLinkDropdown from './MenuItemLink/MenuItemLinkDropdown';
+import axios from 'axios';
+
+const RubriquesRaw = await axios.get("/rubrique-types-parents")
+const RubriqueList = RubriquesRaw.data
 
 const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => {
   const {user} = useContext(UserContext)
-
-
-  const content = [
-    { title: "Informatique", link: "/hello" },
-    { title: "Ressource Humaines", link: "/hello" },
-    { title: "Marketing", link: "/hello" },
-    { title: "Direction", link: "/hello" },
-    { title: "Agence", link: "/hello" },
-  ]
-
 
 
   return (
@@ -41,7 +35,7 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
 
           <div className={styles.middle}>
             <div className={styles.item_middlemenu}>
-              <MenuItemLinkDropdown title="Rubrique" list={content}/>
+              <MenuItemLinkDropdown title="Rubrique" list={RubriqueList}/>
             </div>
             <div className={styles.item_middlemenu}>
               <MenuItemLink title="Calendrier" link="/calendar"/>

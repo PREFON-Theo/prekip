@@ -11,6 +11,7 @@ const EventType = require('./models/EventType');
 const Article = require('./models/Article');
 const Stats = require('./models/Stats');
 const StatsType = require('./models/StatsType');
+const RubriqueType = require('./models/RubriqueType');
 require('dotenv').config();
 
 const bcryptSecret = bcrypt.genSaltSync(10);
@@ -352,11 +353,22 @@ app.get('/article/:id', async (req, res) => {
     }
 })
 
+//Get articles by category - TODO
+app.get('/article-category/:id', async (req, res) => {
+    try {
+        const ArticleInfo = await Article.find({category: req.params.id})
+        res.status(200).json(ArticleInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
 
 //Create - OK
 app.post('/article', async (req, res) => {
     try {
-        const {title, preview, content, category, author, image} = req.body
+        const {title, preview, content, category, author, image, created_at, updated_at} = req.body
         const articleCreation = await Article.create({
             title,
             preview,
@@ -364,6 +376,8 @@ app.post('/article', async (req, res) => {
             category,
             author,
             image,
+            created_at,
+            updated_at,
         })
         res.status(200).json(articleCreation)
     }
@@ -555,6 +569,105 @@ app.patch('/stat-type/:id', (req, res) => {
 app.delete('/stat-type/:id', (req, res) => {
     try {
         StatsType.deleteOne({_id: req.params.id}).then(() => {
+            res.status(200).json({
+                message: "Deleted"
+            })
+        }).catch((error) => {
+            res.status(400).json({
+                error: error
+            });
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+});
+
+
+
+///////////////////////////////////////////
+/*---------------------------------------*/
+/*----------Rubrique type Table----------*/
+/*---------------------------------------*/
+///////////////////////////////////////////
+
+//Get All - OK
+app.get('/rubrique-types', async (req, res) => {
+    const getRubriqueType = await RubriqueType.find()
+    res.json(getRubriqueType);
+})
+
+//Get All Parent - OK
+app.get('/rubrique-types-parents', async (req, res) => {
+    const getRubriqueType = await RubriqueType.find({parent: { $eq: "" }})
+    res.json(getRubriqueType);
+})
+
+
+//Get one - OK
+app.get('/rubrique-type/:id', async (req, res) => {
+    try {
+        const RubriqueTypeInfo = await RubriqueType.findOne({_id: req.params.id})
+        res.status(200).json(RubriqueTypeInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
+//Get one by link - OK
+app.get('/rubrique-link/:element', async (req, res) => {
+    try {
+        const RubriqueTypeInfo = await RubriqueType.find({link: req.params.element})
+        res.status(200).json(RubriqueTypeInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
+//Add one rubrique-type  - OK
+app.post('/rubrique-type', async (req, res) => {
+    try {
+        const {title, description, parent, link} = req.body
+        const RubriqueTypeCreation = await RubriqueType.create({
+            title,
+            description,
+            parent,
+            link
+        })
+        res.status(200).json(RubriqueTypeCreation)
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+    
+})
+
+//Update one rubrique-type  - OK
+app.patch('/rubrique-type/:id', (req, res) => {
+    try {
+        RubriqueType.updateOne({_id: req.params.id}, req.body).then(() => {
+            res.status(200).json({
+                message: "Updated"
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+})
+
+//Delete one rubrique-type - OK
+app.delete('/rubrique-type/:id', (req, res) => {
+    try {
+        RubriqueType.deleteOne({_id: req.params.id}).then(() => {
             res.status(200).json({
                 message: "Deleted"
             })

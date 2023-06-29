@@ -39,7 +39,7 @@ const MenuItemLinkDropdown = ({title,list}) => {
               >
                 <span>
                   {list.map((item, index) => (
-                    <Link to={item.link} key={index} style={{textDecoration: "none"}}>
+                    <Link to={`rubrique/${item.link}`} key={index} style={{textDecoration: "none"}}>
                       <MenuItem onClick={handleClose} sx={{color: "#000"}}>
                         {item.title}
                       </MenuItem>

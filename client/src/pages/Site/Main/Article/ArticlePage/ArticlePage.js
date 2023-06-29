@@ -1,20 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./ArticlePage.module.scss"
-import { useParams } from 'react-router-dom'
+import { Link, Navigate, redirect, useParams } from 'react-router-dom'
 import axios from 'axios';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
+//import Link from '@mui/material/Link';
 import { Button } from '@mui/material';
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 
 const usersList = await axios.get('/users')
+const rubriquesRaw = await axios.get('/rubrique-types')
+const rubriquesList = rubriquesRaw.data
 const listOfUsers = usersList.data
 
 const parse = require('html-react-parser');
 
 const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
   const { id } = useParams();
+  const { user } = useContext(UserContext);
+  const [redirectionGoto, setRedirectGoto] = useState(false)
   const [article, setArticle] = useState(
     {
       id: "",
@@ -45,27 +50,35 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
       }));
   }, [])
 
-  /*useEffect(() => {
-    console.log(new Date(article.created_at).toDateString())
-  }, [article])*/
-
-  /*const handleClick = () => {
-    handleOpenAlert(true)
-    changeAlertValues('success', "Bravo vous savez cliquer")
-  }*/
+  
 
   return (
     <>
+      {redirectionGoto ? <Navigate to={`/rubrique/${rubriquesList.filter((rub) => rub._id === article.category)[0]?.link}`} /> : <></>}
       <div className={styles.breadcrumbs}>
         <Breadcrumbs aria-label="breadcrumb">
-          <Link underline="hover" color="inherit" href="/">
-            Rubriques
-          </Link>
-          <Link underline="hover" color="inherit" href="/">
-            RH
+          <Typography>Rubriques</Typography>
+          <Link to={`/rubrique/${rubriquesList.filter((rub) => rub._id === article.category)[0]?.link}`} className={styles.link_to_rubrique}>
+            {rubriquesList.filter((rub) => rub._id === article.category)[0]?.title}
           </Link>
           <Typography color="text.primary">Article</Typography>
         </Breadcrumbs>
+        {
+          article.author === user?._id ?
+          <div>
+            <Link to={`/edit-article/${id}`} style={{marginRight: '10px'}}>
+              <Button variant='contained' color='warning'>Modifier l'article</Button>
+            </Link>
+            <Button variant='contained' color='error' onClick={
+              () => axios.delete(`/article/${id}`)
+                .then(() => setRedirectGoto(true))
+                .then(() => handleOpenAlert())
+                .then(() => changeAlertValues('success', 'Article supprimé'))
+              }>Supprimer l'article</Button>
+          </div>
+          :
+            <></>
+        }
       </div>
       <div className={styles.container}>
 

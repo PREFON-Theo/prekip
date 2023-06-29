@@ -23,6 +23,8 @@ import StatsPrefon from './pages/Site/Main/StatsPrefon/StatsPrefon';
 
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import Rubrique from './pages/Site/Main/Rubrique/Rubrique';
+import EditArticle from './pages/Site/Main/Article/EditArticle/EditArticle';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -79,13 +81,14 @@ const App = () => {
                 <Route path='/calendar' element={<Calendar handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path='/new-article' element={<NewArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path='/article/:id' element={<ArticlePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path='/edit-article/:id' element={<EditArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path='/stats' element={<StatsPrefon/>}/>
-
+                <Route path='/rubrique/:element' element={<Rubrique/>}/>
+                <Route path='/*' element={<NotFound/>}/>
               </Route>
+
               <Route path='/admin' element={<Admin/>}/>
               <Route path='/register' element={<Signin/>}/>
-              <Route path='*' element={<NotFound/>}/>
-              {/*<Route path='/rubrique/:subpage?' element={</>}/> TODO*/}
 
             </Routes>
 
