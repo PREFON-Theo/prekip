@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require("cookie-parser")
+require('dotenv').config();
 
 const User = require('./models/User');
 const Event = require('./models/Event');
@@ -13,7 +14,8 @@ const Stats = require('./models/Stats');
 const StatsType = require('./models/StatsType');
 const RubriqueType = require('./models/RubriqueType');
 const Like = require('./models/Like');
-require('dotenv').config();
+const Comments = require('./models/Comments');
+
 
 const bcryptSecret = bcrypt.genSaltSync(10);
 const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
@@ -770,6 +772,97 @@ app.delete('/like/:id', (req, res) => {
                 message: "Deleted"
             })
         })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+});
+
+
+//////////////////////////////////////////
+/*--------------------------------------*/
+/*----------Commentaire Table-----------*/
+/*--------------------------------------*/
+//////////////////////////////////////////
+
+//Get All - TODO
+app.get('/comments', async (req, res) => {
+    const getComments = await Comments.find()
+    res.json(getComments);
+})
+
+//Get one - TODO
+app.get('/comment/:id', async (req, res) => {
+    try {
+        const CommentInfo = await Comments.findOne({_id: req.params.id})
+        res.status(200).json(CommentInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
+//Get all comment of an article - TODO
+app.get('/article-comments/:article_id', async (req, res) => {
+    try {
+        const CommentInfo = await Comments.find({article_id: req.params.article_id}).sort({date: -1})
+        res.status(200).json(CommentInfo)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+})
+
+//Add one comment - TODO
+app.post('/comment', async (req, res) => {
+    try {
+        const {text, user_id, date, article_id} = req.body
+        const commentCreation = await Comments.create({
+            text,
+            user_id,
+            date,
+            article_id
+        })
+        res.status(200).json(commentCreation)
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+    
+})
+
+//Update one comment - TODO
+app.patch('/comment/:id', (req, res) => {
+    try {
+        Comments.updateOne({_id: req.params.id}, req.body).then(() => {
+            res.status(200).json({
+                message: "Updated"
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+})
+
+//Delete one comment - TODO
+app.delete('/comment/:id', (req, res) => {
+    try {
+        Comments.deleteOne({_id: req.params.id}).then(() => {
+            res.status(200).json({
+                message: "Deleted"
+            })
+        }).catch((error) => {
+            res.status(400).json({
+                error: error
+            });
+        });
     }
     catch (error) {
         res.status(400).json({

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import styles from "./ArticlePage.module.scss"
 import { Link, Navigate, redirect, useParams } from 'react-router-dom'
 import axios from 'axios';
+import dayjs from 'dayjs';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 //import Link from '@mui/material/Link';
@@ -28,6 +29,7 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
   const [articleLiked, setArticleLiked] = useState(false)
   const [nbLike, setNbLike] = useState(0)
   const [listOfLikes, setListOfLikes] = useState()
+  const [commentText, setCommentText] = useState('')
   const [article, setArticle] = useState(
     {
       id: "",
@@ -40,9 +42,19 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
       updated_at: ""
     },
   )
+  const [comments, setComments] = useState()
 
   useEffect( () => {
-    axios
+    fetchData();
+
+    getLikes();
+
+    
+     
+  }, [])
+
+  const fetchData = async () => {
+    await axios
       .get(`/article/${id}`)
       //.then((res) => console.log(res.data))
       .then((res) => setArticle({
@@ -57,17 +69,16 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
         updated_at: new Date(res.data.updated_at).toLocaleDateString('fr-FR')
       }));
 
-    getLikes();
-  }, [])
+    await axios
+      .get(`/article-comments/${id}`)
+      .then((res) => setComments(res.data));
+  }
 
   const getLikes = async () => {
     let list = await axios.get(`/likes-of-article/${id}`)
     setListOfLikes(list.data)
     setNbLike(list.data.length)
     console.log(list.data)
-    
-    //verifier que l'user à liké
-    // désactiver pour les non connectés
   }
 
   useEffect(() => {
@@ -98,6 +109,20 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
         article_id: id
       }).then(() => console.log("created"))
     }
+  }
+
+  const handleAddComment = () => {
+    axios
+      .post(`/comment/`, {
+        text: commentText,
+        user_id: user,
+        article_id: id,
+        date: new Date()
+      })
+      .then(() => handleOpenAlert())
+      .then(() => changeAlertValues('success', 'Commentaire ajouté'))
+      .then(() => fetchData())
+      .then(() => setCommentText(''))
   }
 
   
@@ -157,19 +182,44 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
         
         <div className={styles.comments}>
           <div className={styles.add_com}>
-            <TextField id="outlined-basic" label="Ajoutez votre commentaire..." variant="outlined" sx={{width: '100%', marginBottom: '20px'}}/>
-            <Button variant='contained' color='primary'>Ajouter</Button>
+            <TextField
+              id="outlined-basic"
+              label="Ajoutez votre commentaire..."
+              variant="outlined"
+              sx={{width: '100%', marginBottom: '20px'}}
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+            />
+            <Button variant='contained' color='primary' onClick={() => handleAddComment()}>Ajouter</Button>
           </div>
 
-          {/* <div className={styles.list_com}> */}
-            <div className={styles.item_com}>
-              <div className={styles.text}>
-                <div className={styles.t}>J'adore ça</div>
-                <div className={styles.a}>Par Jacques le 18/04/2023</div>
-              </div>
-              <div className={styles.second}></div>
-            </div>
-          {/* </div> */}
+          {comments?.map((item, index) => (
+            
+              item.user_id === user._id ?
+              <>
+                <div className={styles.item_com} key={index}>
+                  <div className={styles.second}></div>
+                  <div className={styles.text}>
+                    <div className={styles.t}>{item.text}</div>
+                    <div className={styles.a}>
+                      Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
+                    </div>
+                  </div>
+                </div>
+              </>
+              :
+                <>
+                  <div className={styles.item_com} key={index}>
+                    <div className={styles.text}>
+                      <div className={styles.t}>{item.text}</div>
+                      <div className={styles.a}>
+                        Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
+                      </div>
+                    </div>
+                    <div className={styles.second}></div>
+                  </div>
+                </>
+          ))}
         </div>
 
       </div>
