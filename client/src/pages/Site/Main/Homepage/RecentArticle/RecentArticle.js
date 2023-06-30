@@ -11,10 +11,10 @@ const RecentArticle = () => {
     <div className={styles.container}>
         <h2>Dernière actualité</h2>
         <div className={styles.wrapper}>
-          <div className={styles.title}>{article.title}</div>
-          <div className={styles.preview}>{article.preview.substring(0,100)}...</div>
+          <div className={styles.title}>{article?.title}</div>
+          <div className={styles.preview}>{article?.preview.substring(0,100)}...</div>
           <div className={styles.more}>
-            <Link to={`/article/${article._id}`}>
+            <Link to={`/article/${article?._id}`}>
               En savoir plus
             </Link>
           </div>
