@@ -195,7 +195,7 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
 
           {comments?.map((item, index) => (
             
-              item.user_id === user._id ?
+              item.user_id === user?._id ?
               <>
                 <div className={styles.item_com} key={index}>
                   <div className={styles.second}></div>
