@@ -73,7 +73,7 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
   useEffect(() => {
     if(user){
       console.log(user)
-      for (let l = 0; l < listOfLikes.length; l++) {
+      for (let l = 0; l < listOfLikes?.length; l++) {
         if(listOfLikes[l].user_id === user._id){
           setArticleLiked(true);
           break;
