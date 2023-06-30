@@ -20,7 +20,7 @@ const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
 
 mongoose.set('strictQuery', false);
 mongoose
-    .connect(process.env.MONGO_URL)
+    .connect('mongodb://mongo/prekip')
     .then(() => console.log("Connected"))
     .catch(()=> console.log("Not connected"))
 
@@ -31,7 +31,7 @@ app.use(express.json())
 app.use(cookieParser());
 app.use(cors({
     credentials: true,
-    origin: process.env.CLIENT_URL
+    origin: 'http://localhost:3000'
 }))
 
 //////////////////////////////////////////
