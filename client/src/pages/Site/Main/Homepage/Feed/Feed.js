@@ -10,7 +10,7 @@ const Feed = () => {
   const [lastArticles,setLastArticles] = useState()
 
   const fetchData = async ()=> {
-    const articlesRaw = await axios.get(('/last-articles/5'))
+    const articlesRaw = await axios.get(('/article/last/5'))
     setLastArticles(articlesRaw.data)
   }
 

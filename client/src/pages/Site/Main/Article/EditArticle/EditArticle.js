@@ -20,7 +20,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 
-const rubriquesRaw = await axios.get("/rubrique-types")
+const rubriquesRaw = await axios.get("/rubrique-type")
 const rubriqueList = rubriquesRaw.data
 //let articleGet = false;
 

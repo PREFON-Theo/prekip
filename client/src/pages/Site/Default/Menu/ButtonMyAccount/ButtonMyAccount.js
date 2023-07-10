@@ -32,7 +32,7 @@ const ButtonMyAccount = ({handleOpenAlert, changeAlertValues}) => {
   };
 
   const handleLogoutSubmit = async () => {
-    axios.post('/logout');
+    axios.post('/user/logout');
     setUser(null)
     handleOpenAlert();
     changeAlertValues('success', "Vous êtes déconnecté");

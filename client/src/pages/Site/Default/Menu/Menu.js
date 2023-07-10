@@ -14,7 +14,7 @@ import AddIcon from '@mui/icons-material/Add';
 import MenuItemLinkDropdown from './MenuItemLink/MenuItemLinkDropdown';
 import axios from 'axios';
 
-const RubriquesRaw = await axios.get("/rubrique-types-parents")
+const RubriquesRaw = await axios.get("/rubrique-type/parents")
 const RubriqueList = RubriquesRaw.data
 
 const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => {
@@ -54,7 +54,7 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
                   className={styles.link_login}
                   >
 
-                  <AddIcon/>Ajouter un article
+                  <AddIcon/>Article
                 </Button>
               </Link>
             )}

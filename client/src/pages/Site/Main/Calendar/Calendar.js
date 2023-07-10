@@ -17,7 +17,7 @@ import { UserContext } from "../../../../utils/Context/UserContext/UserContext"
 import FormNotConnected from './FormNotConnected/FormNotConnected'
 
 
-const eventTypes = await axios.get('/event-types')
+const eventTypes = await axios.get('/event-type')
 const listEvenTypes = []
 for(const i in eventTypes.data){
   if(eventTypes.data[i].parent === ''){
@@ -30,7 +30,7 @@ for(const i in eventTypes.data){
   }
 }
 
-const usersList = await axios.get('/users')
+const usersList = await axios.get('/user')
 const listOfUsers = usersList.data
 
 const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) => {
@@ -48,7 +48,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
   const fetchData = async () => {
     setEvents([])
     axios
-    .get('events')
+    .get('/event')
     .then((res) => {
       res.data.map((item) => (
         setEvents((eve) => [...eve, {

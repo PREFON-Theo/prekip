@@ -15,8 +15,8 @@ import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 
 
-const usersList = await axios.get('/users')
-const rubriquesRaw = await axios.get('/rubrique-types')
+const usersList = await axios.get('/user')
+const rubriquesRaw = await axios.get('/rubrique-type')
 const rubriquesList = rubriquesRaw.data
 const listOfUsers = usersList.data
 
@@ -70,12 +70,12 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
       }));
 
     await axios
-      .get(`/article-comments/${id}`)
+      .get(`/comment/article/${id}`)
       .then((res) => setComments(res.data));
   }
 
   const getLikes = async () => {
-    let list = await axios.get(`/likes-of-article/${id}`)
+    let list = await axios.get(`/like-of-article/${id}`)
     setListOfLikes(list.data)
     setNbLike(list.data.length)
     console.log(list.data)
@@ -99,7 +99,7 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
     if(articleLiked) {
       setNbLike(nbLike-1)
       setArticleLiked(false)
-      axios.delete(`/likes/${user._id}/${id}`).then(() => console.log("deleted"))
+      axios.delete(`/like/${user._id}/${id}`).then(() => console.log("deleted"))
     }
     else {
       setNbLike(nbLike+1)

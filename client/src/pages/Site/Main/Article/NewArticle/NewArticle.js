@@ -19,7 +19,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 
-const rubriquesRaw = await axios.get("/rubrique-types")
+const rubriquesRaw = await axios.get("/rubrique-type")
 const rubriqueList = []
 Object.values(rubriquesRaw)[0].filter((rub) => rub.parent === '').map((item) => {
   rubriqueList.push(item)

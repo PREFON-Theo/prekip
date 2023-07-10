@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 // const allArticlesRaw = await axios.get('/articles')
-// const allRubriquesRaw = await axios.get('/rubrique-types')
+// const allRubriquesRaw = await axios.get('/rubrique-type')
 
 // let startValueOfRubrique = ''
 
@@ -16,15 +16,15 @@ const Rubrique = () => {
   const [rubriqueTypeOfList, setRubriqueTypeOfList] = useState([])
 
   const fetchData = async () => {
-    const rubriqueRaw = await axios.get(`/rubrique-link/${element}`)
+    const rubriqueRaw = await axios.get(`/rubrique-type/link/${element}`)
 
     
-    const rubrique = await axios.get('/rubrique-types')
+    const rubrique = await axios.get('/rubrique-type')
     const rubriqueTypesRaw = rubrique.data.filter((rub) => rub._id === rubriqueRaw.data[0]?._id || rub.parent === rubriqueRaw.data[0]?._id)
     setRubriqueTypeOfList(rubriqueTypesRaw)
 
     for (let r = 0; r < rubriqueTypesRaw.length; r++) {
-      const articleById = await axios.get(`/article-category/${rubriqueTypesRaw[r]._id}`)
+      const articleById = await axios.get(`/article/category/${rubriqueTypesRaw[r]._id}`)
       for (let a = 0; a < articleById.data.length; a++) {
         articles.push(articleById.data[a])   
       }
