@@ -41,7 +41,6 @@
       color: rgb(138, 138, 138);
       margin: auto 0;
     }
-
   }
 
   .article_content {
@@ -91,6 +90,50 @@
         }
       }
   }
+
+    .likes {
+      display: flex;
+      justify-content: flex-end;
+
+      .number {
+        vertical-align: middle;
+        margin: auto 0;
+      }
+
+    }
+
+    .comments {
+      margin: 100px 0;
+      padding: 50px;
+      // border: 1px solid grey
+
+      .add_com {
+        margin-bottom: 100px;
+      }
+      
+        .item_com{
+          margin: 20px 0 20px auto;
+          width: 100%;
+          display: flex;
+          .text {
+            padding: 20px;
+            background-color: rgb(228, 228, 228);
+            border-radius: 5px;
+            .t {
+              padding-bottom: 5px;
+            }
+            .a {
+              padding-top: 10px;
+              padding-left: 50px;
+              font-size: small;
+              color: rgb(138, 138, 138);
+            }
+          }
+          .second {
+            flex: auto;
+          }
+        }
+    }
 
 }
 

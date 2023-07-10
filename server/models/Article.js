@@ -11,6 +11,11 @@ const ArticleSchema = Schema({
     category: String,
     author: String,
     image: String,
+    file: String,
+    /*imageUrl: String,
+    imageName: String,
+    fileUrl: String,
+    fileName: String,*/
 })
 
 const ArticleModel = mongoose.model('Article', ArticleSchema);
