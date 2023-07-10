@@ -47,9 +47,9 @@ router.post('/', async (req, res) => {
   }
 })
 
-/*
+
 //Delete one like - OK
-router.delete('/like/:userId/:articleId', (req, res) => {
+router.delete('/:userId/:articleId', (req, res) => {
   try {
       Like.deleteMany({
           user_id: req.params.userId,
@@ -70,7 +70,6 @@ router.delete('/like/:userId/:articleId', (req, res) => {
       });
   }
 });
-*/
 
 //Delete one like - OK
 router.delete('/:id', (req, res) => {
