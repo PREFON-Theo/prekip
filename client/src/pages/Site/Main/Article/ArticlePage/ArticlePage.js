@@ -75,7 +75,7 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
   }
 
   const getLikes = async () => {
-    let list = await axios.get(`/like-of-article/${id}`)
+    let list = await axios.get(`/like/article/${id}`)
     setListOfLikes(list.data)
     setNbLike(list.data.length)
     console.log(list.data)
