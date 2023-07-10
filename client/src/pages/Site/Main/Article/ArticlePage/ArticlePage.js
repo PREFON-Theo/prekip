@@ -96,18 +96,24 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
 
 
   const handleLikeArticle = () => {
-    if(articleLiked) {
-      setNbLike(nbLike-1)
-      setArticleLiked(false)
-      axios.delete(`/like/${user._id}/${id}`).then(() => console.log("deleted"))
+    if(user){
+      if(articleLiked) {
+        setNbLike(nbLike-1)
+        setArticleLiked(false)
+        axios.delete(`/like/${user._id}/${id}`).then(() => console.log("deleted"))
+      }
+      else {
+        setNbLike(nbLike+1)
+        setArticleLiked(true)
+        axios.post('/like', {
+          user_id: user._id,
+          article_id: id
+        }).then(() => console.log("created"))
+      }
     }
     else {
-      setNbLike(nbLike+1)
-      setArticleLiked(true)
-      axios.post('/like', {
-        user_id: user._id,
-        article_id: id
-      }).then(() => console.log("created"))
+      handleOpenAlert()
+      changeAlertValues('warning', "Connectez-vous pour pouvoir aimer ce poste")
     }
   }
 
@@ -139,20 +145,23 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
           <Typography color="text.primary">Article</Typography>
         </Breadcrumbs>
         {
-          article.author === user?._id ?
-          <div>
-            <Link to={`/edit-article/${id}`} style={{marginRight: '10px'}}>
-              <Button variant='contained' color='warning'>Modifier l'article</Button>
-            </Link>
-            <Button variant='contained' color='error' onClick={
-              () => axios.delete(`/article/${id}`)
-                .then(() => setRedirectGoto(true))
-                .then(() => handleOpenAlert())
-                .then(() => changeAlertValues('success', 'Article supprimé'))
-              }>Supprimer l'article</Button>
-          </div>
+          user ?
+            article.author === user?._id ?
+            <div>
+              <Link to={`/edit-article/${id}`} style={{marginRight: '10px'}}>
+                <Button variant='contained' color='warning'>Modifier l'article</Button>
+              </Link>
+              <Button variant='contained' color='error' onClick={
+                () => axios.delete(`/article/${id}`)
+                  .then(() => setRedirectGoto(true))
+                  .then(() => handleOpenAlert())
+                  .then(() => changeAlertValues('success', 'Article supprimé'))
+                }>Supprimer l'article</Button>
+            </div>
+            :
+              <></>
           :
-            <></>
+          <></>
         }
       </div>
       <div className={styles.container}>
@@ -166,6 +175,7 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
             Par {article.authorName}, le {article.created_at} {article.created_at !== article.updated_at ? ` et modifié le ${article.updated_at}`: <></>}
           </div>
           <div className={styles.likes}>
+          
             <IconButton aria-label="delete" color='error' onClick={() => handleLikeArticle()}>
             {articleLiked ?
               <FavoriteRoundedIcon/>
@@ -181,17 +191,22 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
 
         
         <div className={styles.comments}>
-          <div className={styles.add_com}>
-            <TextField
-              id="outlined-basic"
-              label="Ajoutez votre commentaire..."
-              variant="outlined"
-              sx={{width: '100%', marginBottom: '20px'}}
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-            />
-            <Button variant='contained' color='primary' onClick={() => handleAddComment()}>Ajouter</Button>
-          </div>
+          {
+            user ?
+              <div className={styles.add_com}>
+                <TextField
+                  id="outlined-basic"
+                  label="Ajoutez votre commentaire..."
+                  variant="outlined"
+                  sx={{width: '100%', marginBottom: '20px'}}
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                />
+                <Button variant='contained' color='primary' onClick={() => handleAddComment()}>Ajouter</Button>
+              </div>
+            :
+            <></>
+          }
 
           {comments?.map((item, index) => (
             
