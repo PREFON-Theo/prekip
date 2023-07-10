@@ -15,7 +15,6 @@ import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 
 
-
 const usersList = await axios.get('/user')
 const rubriquesRaw = await axios.get('/rubrique-type')
 const rubriquesList = rubriquesRaw.data
@@ -126,46 +125,6 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
       .then(() => setCommentText(''))
   }
 
-  const getLikes = async () => {
-    let list = await axios.get(`/likes-of-article/${id}`)
-    setListOfLikes(list.data)
-    setNbLike(list.data.length)
-    console.log(list.data)
-    
-    //verifier que l'user à liké
-    // désactiver pour les non connectés
-  }
-
-  useEffect(() => {
-    if(user){
-      console.log(user)
-      for (let l = 0; l < listOfLikes.length; l++) {
-        if(listOfLikes[l].user_id === user._id){
-          setArticleLiked(true);
-          break;
-        }
-      }
-
-    }
-  }, [listOfLikes, user])
-
-
-  const handleLikeArticle = () => {
-    if(articleLiked) {
-      setNbLike(nbLike-1)
-      setArticleLiked(false)
-      axios.delete(`/likes/${user._id}/${id}`).then(() => console.log("deleted"))
-    }
-    else {
-      setNbLike(nbLike+1)
-      setArticleLiked(true)
-      axios.post('/like', {
-        user_id: user._id,
-        article_id: id
-      }).then(() => console.log("created"))
-    }
-  }
-
   
 
   return (
@@ -202,7 +161,6 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
 
         <div className={styles.article_preview}>{article.preview}</div>
 
-
         <div className={styles.article_author_informations}>
           <div className={styles.author}>
             Par {article.authorName}, le {article.created_at} {article.created_at !== article.updated_at ? ` et modifié le ${article.updated_at}`: <></>}
@@ -219,19 +177,6 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
           </div>
         </div>
 
-        {
-        article.image 
-        ? 
-          <img src={`http://localhost:4000/${article.image}`} alt="file" />
-        :
-          <></>
-        }
-
-        <a href={`http://localhost:4000/${article.file}`} >
-          <div className={styles.file_to_download}>
-            {article.file}
-          </div>
-        </a>
         <div className={styles.content}>{parse(article.content)}</div>
 
         
