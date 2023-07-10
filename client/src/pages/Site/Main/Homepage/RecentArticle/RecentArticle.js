@@ -3,7 +3,7 @@ import styles from './RecentArticle.module.scss'
 import { Link } from "react-router-dom"
 import axios from 'axios'
 
-const articleRaw = await axios.get("/last-article")
+const articleRaw = await axios.get("/article/last/1")
 const article = articleRaw.data[0]
 
 const RecentArticle = () => {
@@ -11,10 +11,10 @@ const RecentArticle = () => {
     <div className={styles.container}>
         <h2>Dernière actualité</h2>
         <div className={styles.wrapper}>
-          <div className={styles.title}>{article.title}</div>
-          <div className={styles.preview}>{article.preview.substring(0,100)}...</div>
+          <div className={styles.title}>{article?.title}</div>
+          <div className={styles.preview}>{article?.preview.substring(0,100)}...</div>
           <div className={styles.more}>
-            <Link to={`/article/${article._id}`}>
+            <Link to={`/article/${article?._id}`}>
               En savoir plus
             </Link>
           </div>

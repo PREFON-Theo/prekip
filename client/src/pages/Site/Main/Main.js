@@ -26,7 +26,7 @@ const Main = ({ handleOpenAlert, changeAlertValues }) => {
 useEffect(() => {
 
     const fetchUser =  async () => {
-        const { data } = await axios.get('/users')
+        const { data } = await axios.get('/user')
         setUsersList(data)
     }
     fetchUser();

@@ -17,10 +17,10 @@ const Login = ({setOpenLoginForm, handleOpenAlert, changeAlertValues}) => {
     
     const handleLoginSubmit = async () => {
         try {
-            const {data} = await axios.post('/login', {email, password})
-            if(data === 'Not found') {
+            const {data} = await axios.post('/user/login', {email, password})
+            if(data === 'Not found' || data === "Error password") {
                 handleOpenAlert();
-                changeAlertValues('error', "Informations incorrectes");
+                changeAlertValues('error', "Mail ou mot de passe incorrect");
             }
             else {
                 setUser(data);

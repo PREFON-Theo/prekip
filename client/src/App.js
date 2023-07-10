@@ -30,7 +30,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-axios.defaults.baseURL = 'http://localhost:4000'
+axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL
 axios.defaults.withCredentials = true;
 
 const theme = createTheme (
@@ -88,7 +88,7 @@ const App = () => {
               </Route>
 
               <Route path='/admin' element={<Admin/>}/>
-              <Route path='/register' element={<Signin/>}/>
+              <Route path='/register' element={<Signin handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
 
             </Routes>
 
