@@ -39,6 +39,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
     content : '',
     author: '',
     file: '',
+    //image: '',
   })
   const [editorState, setEditorState] = useState(
     () => EditorState.createEmpty(),
@@ -77,17 +78,22 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
         formData.append('category', article.category)
         formData.append('author', article.author)
         formData.append('file', article.file)
+        //formData.append('image', article.image)
+        formData.append('created_at', new Date())
+        formData.append('updated_at', new Date())
+        console.log("4")
+        console.log(formData)
+        console.log("4.5")
         axios
-          .post('/article', {
-            title: article.title,
-            preview: article.preview,
-            category: article.category,
-            content: article.content,
-            created_at: new Date(),
-            updated_at: new Date(),
-            author: user._id,
+          .post('/article', 
+          formData, 
+          {
+            headers: {
+              'content-type': 'multipart/form-data'
+            }
           })
           .then((res) => setIdArticle(res.data._id))
+          .then(() => console.log("5"))
           .then(() => handleOpenAlert())
           .then(() => changeAlertValues('success', 'Article ajouté'))
           .then(() => {setArticlePosted(true)})
@@ -101,14 +107,9 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
     }
   }
 
-  const changeInputFiles = (e) => {
-    let arrFiles = [...e.target.files]
-    console.log(typeof arrFiles)
-  }
-
   return (
     <>
-      {articlePosted ? <Navigate to={`/article/${idArticle}`} /> : <></>}
+      {/* {articlePosted ? <Navigate to={`/article/${idArticle}`} /> : <></>} */}
       <div className={styles.container}>
         <h2>Ajouter un article</h2>
         <div className={styles.title}>
@@ -154,12 +155,28 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
             type="file"
             onChange={(e) => setArticle(prevValues => ({...prevValues, file: e.target.files[0]}))}
             hidden
-            // accept='.pdf'
+            accept='.pdf'
           />
 
         </Button>
 
-        {/* <div>{article.file?.name}</div> */}
+        <div>{article.file?.name}</div>
+
+        {/* <Button
+          variant="contained"
+          component="label"
+        >
+          Upload image
+          <input
+            type="file"
+            onChange={(e) => setArticle(prevValues => ({...prevValues, image: e.target.files[0]}))}
+            hidden
+            accept='.jpg, .jpeg, .png'
+          />
+
+        </Button>
+
+        <div>{article.image?.name}</div> */}
 
         <div className={styles.content}>
           <Editor
