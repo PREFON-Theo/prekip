@@ -10,17 +10,22 @@ const RecentArticle = () => {
   return (
     <div className={styles.container}>
         <h2>Dernière actualité</h2>
-        <div className={styles.wrapper}>
-          <div className={styles.title}>{article?.title}</div>
-          <div className={styles.preview}>{article?.preview.substring(0,100)}...</div>
-          <div className={styles.more}>
-            <Link to={`/article/${article?._id}`}>
-              En savoir plus
-            </Link>
+        <Link to={`/article/${article?._id}`}>
+          <div className={styles.wrapper}>
+            <div className={styles.title}>{article?.title}</div>
+            {
+              article?.preview.length > 100 ?
+              <div className={styles.preview}>{article?.preview.substring(0,100)}...</div>
+              :
+              <div className={styles.preview}>{article?.preview}</div>
+            }
+            <div className={styles.more}>
+                En savoir plus
+            </div>
           </div>
-        </div>
-        
-    </div>
+          
+        </Link>
+      </div>
   )
 }
 

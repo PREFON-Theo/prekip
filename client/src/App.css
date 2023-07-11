@@ -52,3 +52,7 @@ html {
   overflow-x: auto;
 }
 
+
+div.fc.fc-media-screen.fc-direction-ltr.fc-theme-standard {
+  height: 85vh;
+}
