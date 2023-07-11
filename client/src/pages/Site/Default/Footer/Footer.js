@@ -7,15 +7,15 @@ const Footer = () => {
 const links1 = [
     {
       title: "Twitter",
-      link: "https://www.twitter.com",
+      link: "https://www.twitter.com/Prefon_Asso",
     },
     {
       title: "Facebook",
-      link: "https://www.facebook.com",
+      link: "https://www.facebook.com/PrefonAsso/",
     },
     {
       title: "Instagram",
-      link: "https://www.instagram.com",
+      link: "https://www.instagram.com/prefonhandball",
     },
   ];
   
@@ -35,34 +35,34 @@ const links1 = [
   ];
 
     return (
-        <>
+      <>
         <footer className={styles.container}>
-            <div className={styles.f_top_container}>
+          <div className={styles.f_top_container}>
 
             <div className={styles.c_left}>
-                <div className={styles.item_footer}>
-                    <ul className={styles.fl_ul}>
-                        {links1.map((item, index) => (
-                            <li key={index}>
-                                <Link to={item.link}>{item.title}</Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+              <div className={styles.item_footer}>
+                <ul className={styles.fl_ul}>
+                  {links1.map((item, index) => (
+                    <li key={index}>
+                      <Link to={item.link} target='_blank'>{item.title}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-                <div className={styles.item_footer}>
-                    <ul className={styles.fl_ul}>
-                        {links2.map((item, index) => (
-                            <li key={index}>
-                                <Link to={item.link}>{item.title}</Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+              <div className={styles.item_footer}>
+                <ul className={styles.fl_ul}>
+                  {links2.map((item, index) => (
+                    <li key={index}>
+                      <Link to={item.link}>{item.title}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
             <div className={styles.c_right}>
-                <div className={styles.item_container_right}></div>
+              <div className={styles.item_container_right}></div>
             </div>
 
             </div>
@@ -72,10 +72,10 @@ const links1 = [
             <div className={styles.fb_left}>PREKIP</div>
             <div className={styles.fb_right}>© {new Date().getFullYear()} PREFON, Inc.</div>
 
-            </div>
+          </div>
 
         </footer>
-        </>
+      </>
     );
 }
 

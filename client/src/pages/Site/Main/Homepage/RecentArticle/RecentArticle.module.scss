@@ -7,24 +7,24 @@
     h2 {
         color: #000;
     }
-    .wrapper {
-        background-color: #0B2F83;
-        padding: 20px;
-        .title {
-            font-size: 80px;
-            margin-bottom: 50px;
-        }
-        .preview {
-            font-weight: 100;
-            margin-bottom: 50px;
+    a {
+        color: #fff;
+        text-decoration: none;
+        .wrapper {
+            background-color: #0B2F83;
+            padding: 20px;
+            .title {
+                font-size: 80px;
+                margin-bottom: 50px;
+            }
+            .preview {
+                font-weight: 100;
+                margin-bottom: 50px;
 
-        }
-        .more {
-            display: flex;
-            flex-direction: row-reverse;
-            a{
-            color: #ffffff6e;
-            text-decoration: none;
+            }
+            .more {
+                display: flex;
+                flex-direction: row-reverse;
 
             }
         }

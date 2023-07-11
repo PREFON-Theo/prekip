@@ -28,8 +28,7 @@ const statsInfo = [
     type: "Particuliers"
   },
 ]
-  
-let title = '';
+
 
 const StatsPrefon = () => {
   return (
