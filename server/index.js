@@ -4,11 +4,10 @@ const mongoose = require('mongoose');
 const cookieParser = require("cookie-parser")
 require('dotenv').config();
 
-
-
-
 const multer  = require('multer')
 const upload = multer({ dest: 'uploads/' })
+
+const Article = require('./models/Article')
 
 mongoose.set('strictQuery', false);
 mongoose
@@ -23,9 +22,10 @@ app.use(express.json())
 app.use(cookieParser());
 app.use(cors({
     credentials: true,
-    origin: process.env.CLIENT_URL
+    origin: `${process.env.URL}:3000`
 }))
-app.use('/uploads', express.static('uploads'))
+
+app.use('/uploads', express.static('uploads')) 
 
 const UserRoutes = require('./routes/user');
 const EventRoutes = require('./routes/event');
@@ -40,6 +40,43 @@ app.use('/user', UserRoutes);
 app.use('/event', EventRoutes);
 app.use('/event-type', EventTypeRoutes);
 app.use('/article', ArticleRoutes);
+
+app.post('/article', upload.any('image', 2), async (req, res) => {
+    try {
+        let image = '';
+        let file = '';
+        console.log(req.files)
+        for (let fi = 0; fi < req.files.length; fi++) {
+            if(req.files[fi].mimetype === "application/pdf"){
+                file = req.files[fi];
+            }
+            else {
+                image = req.files[fi];
+            }
+            
+        }
+        const {title, preview, content, category, author, created_at, updated_at} = req.body
+        const articleCreation = await Article.create({
+            title,
+            preview,
+            content,
+            category,
+            author,
+            image,
+            file,
+            created_at,
+            updated_at,
+        })
+        res.status(200).json(articleCreation)
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+    
+})
+
 app.use('/stat', StatRoutes);
 app.use('/stat-type', StatTypeRoutes);
 app.use('/rubrique-type', RubriqueTypeRoutes);

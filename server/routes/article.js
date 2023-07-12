@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Article = require('../models/Article')
 
+
 router.get('/', async (req, res) => {
   const getArticles = await Article.find()
   res.json(getArticles);
@@ -43,30 +44,6 @@ router.get('/category/:id', async (req, res) => {
   }
 })
 
-//Create - OK
-router.post('/', async (req, res) => {
-  try {
-      const {title, preview, content, category, author, image, created_at, updated_at} = req.body
-      const articleCreation = await Article.create({
-          title,
-          preview,
-          content,
-          category,
-          author,
-          image,
-          created_at,
-          updated_at,
-      })
-      res.status(200).json(articleCreation)
-  }
-  catch (error) {
-      res.status(400).json({
-          error: error
-      });
-  }
-  
-})
-
 
 
 //Update one event - OK
@@ -88,9 +65,17 @@ router.patch('/:id', (req, res) => {
 //Delete one article - 
 router.delete('/:id', (req, res) => {
   try {
+      Article.findOne({_id: req.params.id}).then((r) => {
+        console.log(r)
+        /*fs.remove(`../uploadsFile/${r.file}`)
+          fs.remove(`../uploadsImage/${r.image}`)*/
+      })
       Article.deleteOne({_id: req.params.id}).then(() => {
-          res.status(200).json({
+          /*res.status(200).json({
               message: "Deleted"
+          })*/
+          res.json({
+            message: "Deleted"
           })
       }).catch((error) => {
           res.status(400).json({
