@@ -36,6 +36,9 @@ const StatTypeRoutes = require('./routes/stattype');
 const RubriqueTypeRoutes = require('./routes/rubriquetype');
 const LikeRoutes = require('./routes/like');
 const CommentsRoutes = require('./routes/comment');
+const ForumRoutes = require('./routes/forum');
+const AnswerRoutes = require('./routes/answer');
+
 app.use('/user', UserRoutes);
 app.use('/event', EventRoutes);
 app.use('/event-type', EventTypeRoutes);
@@ -82,6 +85,8 @@ app.use('/stat-type', StatTypeRoutes);
 app.use('/rubrique-type', RubriqueTypeRoutes);
 app.use('/like', LikeRoutes);
 app.use('/comment', CommentsRoutes);
+app.use('/forum', ForumRoutes);
+app.use('/answer', AnswerRoutes);
 
 
 app.listen('4000', console.log("Running on port 4000"));
