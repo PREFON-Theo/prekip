@@ -13,8 +13,8 @@ import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
-
-
+import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
+import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 
 const usersList = await axios.get('/user')
 const rubriquesRaw = await axios.get('/rubrique-type')
@@ -65,6 +65,8 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
         content: res.data.content,
         category: res.data.category,
         author: res.data.author,
+        image: res.data.image,
+        file: res.data.file,
         authorName: `${listOfUsers.filter((usr) => usr._id === res.data.author)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === res.data.author)[0]?.lastname}`,
         created_at: new Date(res.data.created_at).toLocaleDateString('fr-FR'),
         updated_at: new Date(res.data.updated_at).toLocaleDateString('fr-FR')
@@ -187,6 +189,26 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
             </IconButton>
             <div className={styles.number}>{nbLike}</div>
           </div>
+        </div>
+
+        {
+          article.file ?
+          <Button variant='contained' color='error' endIcon={<DownloadRoundedIcon />} >
+            {article.file?.originalname}
+          </Button>
+          :
+          <></>
+        }
+
+
+        <div>
+          {
+            article.image 
+            ? 
+            <img src={`http://localhost:4000/${article.image?.path}`} alt="img" className={styles.article_image}/>
+          :
+            <></>
+          }
         </div>
 
         <div className={styles.content}>{parse(article.content)}</div>

@@ -1,2 +1,2 @@
-echo $"REACT_APP_SERVER_URL=http://"$(hostname -I | cut -f1 -d' ')":4000" > client/.env
-echo $"CLIENT_URL=http://"$(hostname -I | cut -f1 -d' ')":3000" > server/.env
+echo $"REACT_APP_URL=http://"$(hostname -I | cut -f1 -d' ') > client/.env
+echo $"URL=http://"$(hostname -I | cut -f1 -d' ') > server/.env

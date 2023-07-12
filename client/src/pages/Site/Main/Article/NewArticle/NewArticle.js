@@ -39,7 +39,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
     content : '',
     author: '',
     file: '',
-    //image: '',
+    image: '',
   })
   const [editorState, setEditorState] = useState(
     () => EditorState.createEmpty(),
@@ -77,13 +77,11 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
         formData.append('content', article.content)
         formData.append('category', article.category)
         formData.append('author', article.author)
-        formData.append('file', article.file)
-        //formData.append('image', article.image)
+        formData.append('image', article.image)
+        formData.append('image', article.file)
         formData.append('created_at', new Date())
         formData.append('updated_at', new Date())
-        console.log("4")
-        console.log(formData)
-        console.log("4.5")
+
         axios
           .post('/article', 
           formData, 
@@ -109,7 +107,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
   return (
     <>
-      {/* {articlePosted ? <Navigate to={`/article/${idArticle}`} /> : <></>} */}
+      {articlePosted ? <Navigate to={`/article/${idArticle}`} /> : <></>}
       <div className={styles.container}>
         <h2>Ajouter un article</h2>
         <div className={styles.title}>
@@ -150,7 +148,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
           variant="contained"
           component="label"
         >
-          Upload File
+          Ajouter un fichier
           <input
             type="file"
             onChange={(e) => setArticle(prevValues => ({...prevValues, file: e.target.files[0]}))}
@@ -162,11 +160,11 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
         <div>{article.file?.name}</div>
 
-        {/* <Button
+        <Button
           variant="contained"
           component="label"
         >
-          Upload image
+          Ajouter une image
           <input
             type="file"
             onChange={(e) => setArticle(prevValues => ({...prevValues, image: e.target.files[0]}))}
@@ -176,7 +174,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
         </Button>
 
-        <div>{article.image?.name}</div> */}
+        <div>{article.image?.name}</div>
 
         <div className={styles.content}>
           <Editor

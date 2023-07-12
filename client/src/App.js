@@ -30,7 +30,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL
+axios.defaults.baseURL = `${process.env.REACT_APP_URL}:4000`
 axios.defaults.withCredentials = true;
 
 const theme = createTheme (

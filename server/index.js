@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser")
 require('dotenv').config();
 
 const multer  = require('multer')
-const upload = multer({ dest: 'uploadsFile/' })
+const upload = multer({ dest: 'uploads/' })
 
 const Article = require('./models/Article')
 
@@ -22,7 +22,7 @@ app.use(express.json())
 app.use(cookieParser());
 app.use(cors({
     credentials: true,
-    origin: process.env.CLIENT_URL
+    origin: `${process.env.URL}:3000`
 }))
 
 app.use('/uploads', express.static('uploads')) 
@@ -41,12 +41,21 @@ app.use('/event', EventRoutes);
 app.use('/event-type', EventTypeRoutes);
 app.use('/article', ArticleRoutes);
 
-app.post('/article', upload.single('file'), async (req, res) => {
+app.post('/article', upload.any('image', 2), async (req, res) => {
     try {
-        const file = req.file.path
-
-        console.log(file)
-        const {title, preview, content, category, author, image, created_at, updated_at} = req.body
+        let image = '';
+        let file = '';
+        console.log(req.files)
+        for (let fi = 0; fi < req.files.length; fi++) {
+            if(req.files[fi].mimetype === "application/pdf"){
+                file = req.files[fi];
+            }
+            else {
+                image = req.files[fi];
+            }
+            
+        }
+        const {title, preview, content, category, author, created_at, updated_at} = req.body
         const articleCreation = await Article.create({
             title,
             preview,

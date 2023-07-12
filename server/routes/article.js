@@ -2,11 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Article = require('../models/Article')
 
-const multer  = require('multer')
-const uploadFile = multer({ dest: '../uploadsFile/' })
-const uploadImage = multer({ dest: '../uploadsImage/' })
-
-const fs = require('fs-extra')
 
 router.get('/', async (req, res) => {
   const getArticles = await Article.find()
@@ -48,35 +43,6 @@ router.get('/category/:id', async (req, res) => {
       res.status(400).json(e)
   }
 })
-
-//Create - OK
-
-/*router.post('/', uploadFile.single('file'), uploadImage.single('image'), async (req, res) => {
-  try {
-    //const image = req.image.path
-    const file = req.file.path
-
-    const {title, preview, content, category, author, created_at, updated_at} = req.body
-    const articleCreation = await Article.create({
-      title,
-      preview,
-      content,
-      category,
-      author,
-      //image,
-      file,
-      created_at,
-      updated_at,
-    })
-    res.status(200).json(articleCreation)
-  }
-  catch (error) {
-    res.status(400).json({
-      error: error
-    });
-  }
-  
-})*/
 
 
 

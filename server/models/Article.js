@@ -10,12 +10,8 @@ const ArticleSchema = Schema({
     updated_at: Date,
     category: String,
     author: String,
-    image: String,
-    file: String,
-    /*imageUrl: String,
-    imageName: String,
-    fileUrl: String,
-    fileName: String,*/
+    image: Object,
+    file: Object,
 })
 
 const ArticleModel = mongoose.model('Article', ArticleSchema);

@@ -40,7 +40,7 @@ const ButtonMyAccount = ({handleOpenAlert, changeAlertValues}) => {
 
   return (
     <>
-      <Tooltip title="Account settings">
+      <Tooltip title="Paramètres">
         <IconButton
           onClick={handleClick}
           size="small"
