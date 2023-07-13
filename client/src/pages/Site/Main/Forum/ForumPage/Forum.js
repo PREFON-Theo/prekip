@@ -5,42 +5,38 @@ import { Link, Navigate } from "react-router-dom"
 import { Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
-import ArrowDropUpRoundedIcon from '@mui/icons-material/ArrowDropUpRounded';
-import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded';
 
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 
-const content = [
-  {
-    title: "item1"
-  },
-  {
-    title: "item2"
-  },
-  {
-    title: "item3"
-  },
-  {
-    title: "item4"
-  },
-]
 const usersList = await axios.get('/user')
 const listOfUsers = usersList.data
 console.log(listOfUsers)
 
 const Forum = ({handleOpenAlert, changeAlertValues}) => {
   const { user } = useContext(UserContext);
-  const [redirection, setRedirection] = useState(false)
-  const [lastForum, setLastForum] = useState([])
-  const [forumInfo, setForumInfo] = useState()
-  const [forumOnFocus, setForumOnFocus] = useState()
-  const [answerText, setAnswerText] = useState('')
-  const [answers, setAnswers] = useState([])
+  const [redirection, setRedirection] = useState(false);
+  const [lastForum, setLastForum] = useState([]);
+  const [forumInfo, setForumInfo] = useState();
+  const [forumOnFocus, setForumOnFocus] = useState();
+  const [answerText, setAnswerText] = useState('');
+  const [answers, setAnswers] = useState([]);
+  const [lenghtToLoad, setLengthToLoad] = useState(5);
+  const [lengthOfForums, setLengthOfForums] = useState(0);
+
+  const fetchAllForums = async () => {
+    await axios
+      .get(`/forum`)
+      .then((res) => {
+        setLengthOfForums(res.data.length)
+      })
+      console.log("fetched")
+  }
 
   const fetchLastForums = async () => {
+    fetchAllForums();
     await axios
-      .get('/forum/last/5')
+      .get(`/forum/last/${lenghtToLoad}`)
       .then((res) => {
         setLastForum(res.data)
       })
@@ -48,8 +44,11 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
 
   useEffect(() => {
     fetchLastForums();
-    console.log(forumInfo)
   }, [])
+
+  useEffect(() => {
+    fetchLastForums();
+  }, [lenghtToLoad])
 
   const fetchDataForum = async (id) => {
     await axios
@@ -100,6 +99,29 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
       .then(() => fetchLastForums())
   }
 
+  const deleteForum = async (id) => {
+    await axios.delete(`/forum/${forumInfo._id}`)
+    .then(() => {
+      setRedirection(true)
+      fetchLastForums()
+      setForumOnFocus()
+      setForumInfo()
+      handleOpenAlert()
+      changeAlertValues('success', 'Forum supprimé')
+    })    
+  }
+
+  const changeLengthToLoad = async (more) => {
+    if(more) {
+      setLengthToLoad(lenghtToLoad+5)
+      console.log("more", lenghtToLoad)
+    }
+    else {
+      setLengthToLoad(lenghtToLoad-5)
+      console.log("less", lenghtToLoad)
+    }
+  }
+
   return (
     <>
       {redirection ? <Navigate to={'/forum'}/> : <></>}
@@ -110,18 +132,46 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
             lastForum.length === 0 ?
               <div>Il n'y a aucun sujet</div>
             :
-            lastForum?.map((item, index) => (
-              <div key={index} className={forumOnFocus === item._id ? styles.item_last_forum_focused : styles.item_last_forum} onClick={() => changeTopic(item._id)}>
-                  <span style={{color: item.closed ? "grey": "black"}}>{item.closed ? "[Fermé]" : ""}{item.title}</span>
+            <>
+              {lastForum?.map((item, index) => (
+                <div key={index} className={forumOnFocus === item._id ? styles.item_last_forum_focused : styles.item_last_forum} onClick={() => changeTopic(item._id)}>
+                    <span style={{color: item.closed ? "grey": "black"}}>{item.closed ? "[Fermé]" : ""}{item.title}</span>
+                </div>
+              ))}
+              <div className={styles.more_to_load}>
+                {lengthOfForums <= 5 ?
+                <></>
+                : lenghtToLoad >= lengthOfForums ?
+                <>
+                  <div className={styles.less} style={{cursor: "pointer"}} onClick={() => changeLengthToLoad(false)}>Voir moins</div>
+                </>
+                : lenghtToLoad === 5 ?
+                <>
+                  <div className={styles.more} style={{cursor: "pointer", margin: '0 0 0 auto'}} onClick={() => changeLengthToLoad(true)}>Voir plus</div>              
+                </>
+                :
+                <>
+                  <div className={styles.less} style={{cursor: "pointer", textAlign: "start"}} onClick={() => changeLengthToLoad(false)}>Voir moins</div>
+                  <div className={styles.more} style={{cursor: "pointer", textAlign: "end"}} onClick={() => changeLengthToLoad(true)}>Voir plus</div>
+                </>
+                }
               </div>
-            ))
+            </>
           }
         </div>
 
         <div className={styles.main}>
           {
             forumInfo === undefined ?
-              <>not selected</>
+              <>
+                <div className={styles.forum_hp}>
+                  <h1>Bienvenue sur la page Forum</h1>
+                  <div className={styles.description}>Vous pouvez ajouter un sujet de discussion, interagir et échanger.</div>
+                  <Link to={'/new-forum'}>
+                    <Button variant='contained' sx={{marginTop: '20px'}} color='success'>Ajouter un sujet de discussion</Button>
+                  </Link>
+                </div>
+              </>
             :
 
               <div className={styles.wrapper}>
@@ -133,12 +183,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
                       <Link to={`/edit-forum/${forumInfo._id}`} style={{marginLeft: '10px'}}>
                         <Button variant='contained' color='warning'>Modifier le forum</Button>
                       </Link>
-                      <Button variant='contained' color='error' onClick={
-                        () => axios.delete(`/forum/${forumInfo._id}`)
-                          .then(() => setRedirection(true))
-                          .then(() => handleOpenAlert())
-                          .then(() => changeAlertValues('success', 'Forum supprimé'))
-                        }>Supprimer le forum</Button>
+                      <Button variant='contained' color='error' onClick={() => deleteForum(forumInfo._id)}>Supprimer le forum</Button>
                     </div>
                     :
                       <></>

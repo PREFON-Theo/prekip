@@ -22,7 +22,7 @@ router.get('/:id', async (req, res) => {
 //Get all answers of an topic (forum) - OK
 router.get('/forum/:forum_id', async (req, res) => {
   try {
-      const AnswerInfo = await Answer.find({forum_id: req.params.forum_id}).sort({date: -1})
+      const AnswerInfo = await Answer.find({forum_id: req.params.forum_id}).sort({created_at: -1})
       res.status(200).json(AnswerInfo)
   }
   catch (e){

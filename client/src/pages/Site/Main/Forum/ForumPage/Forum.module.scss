@@ -12,12 +12,12 @@
       padding: 0 25px;
     }
 
-    > div {
+    > div.item_last_forum,  > div.item_last_forum_focused{
       border-top: 1px solid rgba(0, 0, 0, 0.192);
       border-right: 1px solid rgba(0, 0, 0, 0.192);
     }
 
-    > div:last-child {
+    > div.item_last_forum:last-child, > div.item_last_forum_focused:last-child {
       border-bottom:  1px solid rgba(0, 0, 0, 0.192);
     }
 
@@ -32,10 +32,19 @@
       background-color: #fff;
     }
 
+    .more_to_load {
+      padding: 25px;
+      display: flex;
+      justify-content: space-between;
+    }
+
   }
 
   .main {
     flex: 5;
+    .forum_hp {
+      padding: 0 40px;
+    }
     .wrapper {
       padding: 0 40px;
 

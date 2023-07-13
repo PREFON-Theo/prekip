@@ -41,7 +41,10 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
               <MenuItemLink title="Calendrier" link="/calendar"/>
             </div>
             <div className={styles.item_middlemenu}>
-              <MenuItemLink title="Chiffres PREFON" link="/stats"/>
+              <MenuItemLink title="Chiffres" link="/stats"/>
+            </div>
+            <div className={styles.item_middlemenu}>
+              <MenuItemLink title="Forum" link="/forum"/>
             </div>
           </div>
 
