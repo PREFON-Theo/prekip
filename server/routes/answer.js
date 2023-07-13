@@ -33,12 +33,12 @@ router.get('/forum/:forum_id', async (req, res) => {
 //Add one answer - OK
 router.post('/', async (req, res) => {
   try {
-      const {text, user_id, date, article_id} = req.body
+      const {text, user_id, article_id, forum_id} = req.body
       const answerCreation = await Answer.create({
           text,
           user_id,
-          date,
-          article_id
+          article_id,
+          forum_id
       })
       res.status(200).json(answerCreation)
   }

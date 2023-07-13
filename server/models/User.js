@@ -10,7 +10,10 @@ const UserSchema = Schema({
     role: String,
     joiningDate: Date,
     leavingDate: Date,
-    valid: Boolean
+    valid: {
+        type: Boolean,
+        default: true
+    }
 })
 
 const UserModel = mongoose.model('User', UserSchema);

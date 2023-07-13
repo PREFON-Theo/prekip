@@ -8,9 +8,18 @@ const ForumSchema = Schema({
     author: String,
     image: Object,
     file: Object,
-    closed: Boolean,
-    created_at: Date,
-    updated_at: Date,
+    closed: {
+        type: Boolean,
+        default: false
+    },
+    created_at: {
+        type: Date,
+        default: Date.now
+    },
+    updated_at: {
+        type: Date,
+        default: Date.now
+    },
 })
 
 const ForumModel = mongoose.model('Forum', ForumSchema);

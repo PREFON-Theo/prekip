@@ -17,6 +17,9 @@ import StatsPrefon from './StatsPrefon/StatsPrefon';
 import Rubrique from './Rubrique/Rubrique';
 import NotFound from '../../Errors/404/NotFound';
 import EditArticle from './Article/EditArticle/EditArticle';
+import Forum from './Forum/ForumPage/Forum';
+import NewForum from './Forum/NewForum/NewForum';
+import EditForum from './Forum/EditForum/EditForum';
 
 
 const Main = ({ handleOpenAlert, changeAlertValues }) => {
@@ -60,6 +63,9 @@ const handleOpenLoginForm = () => {
                     <Route path='edit-article/:id' element={<EditArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='stats' element={<StatsPrefon/>}/>
                     <Route path='rubrique/:element' element={<Rubrique/>}/>
+                    <Route path='forum' element={<Forum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='new-forum' element={<NewForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='edit-forum/:id' element={<EditForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='/*' element={<NotFound/>}/>
                 </Routes>
             </div>

@@ -6,8 +6,14 @@ const ArticleSchema = Schema({
     title: String,
     preview: String,
     content: String,
-    created_at: Date,
-    updated_at: Date,
+    created_at: {
+        type: Date,
+        default: Date.now
+    },
+    updated_at: {
+        type: Date,
+        default: Date.now
+    },
     category: String,
     author: String,
     image: Object,
