@@ -101,7 +101,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
     try {
       if(article.title === '' || article.preview === '' || article.category === '' || article.content === '<p></p>') {
         handleOpenAlert()
-        changeAlertValues('warning', "Il manque des informations pour ajouter l'article")
+        changeAlertValues('warning', "Il manque des informations pour modifier l'article")
       }
       else {
         //if(user?._id !== articleRaw.data?.author){

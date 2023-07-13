@@ -25,6 +25,9 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Rubrique from './pages/Site/Main/Rubrique/Rubrique';
 import EditArticle from './pages/Site/Main/Article/EditArticle/EditArticle';
+import Forum from './pages/Site/Main/Forum/ForumPage/Forum';
+import NewForum from './pages/Site/Main/Forum/NewForum/NewForum';
+import EditForum from './pages/Site/Main/Forum/EditForum/EditForum';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -84,6 +87,9 @@ const App = () => {
                 <Route path='/edit-article/:id' element={<EditArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path='/stats' element={<StatsPrefon/>}/>
                 <Route path='/rubrique/:element' element={<Rubrique/>}/>
+                <Route path='/forum' element={<Forum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path='/new-forum' element={<NewForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path='/edit-forum/:id' element={<EditForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path='/*' element={<NotFound/>}/>
               </Route>
 
