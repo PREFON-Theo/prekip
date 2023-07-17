@@ -38,6 +38,7 @@ const LikeRoutes = require('./routes/like');
 const CommentsRoutes = require('./routes/comment');
 const ForumRoutes = require('./routes/forum');
 const AnswerRoutes = require('./routes/answer');
+const HomelinkRoutes = require('./routes/homelink');
 
 app.use('/user', UserRoutes);
 app.use('/event', EventRoutes);
@@ -87,6 +88,7 @@ app.use('/like', LikeRoutes);
 app.use('/comment', CommentsRoutes);
 app.use('/forum', ForumRoutes);
 app.use('/answer', AnswerRoutes);
+app.use('/homelink', HomelinkRoutes);
 
 
 app.listen('4000', console.log("Running on port 4000"));

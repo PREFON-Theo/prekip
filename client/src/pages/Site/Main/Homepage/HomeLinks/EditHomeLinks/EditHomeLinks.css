@@ -1,0 +1,29 @@
+.list_dragg {
+  user-select: none;
+  margin: 50px 0;
+}
+
+.item_dragg {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  background-color: #0B2F83;
+  color: white;
+  margin: 8px 0;
+  height: 60px;
+  cursor: grab;
+}
+
+.item_dragg > div:first-child {
+  flex: 1;
+}
+
+.item_dragg > div:last-child {
+  flex: 1;
+  cursor: pointer;
+}
+
+.item_dragg > div:nth-child(2) {
+  flex: 9;
+  text-align: center;
+}

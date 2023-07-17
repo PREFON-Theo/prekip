@@ -11,7 +11,6 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 
 const usersList = await axios.get('/user')
 const listOfUsers = usersList.data
-console.log(listOfUsers)
 
 const Forum = ({handleOpenAlert, changeAlertValues}) => {
   const { user } = useContext(UserContext);

@@ -18,6 +18,10 @@ const ArticleSchema = Schema({
     author: String,
     image: Object,
     file: Object,
+    important: {
+        type: Boolean,
+        default: false
+    },
 })
 
 const ArticleModel = mongoose.model('Article', ArticleSchema);
