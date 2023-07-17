@@ -6,7 +6,8 @@
   .left {
     flex: 1;
     background-color: rgb(241, 241, 241);
-    min-height: 100vh;
+    height: 100vh;
+    overflow-y: auto;
 
     h4 {
       padding: 0 25px;
