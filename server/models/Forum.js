@@ -20,6 +20,10 @@ const ForumSchema = Schema({
         type: Date,
         default: Date.now
     },
+    important: {
+        type: Boolean,
+        default: false
+    },
 })
 
 const ForumModel = mongoose.model('Forum', ForumSchema);

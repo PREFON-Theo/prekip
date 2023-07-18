@@ -28,6 +28,7 @@ import EditArticle from './pages/Site/Main/Article/EditArticle/EditArticle';
 import Forum from './pages/Site/Main/Forum/ForumPage/Forum';
 import NewForum from './pages/Site/Main/Forum/NewForum/NewForum';
 import EditForum from './pages/Site/Main/Forum/EditForum/EditForum';
+import EditHomeLinks from './pages/Site/Main/Homepage/HomeLinks/EditHomeLinks/EditHomeLinks';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -90,6 +91,7 @@ const App = () => {
                 <Route path='/forum' element={<Forum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path='/new-forum' element={<NewForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path='/edit-forum/:id' element={<EditForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path='/edit-static-link/' element={<EditHomeLinks handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path='/*' element={<NotFound/>}/>
               </Route>
 
