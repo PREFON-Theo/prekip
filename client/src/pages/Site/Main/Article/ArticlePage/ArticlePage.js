@@ -16,6 +16,9 @@ import TextField from '@mui/material/TextField';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 
+import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
+
+
 const usersList = await axios.get('/user')
 const rubriquesRaw = await axios.get('/rubrique-type')
 const rubriquesList = rubriquesRaw.data
@@ -55,26 +58,27 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
   }, [])
 
   const fetchData = async () => {
-    await axios
+    const articleData = await axios
       .get(`/article/${id}`)
-      //.then((res) => console.log(res.data))
-      .then((res) => setArticle({
-        id: res.data._id,
-        title: res.data.title,
-        preview: res.data.preview,
-        content: res.data.content,
-        category: res.data.category,
-        author: res.data.author,
-        image: res.data.image,
-        file: res.data.file,
-        authorName: `${listOfUsers.filter((usr) => usr._id === res.data.author)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === res.data.author)[0]?.lastname}`,
-        created_at: new Date(res.data.created_at).toLocaleDateString('fr-FR'),
-        updated_at: new Date(res.data.updated_at).toLocaleDateString('fr-FR')
-      }));
 
-    await axios
-      .get(`/comment/article/${id}`)
-      .then((res) => setComments(res.data));
+      console.log(articleData.data)
+      setArticle({
+        id: articleData.data._id,
+        title: articleData.data.title,
+        preview: articleData.data.preview,
+        content: articleData.data.content,
+        category: articleData.data.category,
+        author: articleData.data.author,
+        image: articleData.data.image,
+        file: articleData.data.file,
+        important: articleData.data.important,
+        authorName: `${listOfUsers.filter((usr) => usr._id === articleData.data.author)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === articleData.data.author)[0]?.lastname}`,
+        created_at: new Date(articleData.data.created_at).toLocaleDateString('fr-FR'),
+        updated_at: new Date(articleData.data.updated_at).toLocaleDateString('fr-FR')
+      });
+
+    const commentData = await axios.get(`/comment/article/${id}`)
+    setComments(commentData.data);
   }
 
   const getLikes = async () => {
@@ -98,40 +102,54 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
   }, [listOfLikes, user])
 
 
-  const handleLikeArticle = () => {
-    if(user){
-      if(articleLiked) {
-        setNbLike(nbLike-1)
-        setArticleLiked(false)
-        axios.delete(`/like/${user._id}/${id}`).then(() => console.log("deleted"))
+  const handleLikeArticle = async () => {
+    try {
+      if(user){
+        if(articleLiked) {
+          setNbLike(nbLike-1)
+          setArticleLiked(false)
+          await axios.delete(`/like/${user._id}/${id}`)
+          console.log("deleted")
+        }
+        else {
+          setNbLike(nbLike+1)
+          setArticleLiked(true)
+          await axios.post('/like', {
+            user_id: user._id,
+            article_id: id
+          })
+          console.log("created")
+        }
       }
       else {
-        setNbLike(nbLike+1)
-        setArticleLiked(true)
-        axios.post('/like', {
-          user_id: user._id,
-          article_id: id
-        }).then(() => console.log("created"))
+        handleOpenAlert()
+        changeAlertValues('warning', "Connectez-vous pour pouvoir aimer ce poste")
       }
     }
-    else {
+    catch (err) {
       handleOpenAlert()
-      changeAlertValues('warning', "Connectez-vous pour pouvoir aimer ce poste")
+      changeAlertValues('error', err)
     }
   }
 
-  const handleAddComment = () => {
-    axios
-      .post(`/comment/`, {
-        text: commentText,
-        user_id: user,
-        article_id: id,
-        date: new Date()
-      })
-      .then(() => handleOpenAlert())
-      .then(() => changeAlertValues('success', 'Commentaire ajouté'))
-      .then(() => fetchData())
-      .then(() => setCommentText(''))
+  const handleAddComment = async () => {
+    try {
+      await axios
+        .post(`/comment/`, {
+          text: commentText,
+          user_id: user,
+          article_id: id,
+          date: new Date()
+        })
+        handleOpenAlert()
+        changeAlertValues('success', 'Commentaire ajouté')
+        fetchData()
+        setCommentText('')
+    }
+    catch (err) {
+      handleOpenAlert()
+      changeAlertValues('error', err)
+    }
   }
 
   
@@ -154,12 +172,12 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
               <Link to={`/edit-article/${id}`} style={{marginRight: '10px'}}>
                 <Button variant='contained' color='warning'>Modifier l'article</Button>
               </Link>
-              <Button variant='contained' color='error' onClick={
-                () => axios.delete(`/article/${id}`)
-                  .then(() => setRedirectGoto(true))
-                  .then(() => handleOpenAlert())
-                  .then(() => changeAlertValues('success', 'Article supprimé'))
-                }>Supprimer l'article</Button>
+              <Button variant='contained' color='error' onClick={() => {
+                axios.delete(`/article/${id}`)
+                setRedirectGoto(true)
+                handleOpenAlert()
+                changeAlertValues('success', 'Article supprimé')
+              }}>Supprimer l'article</Button>
             </div>
             :
               <></>
@@ -170,6 +188,8 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
       <div className={styles.container}>
 
         <div className={styles.article_title}>{article.title}</div>
+
+        <div className={styles.content}>{article.important ? <><CheckBoxRoundedIcon color='success' sx={{verticalAlign: 'middle'}}/> Article important</> : ""}</div>
 
         <div className={styles.article_preview}>{article.preview}</div>
 

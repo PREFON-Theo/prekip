@@ -37,18 +37,17 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
   const [typeOfAbs, setTypeOfAbs] = useState('')
   const usersTaggedNamed = []
 
-  const fetchData = () => {
-    axios.get('/event/' + idEventToEdit).then((res) => 
-      setEventInfo({
-        title: res.data.title,
-        description: res.data.description,
-        startDate: dayjs(res.data.startDate),
-        finishDate: dayjs(res.data.finishDate),
-        type: res.data.type,
-        owner: res.data.owner,
-        usersTagged: res.data.usersTagged
-      })
-    )
+  const fetchData = async () => {
+    const eventData = await axios.get('/event/' + idEventToEdit)
+    setEventInfo({
+      title: eventData.data.title,
+      description: eventData.data.description,
+      startDate: dayjs(eventData.data.startDate),
+      finishDate: dayjs(eventData.data.finishDate),
+      type: eventData.data.type,
+      owner: eventData.data.owner,
+      usersTagged: eventData.data.usersTagged
+    })
   };
 
   useEffect(() => {

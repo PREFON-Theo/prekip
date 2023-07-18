@@ -39,14 +39,15 @@ const FormAddEvent = ({dayInformations, eventTypes, user, userList, handleCloseF
     try {
         await axios
           .post('/event', eventInfo)
-          .then(() => console.log("Added"))
-          .then(() => handleOpenAlert())
-          .then(() => handleCloseForm())
-          .then(() => changeAlertValues('success', 'Evenement ajouté'))
-          .then(() => actualisateData())
+          console.log("Added")
+          handleOpenAlert()
+          handleCloseForm()
+          changeAlertValues('success', 'Evenement ajouté')
+          actualisateData()
           .catch((e) => changeAlertValues('error', e))
     }
     catch (err) {
+      handleOpenAlert()
       changeAlertValues('error', err)
     }
   }

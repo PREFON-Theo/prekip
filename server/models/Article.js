@@ -22,6 +22,7 @@ const ArticleSchema = Schema({
         type: Boolean,
         default: false
     },
+    type: String,
 })
 
 const ArticleModel = mongoose.model('Article', ArticleSchema);
