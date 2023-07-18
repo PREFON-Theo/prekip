@@ -41,7 +41,6 @@ router.post('/', async (req, res) => {
 //Update one - OK
 router.patch('/:id', (req, res) => {
   try {
-    console.log("test")
       Homelink.updateOne({_id: req.params.id}, req.body).then(() => {
         res.status(200).json({
             message: "Updated"

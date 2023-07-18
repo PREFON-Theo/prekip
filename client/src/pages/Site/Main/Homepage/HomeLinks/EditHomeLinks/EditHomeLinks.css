@@ -21,6 +21,8 @@
 .item_dragg > div:last-child {
   flex: 1;
   cursor: pointer;
+  display: flex;
+  justify-content: left;
 }
 
 .item_dragg > div:nth-child(2) {

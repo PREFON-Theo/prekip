@@ -3,6 +3,7 @@ import styles from "./Homepage.module.scss"
 import RecentArticle from './RecentArticle/RecentArticle';
 import Feed from './Feed/Feed'
 import ArticlesCategories from './ArticlesCategories/ArticlesCategories';
+import HomeLinks from './HomeLinks/HomeLinks';
 
 const contentArticlesCategInfo = {
   title: "Informatique",
@@ -97,6 +98,7 @@ const Homepage = ({ handleOpenAlert, changeAlertValues }) => {
 
           <div className={styles.right}>
             <Feed/>
+            <HomeLinks/>
 
           </div>
 

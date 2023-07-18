@@ -1,3 +1,21 @@
 .container {
-  
+  padding: 40px 30px 0 30px;
+
+  .title {
+    display: flex;
+
+    a {
+      margin: auto 0 auto 10px;
+    }
+  }
+
+  ul {
+    li {
+      margin: 20px 0;
+
+      a {
+        color: #000;
+      }
+    }
+  }
 }

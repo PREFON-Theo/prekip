@@ -14,7 +14,7 @@ const ArticlesCategories = ({title, itemImg, itemArticle}) => {
   return (
     <>
         <div className={styles.container}>
-          <div className={styles.title}>{title}</div>
+          <h2>{title}</h2>
 
           <div className={styles.wrapper}>
             <div className={styles.left}>

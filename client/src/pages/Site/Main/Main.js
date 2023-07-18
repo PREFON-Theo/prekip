@@ -67,7 +67,7 @@ const handleOpenLoginForm = () => {
                     <Route path='forum' element={<Forum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='new-forum' element={<NewForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='edit-forum/:id' element={<EditForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-                    <Route path='edit-static-link/' element={<EditHomeLinks handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='edit-static-link' element={<EditHomeLinks handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='/*' element={<NotFound/>}/>
                 </Routes>
             </div>
