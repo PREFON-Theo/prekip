@@ -47,32 +47,29 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
   
   const fetchData = async () => {
     setEvents([])
-    axios
-    .get('/event')
-    .then((res) => {
-      res.data.map((item) => (
-        setEvents((eve) => [...eve, {
-            eventId: item._id,
-            title: listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Absences" 
-            ? 
-              `Absence ${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''} de ${listOfUsers.filter((u) => u._id === item.owner)[0]?.firstname} ${listOfUsers.filter((u) => u._id === item.owner)[0]?.lastname}` 
-            : 
-              listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Equipe"
-            ?
-              `${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''} de ${listOfUsers.filter((u) => u._id === item.owner)[0]?.firstname} ${listOfUsers.filter((u) => u._id === item.owner)[0]?.lastname}` 
-            : 
-              listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Global"
-            ? 
-            `${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''}` 
-            :
-              "Autre",
-            start: item.startDate,
-            end: item.finishDate,
-            description: item.description,
-            color: listEvenTypes.filter((i) => i._id === item.type)[0]?.color || "orange"
-        }])
-      ))
-    })
+    const eventData = await axios.get('/event')
+    eventData.data.map((item) => (
+      setEvents((eve) => [...eve, {
+          eventId: item._id,
+          title: listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Absences" 
+          ? 
+            `Absence ${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''} de ${listOfUsers.filter((u) => u._id === item.owner)[0]?.firstname} ${listOfUsers.filter((u) => u._id === item.owner)[0]?.lastname}` 
+          : 
+            listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Equipe"
+          ?
+            `${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''} de ${listOfUsers.filter((u) => u._id === item.owner)[0]?.firstname} ${listOfUsers.filter((u) => u._id === item.owner)[0]?.lastname}` 
+          : 
+            listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Global"
+          ? 
+          `${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''}` 
+          :
+            "Autre",
+          start: item.startDate,
+          end: item.finishDate,
+          description: item.description,
+          color: listEvenTypes.filter((i) => i._id === item.type)[0]?.color || "orange"
+      }])
+    ))
   };
 
 

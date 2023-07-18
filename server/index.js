@@ -45,11 +45,10 @@ app.use('/event', EventRoutes);
 app.use('/event-type', EventTypeRoutes);
 app.use('/article', ArticleRoutes);
 
-app.post('/article', upload.any('image', 2), async (req, res) => {
+app.post('/article/with-file', upload.any('image',), async (req, res) => {
     try {
         let image = '';
         let file = '';
-        console.log(req.files)
         for (let fi = 0; fi < req.files.length; fi++) {
             if(req.files[fi].mimetype === "application/pdf"){
                 file = req.files[fi];
@@ -59,7 +58,7 @@ app.post('/article', upload.any('image', 2), async (req, res) => {
             }
             
         }
-        const {title, preview, content, category, author, created_at, updated_at} = req.body
+        const {title, preview, content, category, author, type, important, created_at, updated_at} = req.body
         const articleCreation = await Article.create({
             title,
             preview,
@@ -68,6 +67,8 @@ app.post('/article', upload.any('image', 2), async (req, res) => {
             author,
             image,
             file,
+            type,
+            important,
             created_at,
             updated_at,
         })

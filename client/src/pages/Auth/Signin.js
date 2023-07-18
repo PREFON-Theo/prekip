@@ -22,8 +22,8 @@ const Signin = ({handleOpenAlert, changeAlertValues}) => {
     try {
       await axios
         .post('/user/register', userInfo)
-        .then(() => handleOpenAlert())
-        .then(() => changeAlertValues('success', 'Compte créé'))
+        handleOpenAlert()
+        changeAlertValues('success', 'Compte créé')
     }
     catch (err) {
       console.log(err)

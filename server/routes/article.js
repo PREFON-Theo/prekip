@@ -6,11 +6,22 @@ const Article = require('../models/Article')
 router.get('/', async (req, res) => {
   const getArticles = await Article.find()
   res.json(getArticles);
-}) 
+})
+
+router.get('/type/:type', async (req, res) => {
+  const getContent = await Article.find({type: req.params.type})
+  res.json(getContent);
+})
 
 
-router.get('/last/:length', async (req, res) => {
-  const getArticles = await Article.find().sort({created_at: -1}).limit(req.params.length)
+router.get('/:type/last/:length', async (req, res) => {
+  const getArticles = await Article.find({type: req.params.type}).sort({created_at: -1}).limit(req.params.length)
+  res.json(getArticles)
+})
+
+
+router.get('/lastest-important-article/', async (req, res) => {
+  const getArticles = await Article.find({type: 'article', important: true}).sort({created_at: -1}).limit(1)
   res.json(getArticles)
 })
 
@@ -44,7 +55,29 @@ router.get('/category/:id', async (req, res) => {
   }
 })
 
-
+router.post('/', async (req, res) => {
+  try {
+      const {title, preview, content, category, type, author, important, created_at, updated_at} = req.body
+      const articleCreation = await Article.create({
+          title,
+          preview,
+          content,
+          category,
+          author,
+          type,
+          important,
+          created_at,
+          updated_at,
+      })
+      res.status(200).json(articleCreation)
+  }
+  catch (error) {
+      res.status(400).json({
+          error: error
+      });
+  }
+  
+})
 
 //Update one event - OK
 router.patch('/:id', (req, res) => {

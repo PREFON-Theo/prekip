@@ -19,6 +19,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
+import Switch from '@mui/material/Switch';
 
 const rubriquesRaw = await axios.get("/rubrique-type")
 const rubriqueList = rubriquesRaw.data
@@ -39,6 +40,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
       category: articleRaw.data?.category,
       preview: articleRaw.data?.preview,
       content : articleRaw.data?.content,
+      important : articleRaw.data?.important,
     })
     
     setEditorState(
@@ -97,7 +99,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
 
 
-  const handleAddArticle = () => {
+  const handleAddArticle = async () => {
     try {
       if(article.title === '' || article.preview === '' || article.category === '' || article.content === '<p></p>') {
         handleOpenAlert()
@@ -105,17 +107,18 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
       }
       else {
         //if(user?._id !== articleRaw.data?.author){
-        axios
+        await axios
           .patch(`/article/${id}`, {
             title: article.title,
             preview: article.preview,
             category: article.category,
             content: article.content,
             updated_at: new Date(),
+            important: article.important,
           })
-          .then(() => handleOpenAlert())
-          .then(() => changeAlertValues('success', 'Article modifié'))
-          .then(() => {setArticlePosted(true)})
+          handleOpenAlert()
+          changeAlertValues('success', 'Article modifié')
+          setArticlePosted(true)
         }
       //}
 
@@ -131,6 +134,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
       {articlePosted ? <Navigate to={`/article/${id}`} /> : <></>}
       <div className={styles.container}>
         <h2>Modifier l'article</h2>
+        <div>Article important ?  <Switch checked={article.important} onChange={(e) => setArticle(prev => ({...prev, important: e.target.checked}))}/></div>
         <div className={styles.title}>
           <TextField
             required

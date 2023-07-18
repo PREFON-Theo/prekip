@@ -49,12 +49,12 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
               ...userInfor,
               password: password
             })
-            .then(() => handleOpenAlert())
-            .then(() => changeAlertValues("success", "Informations modifiées"))
-            .then(() => setUser({
+            handleOpenAlert()
+            changeAlertValues("success", "Informations modifiées")
+            setUser({
               firstname: userInfor.firstname,
               lastname: userInfor.lastname
-            }))
+            })
           }
         }
         else {
@@ -65,12 +65,12 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
         console.log(userInfor)
         if(user._id){
           axios.patch(`/user/${user?._id}`, userInfor)
-          .then(() => handleOpenAlert())
-          .then(() => changeAlertValues("success", "Informations modifiées"))
-          .then(() => setUser({
+          handleOpenAlert()
+          changeAlertValues("success", "Informations modifiées")
+          setUser({
             firstname: userInfor.firstname,
             lastname: userInfor.lastname
-          }))
+          })
         }
       }
       
