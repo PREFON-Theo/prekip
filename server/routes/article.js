@@ -55,6 +55,18 @@ router.get('/category/:id', async (req, res) => {
   }
 })
 
+//Get type by category - OK
+router.get('/type/:type/category/:id', async (req, res) => {
+  try {
+      const ArticleInfo = await Article.find({category: req.params.id, type: req.params.type})
+      res.status(200).json(ArticleInfo)
+  }
+  catch (e){
+      res.status(400).json(e)
+  }
+})
+
+
 router.post('/', async (req, res) => {
   try {
       const {title, preview, content, category, type, author, important, created_at, updated_at} = req.body

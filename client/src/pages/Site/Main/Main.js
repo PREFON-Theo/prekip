@@ -21,6 +21,8 @@ import Forum from './Forum/ForumPage/Forum';
 import NewForum from './Forum/NewForum/NewForum';
 import EditForum from './Forum/EditForum/EditForum';
 import EditHomeLinks from './Homepage/HomeLinks/EditHomeLinks/EditHomeLinks';
+import ActualityPage from './Article/ActualityPage/ActualityPage';
+import ReferencePage from './Article/ReferencePage/ReferencePage';
 
 
 const Main = ({ handleOpenAlert, changeAlertValues }) => {
@@ -61,6 +63,8 @@ const handleOpenLoginForm = () => {
                     <Route path="calendar" element={<Calendar handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues} handleOpenLoginForm={handleOpenLoginForm}/>}/>
                     <Route path='new-article' element={<NewArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='article/:id' element={<ArticlePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='actuality/:id' element={<ActualityPage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='reference/:id' element={<ReferencePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='edit-article/:id' element={<EditArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='stats' element={<StatsPrefon/>}/>
                     <Route path='rubrique/:element' element={<Rubrique/>}/>

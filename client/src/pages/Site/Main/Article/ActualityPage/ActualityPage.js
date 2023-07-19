@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import styles from "./ArticlePage.module.scss"
+import styles from "./ActualityPage.module.scss"
 import { Link, Navigate, redirect, useParams } from 'react-router-dom'
 import axios from 'axios';
 import dayjs from 'dayjs';
@@ -26,7 +26,7 @@ const listOfUsers = usersList.data
 
 const parse = require('html-react-parser');
 
-const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
+const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
   const { id } = useParams();
   const { user } = useContext(UserContext);
   const [redirectionGoto, setRedirectGoto] = useState(false)
@@ -64,7 +64,7 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
       .get(`/article/${id}`)
 
       console.log(articleData.data)
-      articleData.data.type === 'article' ? <></> : setRedirectionError(true)
+      articleData.data.type === 'actuality' ? <></> : setRedirectionError(true)
       setArticle({
         id: articleData.data._id,
         title: articleData.data.title,
@@ -163,25 +163,20 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
       {redirectionError ? <Navigate to='/404error' replace /> : <></>}
       <div className={styles.breadcrumbs}>
         <Breadcrumbs aria-label="breadcrumb">
-          <Typography>Rubriques</Typography>
-          <Link to={`/rubrique/${rubriquesList.filter((rub) => rub._id === article.category)[0]?.link}`} className={styles.link_to_rubrique}>
-            {rubriquesList.filter((rub) => rub._id === article.category)[0]?.title}
-          </Link>
-          <Typography color="text.primary">Article</Typography>
         </Breadcrumbs>
         {
           user ?
             article.author === user?._id ?
             <div>
               <Link to={`/edit-article/${id}`} style={{marginRight: '10px'}}>
-                <Button variant='contained' color='warning'>Modifier l'article</Button>
+                <Button variant='contained' color='warning'>Modifier l'actualité</Button>
               </Link>
               <Button variant='contained' color='error' onClick={() => {
                 axios.delete(`/article/${id}`)
                 setRedirectGoto(true)
                 handleOpenAlert()
-                changeAlertValues('success', 'Article supprimé')
-              }}>Supprimer l'article</Button>
+                changeAlertValues('success', 'Actualité supprimé')
+              }}>Supprimer l'actualité</Button>
             </div>
             :
               <></>
@@ -192,11 +187,6 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
       <div className={styles.container}>
 
         <div className={styles.article_title}>{article.title}</div>
-
-        <div className={styles.content}>{article.important ? <><CheckBoxRoundedIcon color='success' sx={{verticalAlign: 'middle'}}/> Article important</> : ""}</div>
-
-        <div className={styles.article_preview}>{article.preview}</div>
-
 
         <div className={styles.article_author_informations}>
           <div className={styles.author}>
@@ -213,26 +203,6 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
             </IconButton>
             <div className={styles.number}>{nbLike}</div>
           </div>
-        </div>
-
-        {
-          article.file ?
-          <Button variant='contained' color='error' endIcon={<DownloadRoundedIcon />} >
-            {article.file?.originalname}
-          </Button>
-          :
-          <></>
-        }
-
-
-        <div>
-          {
-            article.image 
-            ? 
-            <img src={`http://localhost:4000/${article.image?.path}`} alt="img" className={styles.article_image}/>
-          :
-            <></>
-          }
         </div>
 
         <div className={styles.content}>{parse(article.content)}</div>
@@ -290,4 +260,4 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
   )
 }
 
-export default ArticlePage;
+export default ActualityPage;

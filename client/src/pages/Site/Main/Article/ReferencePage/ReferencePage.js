@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
-import styles from "./ArticlePage.module.scss"
-import { Link, Navigate, redirect, useParams } from 'react-router-dom'
+import styles from "./ReferencePage.module.scss"
+import { Link, Navigate, useParams } from 'react-router-dom'
 import axios from 'axios';
 import dayjs from 'dayjs';
 import Typography from '@mui/material/Typography';
@@ -26,7 +26,7 @@ const listOfUsers = usersList.data
 
 const parse = require('html-react-parser');
 
-const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
+const ReferencePage = ({ handleOpenAlert, changeAlertValues }) => {
   const { id } = useParams();
   const { user } = useContext(UserContext);
   const [redirectionGoto, setRedirectGoto] = useState(false)
@@ -40,7 +40,6 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
     {
       id: "",
       title: "",
-      preview: "",
       content: "",
       category: "",
       author: "",
@@ -64,15 +63,13 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
       .get(`/article/${id}`)
 
       console.log(articleData.data)
-      articleData.data.type === 'article' ? <></> : setRedirectionError(true)
+      articleData.data.type === 'reference' ? <></> : setRedirectionError(true)
       setArticle({
         id: articleData.data._id,
         title: articleData.data.title,
-        preview: articleData.data.preview,
         content: articleData.data.content,
         category: articleData.data.category,
         author: articleData.data.author,
-        image: articleData.data.image,
         file: articleData.data.file,
         important: articleData.data.important,
         authorName: `${listOfUsers.filter((usr) => usr._id === articleData.data.author)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === articleData.data.author)[0]?.lastname}`,
@@ -163,7 +160,7 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
       {redirectionError ? <Navigate to='/404error' replace /> : <></>}
       <div className={styles.breadcrumbs}>
         <Breadcrumbs aria-label="breadcrumb">
-          <Typography>Rubriques</Typography>
+          <Typography>Contenu de référence</Typography>
           <Link to={`/rubrique/${rubriquesList.filter((rub) => rub._id === article.category)[0]?.link}`} className={styles.link_to_rubrique}>
             {rubriquesList.filter((rub) => rub._id === article.category)[0]?.title}
           </Link>
@@ -195,9 +192,6 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
 
         <div className={styles.content}>{article.important ? <><CheckBoxRoundedIcon color='success' sx={{verticalAlign: 'middle'}}/> Article important</> : ""}</div>
 
-        <div className={styles.article_preview}>{article.preview}</div>
-
-
         <div className={styles.article_author_informations}>
           <div className={styles.author}>
             Par {article.authorName}, le {article.created_at} {article.created_at !== article.updated_at ? ` et modifié le ${article.updated_at}`: <></>}
@@ -223,17 +217,6 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
           :
           <></>
         }
-
-
-        <div>
-          {
-            article.image 
-            ? 
-            <img src={`http://localhost:4000/${article.image?.path}`} alt="img" className={styles.article_image}/>
-          :
-            <></>
-          }
-        </div>
 
         <div className={styles.content}>{parse(article.content)}</div>
 
@@ -290,4 +273,4 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
   )
 }
 
-export default ArticlePage;
+export default ReferencePage;

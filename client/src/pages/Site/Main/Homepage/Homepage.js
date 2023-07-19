@@ -4,6 +4,7 @@ import RecentArticle from './RecentArticle/RecentArticle';
 import Feed from './Feed/Feed'
 import ArticlesCategories from './ArticlesCategories/ArticlesCategories';
 import HomeLinks from './HomeLinks/HomeLinks';
+import axios from 'axios';
 
 const contentArticlesCategInfo = {
   title: "Informatique",
@@ -77,8 +78,24 @@ const contentArticlesCategRH = {
 
 }
 
+const rubriqueRaw = await axios.get('/rubrique-type/parents');
+const rubriqueData = rubriqueRaw.data;
 
-const Homepage = ({ handleOpenAlert, changeAlertValues }) => {
+rubriqueData.map((item, index) => {
+  axios
+    .get(`/article/type/reference/category/${item._id}`)
+    .then((res) => {
+      rubriqueData[index] = {
+        ...item,
+        reference: res.data
+      }
+    })
+})
+
+// console.log(rubriqueData)
+
+
+const Homepage = () => {
   return (
     <>
       <div className={styles.container}>
@@ -89,8 +106,9 @@ const Homepage = ({ handleOpenAlert, changeAlertValues }) => {
             <RecentArticle/>
 
             <div className={styles.artcat}>
-              <ArticlesCategories title={contentArticlesCategInfo.title} itemImg={contentArticlesCategInfo.itemImg} itemArticle={contentArticlesCategInfo.itemArticle}/>
-              <ArticlesCategories title={contentArticlesCategRH.title} itemImg={contentArticlesCategRH.itemImg} itemArticle={contentArticlesCategRH.itemArticle}/>
+              {rubriqueData?.map((item, index) => (
+                <ArticlesCategories key={index} title={item.title} itemArticle={item.reference}/>
+              ))}
             </div>
 
           </div>
