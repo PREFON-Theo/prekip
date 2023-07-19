@@ -12,7 +12,6 @@ const HomeLinks = () => {
     const LinkRaw = await axios
       .get('/homelink')
     setLinks(LinkRaw.data)
-    console.log(LinkRaw.data)
   }
 
   useEffect(() => {

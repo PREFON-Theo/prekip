@@ -60,10 +60,6 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
     setArticle(prev => ({...prev, author: user?._id}))
   }, [user])
 
-  useEffect(() => {
-    console.log(article)
-  }, [article])
-
   if(ready) {
     if(!user){
       handleOpenAlert()
@@ -149,12 +145,52 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
     }
   }
 
+  const handleAddReference = async () => {
+    try {
+      if(article.title === '' || article.category === '' || article.content === '<p></p>') {
+        handleOpenAlert()
+        changeAlertValues('warning', "Il manque des informations pour ajouter l'article")
+      }
+      else {
+        const formData = new FormData()
+        formData.append('title', article.title)
+        formData.append('content', article.content)
+        formData.append('category', article.category)
+        formData.append('author', article.author)
+        formData.append('image', article.file)
+        formData.append('type', contentType)
+        formData.append('created_at', new Date())
+        formData.append('updated_at', new Date())
+
+        const newArticle = await axios
+          .post('/article/with-file', 
+          formData, 
+          {
+            headers: {
+              'content-type': 'multipart/form-data'
+            }
+          })
+          setIdArticle(newArticle.data._id)
+          handleOpenAlert()
+          changeAlertValues('success', 'Contenu de référence ajouté')
+          setArticlePosted(true)
+      }
+
+    }
+    catch (err) {
+      handleOpenAlert()
+      changeAlertValues('error', err)
+    }
+  }
+
   return (
     <>
       {articlePosted && contentType === 'article' ? 
         <Navigate to={`/article/${idArticle}`} />
       : articlePosted && contentType === 'actuality' ? 
         <Navigate to={`/actuality/${idArticle}`} />
+      : articlePosted && contentType === 'reference' ? 
+      <Navigate to={`/reference/${idArticle}`} />
       :
       <></>
       }
@@ -171,6 +207,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
           >
               <MenuItem key={1} value={'article'} sx={{textAlign: 'left'}}>Article</MenuItem>
               <MenuItem key={2} value={'actuality'} sx={{textAlign: 'left'}}>Actualité</MenuItem>
+              <MenuItem key={3} value={'reference'} sx={{textAlign: 'left'}}>Contenu de référence statique</MenuItem>
           </Select>
         </FormControl>
         {
@@ -318,7 +355,68 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
               </div>
             </>
             :
+            contentType === 'reference' ?
+            <>
+              <div className={styles.title}>
+                <TextField
+                  required
+                  label="Titre du contenu"
+                  sx={{width: '100%'}}
+                  value={article.title}
+                  onChange={e => setArticle(prevValues => ({...prevValues, title: e.target.value}) )}
+                />
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Catégorie du contenu</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={article.type}
+                    label="Catégorie du contenu"
+                    onChange={e => setArticle(prevValues => ({...prevValues, category: e.target.value}) )}
+                  >
+                    {rubriqueList.map((item, index) => (
+                      <MenuItem key={index} value={item._id} sx={{textAlign: 'left', paddingLeft: item.parent === '' ? '' : "30px", fontWeight : item.parent === '' ? 'bold' : ''}}>{item.title}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
 
+              <Button
+                variant="contained"
+                component="label"
+              >
+                Ajouter un fichier
+                <input
+                  type="file"
+                  onChange={(e) => {
+                    setArticle(prevValues => ({...prevValues, file: e.target.files[0]}))
+                    console.log(e.target.files)
+                  }}
+                  hidden
+                  accept='.pdf'
+                />
+
+              </Button>
+
+              <div>{article.file?.name}</div>
+
+
+              <div className={styles.content}>
+                <Editor
+                  toolbarClassName="toolbarClassName"
+                  wrapperClassName="wrapperClassName"
+                  editorClassName="editorClassName"
+                  editorState={editorState}
+                  onEditorStateChange={setEditorState}
+                  placeholder='Reseignez les informations ici'
+                />
+              </div>
+              
+              <div className={styles.button_submit}>
+                <Button variant="contained" color='primary' onClick={handleAddReference}>Ajouter le contenu de référence</Button>
+              </div>
+            </>
+            :
             <>
             </>
         }
