@@ -80,16 +80,28 @@ router.get('/search/:text', async (req, res) => {
       .replace(/O/g, '[O,o,ó,ö,ò]')
       .replace(/u/g, '[u,ü,ú,ù]')
       .replace(/U/g, '[U,u,ü,ú,ù]');
-    const ArticleInfo = await Article.find({
-      $or: [ 
-        {title: {$regex: textToSearch, $options: 'imxs'}},
-        {preview: {$regex: textToSearch, $options: 'imxs'}},
-        {content: {$regex: textToSearch, $options: 'imxs'}},
-        {author: {$regex: textToSearch, $options: 'imxs'}},
-        {type: {$regex: textToSearch, $options: 'imxs'}},
-      ]
-    })
-    res.status(200).json(ArticleInfo)
+    const category = req.query.category === undefined ? '' : req.query.category;
+    const author = req.query.author === undefined ? '' : req.query.author;
+    const date = req.query.date === "ascending" ? 1 : -1;
+    const type = req.query.type === undefined ? '' : req.query.type;
+
+    console.log(category, ' ', author, ' ', date, ' ', type)
+
+    const ArticleInfo = await Article.find(
+      {$and: [
+        {$or: [ 
+          {title: {$regex: textToSearch, $options: 'imxs'}},
+          {preview: {$regex: textToSearch, $options: 'imxs'}},
+          {content: {$regex: textToSearch, $options: 'imxs'}},
+          {type: {$regex: textToSearch, $options: 'imxs'}},
+        ]},
+        {category: {$regex: category, $options: 'imxs'}},
+        {author: {$regex: author, $options: 'imxs'}},
+        {type: {$regex: type, $options: 'imxs'}},
+      ]}
+    ).sort({created_at: date});
+    res.status(200).json(ArticleInfo);
+    
   }
   catch (e){
       res.status(400).json(e)

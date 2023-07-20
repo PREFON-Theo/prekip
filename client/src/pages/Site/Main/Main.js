@@ -23,6 +23,7 @@ import EditForum from './Forum/EditForum/EditForum';
 import EditHomeLinks from './Homepage/HomeLinks/EditHomeLinks/EditHomeLinks';
 import ActualityPage from './Article/ActualityPage/ActualityPage';
 import ReferencePage from './Article/ReferencePage/ReferencePage';
+import Search from './Search/Search';
 
 
 const Main = ({ handleOpenAlert, changeAlertValues }) => {
@@ -72,6 +73,7 @@ const handleOpenLoginForm = () => {
                     <Route path='new-forum' element={<NewForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='edit-forum/:id' element={<EditForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='edit-static-link' element={<EditHomeLinks handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='search' element={<Search handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='/*' element={<NotFound/>}/>
                 </Routes>
             </div>
