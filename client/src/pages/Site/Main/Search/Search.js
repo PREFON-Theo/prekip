@@ -1,12 +1,44 @@
 import React, { useEffect, useState } from 'react'
 import style from "./Search.module.scss"
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import axios from 'axios'
+import Pagination from '@mui/material/Pagination';
+import { FormControl, InputLabel, Select, MenuItem, Button } from '@mui/material'
+import DangerousRoundedIcon from '@mui/icons-material/DangerousRounded';
+
+const rubriquesRaw = await axios.get("/rubrique-type");
+const rubriqueData = rubriquesRaw.data;
+
+const authorRaw = await axios.get('/user');
+const authorData = authorRaw.data;
+
+const typeData = [
+  {
+    _id: 1,
+    title: "Article",
+    value: "article"
+  },
+  {
+    _id: 2,
+    title: "Actualité",
+    value: "actuality"
+  },
+  {
+    _id: 3,
+    title: "Référence",
+    value: "reference"
+  },
+]
 
 const Search = () => {
-  const [ params ] = useSearchParams()
+  const [ params, setParams ] = useSearchParams()
   const [articles, setArticles] = useState()
   const [itemFocused, setItemFocused] = useState('')
+  const [page, setPage] = useState(0);
+
+  const [categorySelected, setCategorySelected] = useState('')
+  const [authorSelected, setAuthorSelected] = useState('')
+  const [typeSelected, setTypeSelected] = useState('')
 
   const fetchArticles = async () => {
     try {
@@ -23,6 +55,7 @@ const Search = () => {
 
       const articlesRaw = await axios.get(`/article/search/${params.get('q')}${query}`)
       setArticles(articlesRaw.data)
+      setPage(articlesRaw.data.length > 0 ? 1 : 0)
     }
     catch (err) {
       console.log(err)
@@ -33,38 +66,119 @@ const Search = () => {
     fetchArticles()
   }, [params])
 
+  const handleChangePage = (event, value) => {
+    setPage(value)
+  }
+
+  useEffect(() => {
+    setParams({
+      "q": params.get('q'),
+      "category": categorySelected,
+      "author": authorSelected,
+      "type": typeSelected,
+    })
+  }, [categorySelected, authorSelected, typeSelected])
+
+
+  const changeFilter = async (t, value) => {
+    if(t === "Category"){
+      setCategorySelected(value)
+    }
+    else if (t === 'Author'){
+      setAuthorSelected(value)
+    }
+    else if (t === "Type"){
+      setTypeSelected(value)
+    }
+  }
+  
+
+  const resetFilters = () => {
+    setCategorySelected('')
+    setAuthorSelected('')
+    setTypeSelected('')
+  }
+
   return (
     <>
       <div className={style.container}>
         <h2>Résultat pour la rechercher "{params.get('q')}":</h2>
+        <div className={style.filters}>
 
-        {articles === undefined ?
-          <>Chargement</>
-        : 
-        
-        articles.length === 0 ?
 
-          <>Rien</>
-        :
-          <div className={style.list_results}>
-            {articles?.map((item, index) => (
-              <div 
-                key={index}
-                className={style.item_result}
-                onMouseEnter={() => setItemFocused(item._id)}
-                onMouseLeave={() => setItemFocused('')}
-                style={{filter: itemFocused !== item._id && itemFocused !== '' ? 'blur(4px)' : 'blur(0)'}}
-              >
+          <FormControl sx={{width: '250px', marginRight: "50px"}}>
+            <InputLabel id="demo-simple-select-label">Filtre des rubriques</InputLabel>
+            <Select
+              id="demo-simple-select"
+              value={categorySelected}
+              label="Filtre des rubriques"
+              onChange={e => changeFilter("Category", e.target.value)}
+            >
+              {rubriqueData.map((item, index) => (
+                <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl sx={{width: '250px', marginRight: "50px"}}>
+            <InputLabel id="demo-simple-select-label">Filtre des auteurs</InputLabel>
+            <Select
+              id="demo-simple-select"
+              value={authorSelected}
+              label="Filtre des auteurs"
+              onChange={e => changeFilter("Author", e.target.value)}
+            >
+              {authorData.map((item, index) => (
+                <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.firstname} {item.lastname}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl sx={{width: '250px', marginRight: "50px"}}>
+            <InputLabel id="demo-simple-select-label">Filtre des type de contenu</InputLabel>
+            <Select
+              id="demo-simple-select"
+              value={typeSelected}
+              label="Filtre des type de contenu"
+              onChange={e => changeFilter("Type", e.target.value)}
+            >
+              {typeData.map((item, index) => (
+                <MenuItem key={index} value={item.value} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <Button color="error" variant='contained' onClick={resetFilters}><DangerousRoundedIcon fontSize='large'/></Button>
+          
+        </div>
+
+        <div className={style.list_results}>
+          {articles === undefined ?
+            <>Chargement</>
+          : articles.length === 0 ?
+          <div 
+            className={style.item_result}
+          >
+            <>Aucun résultat...</>
+          </div>
+          :
+          articles.slice(((page-1)*5) , (page*5)).map((item, index) => (
+            <div 
+              key={index}
+              className={style.item_result}
+              onMouseEnter={() => setItemFocused(item._id)}
+              onMouseLeave={() => setItemFocused('')}
+              //style={{filter: itemFocused !== item._id && itemFocused !== '' ? 'blur(4px)' : 'blur(0)'}}
+            >
+              <Link style={{textDecoration: "none"}} to={`/${item.type}/${item._id}`}>
                 <div className={style.item_title}>{item.title}</div>
                 <div className={style.item_preview}>{item.preview?.length > 100 ? `${item.preview.substring(0, 100)}...` : item.preview}</div>
-                <div className={style.item_type}>{item.type}</div>
-              </div>
-            ))}
-          </div>
-          
-        }
-
-        
+                <div className={style.item_type}>{typeData.filter((t) => t.value === item.type)[0].title} par {authorData.filter((auth) => auth._id === item.author)[0].firstname} {authorData.filter((auth) => auth._id === item.author)[0].lastname}</div>
+              </Link>
+            </div>
+          ))}
+          <Pagination count={articles?.length/5 | 0} page={page} onChange={handleChangePage}/>
+        </div>
 
       </div>
     </>

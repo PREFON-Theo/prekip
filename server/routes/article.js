@@ -85,8 +85,6 @@ router.get('/search/:text', async (req, res) => {
     const date = req.query.date === "ascending" ? 1 : -1;
     const type = req.query.type === undefined ? '' : req.query.type;
 
-    console.log(category, ' ', author, ' ', date, ' ', type)
-
     const ArticleInfo = await Article.find(
       {$and: [
         {$or: [ 

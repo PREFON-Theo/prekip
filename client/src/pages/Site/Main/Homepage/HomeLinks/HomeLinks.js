@@ -22,7 +22,7 @@ const HomeLinks = () => {
     <>
     <div className={style.container}>
       <div className={style.title}>
-        <h2>Liens utils</h2>
+        <h2>Liens utiles</h2>
         <Link to="edit-static-link">
           <EditRoundedIcon color='primary'/>
         </Link>

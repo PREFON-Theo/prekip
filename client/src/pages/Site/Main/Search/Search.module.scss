@@ -1,6 +1,13 @@
 .container {
   padding: 4vh;
+  height: 100%;
   background-color: #F9FBFA;
+
+  .filters {
+    display: flex;
+    justify-content: left;
+    margin: 30px 0 50px 0;
+  }
 
   .list_results {
     
@@ -22,6 +29,8 @@
 
       .item_preview {
         margin-bottom: 20px;
+        color: #000;
+
       }
       
       .item_type {
@@ -30,6 +39,9 @@
       }
 
   
+    }
+    .item_result:hover {
+      transform: scale(105%);
     }
   }
 

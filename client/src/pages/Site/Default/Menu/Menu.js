@@ -80,7 +80,7 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
                   className={styles.link_login}
                   >
 
-                  <AddIcon/>Article
+                  <AddIcon/>Contenu
                 </Button>
               </Link>
             )}
