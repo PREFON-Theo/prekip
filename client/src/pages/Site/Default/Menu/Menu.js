@@ -1,10 +1,9 @@
-import React, { useContext, useState  } from 'react'
+import React, { useContext, useEffect, useState  } from 'react'
 import styles from "./Menu.module.scss"
 import {UserContext} from "../../../../utils/Context/UserContext/UserContext"
-import { Link } from "react-router-dom"
+import { Link, Navigate, createSearchParams, useNavigate, useSearchParams } from "react-router-dom"
 import ButtonMyAccount from './ButtonMyAccount/ButtonMyAccount';
 import MenuItemLink from "./MenuItemLink/MenuItemLink"
-import SearchItem from './SearchItem/SearchItem';
 
 import logo from "../../../../utils/assets/Logo PREKIP.png"
 
@@ -12,13 +11,37 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import MenuItemLinkDropdown from './MenuItemLink/MenuItemLinkDropdown';
+import SearchIcon from '@mui/icons-material/Search';
+import Box from '@mui/material/Box';
 import axios from 'axios';
+import { TextField } from '@mui/material';
 
 const RubriquesRaw = await axios.get("/rubrique-type/parents")
 const RubriqueList = RubriquesRaw.data
 
 const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => {
   const {user} = useContext(UserContext)
+  const [textToSearch, setTextToSearch] = useState('')
+
+  const navigate = useNavigate()
+  
+
+  const searching = async () => {
+    if(textToSearch !== ''){
+      return navigate({
+        pathname: 'search',
+        search: `?${createSearchParams({
+          q: textToSearch
+        })}`
+      })
+    }
+  }
+
+  const handleKeyUp = (e) => {
+    if(e.key === "Enter"){
+      searching();
+    }
+  }
 
 
   return (
@@ -57,11 +80,23 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
                   className={styles.link_login}
                   >
 
-                  <AddIcon/>Article
+                  <AddIcon/>Contenu
                 </Button>
               </Link>
             )}
-            <SearchItem/>
+            <Box sx={{ display: 'flex', alignItems: 'flex-end', margin: '0 15px' }}>
+
+              <TextField
+                placeholder="Recherche..."
+                variant="standard"
+                value={textToSearch}
+                onChange={(e) => setTextToSearch(e.target.value)}
+                onKeyUp={handleKeyUp}
+              />
+
+              <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5, cursor: 'pointer' }} onClick={searching} />
+
+            </Box>
             {!!user && (
               <>
                 <div className={styles.account}>

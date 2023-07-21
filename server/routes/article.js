@@ -66,6 +66,46 @@ router.get('/type/:type/category/:id', async (req, res) => {
   }
 })
 
+//Get search for a text
+router.get('/search/:text', async (req, res) => {
+  try {
+    const textToSearch = req.params.text
+      .replace(/a/g, '[a,á,à,ä,â]')
+      .replace(/A/g, '[A,a,á,à,ä,â]')
+      .replace(/e/g, '[e,é,ë,è]')
+      .replace(/E/g, '[E,e,é,ë,è]')
+      .replace(/i/g, '[i,í,ï,ì]')
+      .replace(/I/g, '[I,i,í,ï,ì]')
+      .replace(/o/g, '[o,ó,ö,ò]')
+      .replace(/O/g, '[O,o,ó,ö,ò]')
+      .replace(/u/g, '[u,ü,ú,ù]')
+      .replace(/U/g, '[U,u,ü,ú,ù]');
+    const category = req.query.category === undefined ? '' : req.query.category;
+    const author = req.query.author === undefined ? '' : req.query.author;
+    const date = req.query.date === "ascending" ? 1 : -1;
+    const type = req.query.type === undefined ? '' : req.query.type;
+
+    const ArticleInfo = await Article.find(
+      {$and: [
+        {$or: [ 
+          {title: {$regex: textToSearch, $options: 'imxs'}},
+          {preview: {$regex: textToSearch, $options: 'imxs'}},
+          {content: {$regex: textToSearch, $options: 'imxs'}},
+          {type: {$regex: textToSearch, $options: 'imxs'}},
+        ]},
+        {category: {$regex: category, $options: 'imxs'}},
+        {author: {$regex: author, $options: 'imxs'}},
+        {type: {$regex: type, $options: 'imxs'}},
+      ]}
+    ).sort({created_at: date});
+    res.status(200).json(ArticleInfo);
+    
+  }
+  catch (e){
+      res.status(400).json(e)
+  }
+})
+
 
 router.post('/', async (req, res) => {
   try {
