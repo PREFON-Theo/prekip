@@ -173,7 +173,12 @@ const Search = () => {
               <Link style={{textDecoration: "none"}} to={`/${item.type}/${item._id}`}>
                 <div className={style.item_title}>{item.title}</div>
                 <div className={style.item_preview}>{item.preview?.length > 100 ? `${item.preview.substring(0, 100)}...` : item.preview}</div>
-                <div className={style.item_type}>{typeData.filter((t) => t.value === item.type)[0].title} par {authorData.filter((auth) => auth._id === item.author)[0].firstname} {authorData.filter((auth) => auth._id === item.author)[0].lastname}</div>
+                <div className={style.item_type}>
+                  {typeData.filter((t) => t.value === item.type)[0].title} par {authorData.filter((auth) => auth._id === item.author)[0]?.firstname === undefined
+                    ? <span style={{fontStyle:"italic"}}>utilisateur inconnu</span> 
+                    : `${authorData.filter((auth) => auth._id === item.author)[0].firstname} ${authorData.filter((auth) => auth._id === item.author)[0].lastname}`
+                  }
+                </div>
               </Link>
             </div>
           ))}
