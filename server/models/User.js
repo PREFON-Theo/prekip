@@ -7,7 +7,10 @@ const UserSchema = Schema({
     lastname: String,
     email: {type: String, unique: true},
     password: String,
-    role: String,
+    roles: {
+        type: Array,
+        default: ["User"]
+    },
     joiningDate: Date,
     leavingDate: Date,
     valid: {
