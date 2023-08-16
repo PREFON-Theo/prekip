@@ -1,0 +1,35 @@
+.container {
+  width: 450px;
+  margin: 50px 20px;
+  
+  a {
+    text-decoration: none;
+    
+    .item {
+      padding: 20px;
+      display: block;
+      color: black;
+      background-color: rgb(240, 240, 240);
+      border-radius: 0.375rem;
+    
+      .title {
+        text-align: left;
+        font-size: medium;
+      }
+    
+      .number {
+        text-align: center;
+        font-weight: bold;
+        font-size: 50px;
+        margin: 30px 0;
+      }
+    
+      .text {
+        text-align: center;
+        font-size: medium;
+        color: rgba(0, 0, 0, 0.294);
+      }
+    }
+  }
+
+}

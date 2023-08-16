@@ -9,7 +9,7 @@ const UserSchema = Schema({
     password: String,
     roles: {
         type: Array,
-        default: ["User"]
+        default: ["Utilisateur"]
     },
     joiningDate: Date,
     leavingDate: Date,

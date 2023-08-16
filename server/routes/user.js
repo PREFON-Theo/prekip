@@ -15,7 +15,19 @@ router.get('/', async (req, res) => {
   res.json(getUser);
 })
 
-//Update one event - OK
+
+//Get one - TODO
+router.get('/one/:id', async (req, res) => {
+  try {
+      const UserInfo = await User.findOne({_id: req.params.id})
+      res.status(200).json(UserInfo)
+  }
+  catch (e){
+      res.status(400).json(e)
+  }
+})
+
+//Update one user - OK
 router.patch('/:id', (req, res) => {
   try {
       if(req.body.password){

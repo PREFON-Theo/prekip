@@ -30,6 +30,12 @@ import NewForum from './pages/Site/Main/Forum/NewForum/NewForum';
 import EditForum from './pages/Site/Main/Forum/EditForum/EditForum';
 import EditHomeLinks from './pages/Site/Main/Homepage/HomeLinks/EditHomeLinks/EditHomeLinks';
 import Search from './pages/Site/Main/Search/Search';
+import ListUsers from './pages/Admin/Main/User/ListUsers';
+import UserPage from './pages/Admin/Main/User/UserPage';
+import ListContents from './pages/Admin/Main/Content/ListContents';
+import ContentPage from './pages/Admin/Main/Content/ContentPage';
+import NotFoundAdmin from './pages/Admin/Errors/404/NotFoundAdmin';
+import NewUser from './pages/Admin/Main/User/NewUser';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -97,7 +103,14 @@ const App = () => {
                 <Route path='/*' element={<NotFound/>}/>
               </Route>
 
-              <Route path='/admin' element={<Admin/>}/>
+              <Route path='/admin' element={<Admin handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}>
+                <Route path="/admin/user/list" element={<ListUsers handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="/admin/user/page/:id" element={<UserPage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="/admin/user/new/" element={<NewUser handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="/admin/content/list" element={<ListContents handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="/admin/content/page/:id" element={<ContentPage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="/admin/*" element={<NotFoundAdmin/>}/>
+              </Route>
               <Route path='/register' element={<Signin handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
 
             </Routes>
