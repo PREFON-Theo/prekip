@@ -22,7 +22,7 @@ import { Navigate, useParams } from 'react-router-dom';
 const rolesData = [
   {name:"User", label: "Utilisateur"},
   {name:"Mod", label: "Modérateur"},
-  {name:"Admin", label: "Adminisateur"}
+  {name:"Admin", label: "Administrateur"}
 ]
 
 const UserPage = ({handleOpenAlert, changeAlertValues}) => {

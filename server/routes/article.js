@@ -44,6 +44,53 @@ router.get('/:id', async (req, res) => {
   }
 })
 
+router.get('/stats/global', async (req, res) => {
+  try {
+    const getTypeArticle = await Article.find({type: 'article'})
+    const getTypeActuality = await Article.find({type: 'actuality'})
+    const getTypeReference = await Article.find({type: 'reference'})
+    const getContentLength = await Article.find();
+
+    res.json({
+      article: getTypeArticle.length,
+      actuality: getTypeActuality.length,
+      reference: getTypeReference.length,
+      total: getContentLength.length
+    })
+  }
+  catch (err) {
+    res.status(400).json({
+      error: err
+  });
+  }
+})
+
+router.get('/stats/this-month', async (req, res) => {
+  try {
+    let d = new Date()
+    d.setDate(1)
+    d.setHours(0)
+    d.setMinutes(0)
+    d.setSeconds(0)
+
+    const getTypeArticle = await Article.find({type: 'article',created_at: { $gte: d}})
+    const getTypeActuality = await Article.find({type: 'actuality',created_at: { $gte: d}})
+    const getTypeReference = await Article.find({type: 'reference',created_at: { $gte: d}})
+
+    res.json({
+      article: getTypeArticle.length,
+      actuality: getTypeActuality.length,
+      reference: getTypeReference.length,
+      total: getTypeArticle.length + getTypeActuality.length + getTypeReference.length
+    })
+  }
+  catch (err) {
+    res.status(400).json({
+      error: err
+  });
+  }
+})
+
 //Get articles by category - OK
 router.get('/category/:id', async (req, res) => {
   try {

@@ -22,7 +22,7 @@ import { Navigate } from 'react-router-dom';
 const rolesData = [
   {name:"User", label: "Utilisateur"},
   {name:"Mod", label: "Modérateur"},
-  {name:"Admin", label: "Adminisateur"}
+  {name:"Admin", label: "Administrateur"}
 ]
 
 const NewUser = ({handleOpenAlert, changeAlertValues}) => {
@@ -43,10 +43,6 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
   const [emailIncorrect, setEmailIncorrect] = useState(false)
 
   const [redirection, setRedirection] = useState(false);
-
-  useEffect(() => {
-    console.log(newUser)
-  }, [newUser])
 
   const handleChange = (event) => {
     const {

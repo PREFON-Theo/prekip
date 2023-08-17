@@ -28,6 +28,22 @@ router.get('/:id', async (req, res) => {
   }
 })
 
+router.get('/stats/global', async (req, res) => {
+  try {
+    const openedTopic = await Forum.find({closed: false})
+    const closedTopic = await Forum.find({closed: true})
+
+    res.status(200).json({
+      opened: openedTopic.length,
+      closed: closedTopic.length,
+      total: openedTopic.length + closedTopic.length
+    })
+  }
+  catch (err) {
+    res.status(400).json(e)
+  }
+})
+
 
 //Add one forum - OK
 router.post('/', async (req, res) => {

@@ -27,6 +27,26 @@ router.get('/one/:id', async (req, res) => {
   }
 })
 
+router.get('/stats', async (req, res) => {
+  try {
+    const getRoleModo = await User.find({roles: 'Modérateur'})
+    const getRoleAdmin = await User.find({roles: 'Administrateur'})
+    const getUsersLength = await User.find();
+
+    res.json({
+      user: getUsersLength.length - (getRoleAdmin.length + getRoleModo.length),
+      modo: getRoleModo.length,
+      admin: getRoleAdmin.length,
+      total: getUsersLength.length
+    })
+  }
+  catch (err) {
+    res.status(400).json({
+      error: err
+  });
+  }
+})
+
 //Update one user - OK
 router.patch('/:id', (req, res) => {
   try {
