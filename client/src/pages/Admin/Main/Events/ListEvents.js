@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import styles from "./ListContents.module.scss"
+import styles from "./ListEvents.module.scss"
 import axios from 'axios'
 
 import Table from '@mui/material/Table';
@@ -15,22 +15,18 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-const ListContents = ({handleOpenAlert, changeAlertValues}) => {
-  const [articles, setArticles] = useState()
-  const [categories, setCategories] = useState()
+const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
+  const [events, setEvents] = useState()
   const [users, setUsers] = useState()
+  const [eventTypes, setEventTypes] = useState()
 
   const [dialogOpened, setDialogOpened] = useState(false)
-  const [articleToDelete, setArticleToDelete] = useState("")
+  const [eventToDelete, setEventToDelete] = useState("")
 
-  const fetchArticles = async () => {
-    const articlesRaw = await axios.get('/article')
-    setArticles(articlesRaw.data)
-  }
-
-  const fetchCategories = async () => {
-    const categoriesRaw = await axios.get('/rubrique-type')
-    setCategories(categoriesRaw.data)
+  const fetchEvents = async () => {
+    const eventsRaw = await axios.get('/event')
+    setEvents(eventsRaw.data)
+    console.log(eventsRaw.data)
   }
 
   const fetchUsers = async () => {
@@ -38,31 +34,35 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
     setUsers(usersRaw.data)
   }
 
+  const fetchEventTypes = async () => {
+    const eventTypesRaw = await axios.get('/event-type')
+    setEventTypes(eventTypesRaw.data)
+    console.log(eventTypesRaw.data)
+  }
+
   useEffect(() => {
-    fetchArticles();
-    fetchCategories();
+    fetchEvents();
     fetchUsers();
+    fetchEventTypes();
   }, [])
 
-  const dialogApears = (article_id) => {
-    setArticleToDelete(article_id)
+  const dialogApears = (event_id) => {
+    setEventToDelete(event_id)
     setDialogOpened(true)
   }
 
   const deletionComplete = () => {
-    setArticleToDelete("")
+    setEventToDelete("")
     setDialogOpened(false)
   }
 
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/article/${articleToDelete}`)
-      await axios.delete(`/like/article/${articleToDelete}`)
-      await axios.delete(`/comment/article/${articleToDelete}`)
+      await axios.delete(`/event/${eventToDelete}`)
       handleOpenAlert()
-      changeAlertValues('success', 'Contenu supprimé')
-      fetchArticles();
+      changeAlertValues('success', 'Evènement supprimé')
+      fetchEvents();
       deletionComplete();
     }
     catch (err) {
@@ -74,41 +74,38 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
 
   return (
     <div className={styles.container}>
-      <h2>Liste des contenus</h2>
+      <h2>Liste des évènements</h2>
       <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell sx={{fontWeight: 'bold'}}>Titre</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Date d'ajout</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Catégorie</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Créateur</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Contient un fichier joint ?</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Contenu important ?</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Type de contenu</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell> {/* TODO Check */}
+              <TableCell sx={{fontWeight: 'bold'}}>Date de début</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Date de fin</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Type</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Créateur de l'évènement</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {articles?.map((item, index) => (
+            {events?.map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
-                <TableCell>{item.preview?.length > 25 ? `${item.preview.substring(0,25)}...` : item.preview?.length === 0 ? "-" : item.preview}</TableCell>
-                <TableCell>{item.created_at === null ? "-" : new Date(item.created_at).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell>{item.category === "" ? "-" : categories?.filter((cat) => cat._id === item.category)[0]?.title}</TableCell>
-                <TableCell>
-                  {item.author === "" 
+                <TableCell>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
+                <TableCell>{item.startDate === null ? "-" : new Date(item.startDate).toLocaleDateString('fr-FR')}</TableCell>
+                <TableCell>{item.finishDate === null ? "-" : new Date(item.finishDate).toLocaleDateString('fr-FR')}</TableCell>
+                <TableCell>{eventTypes?.filter((et) => et._id === item.type)[0]?.title === undefined ? <span style={{fontStyle: "italic"}}>Non disponible</span> : eventTypes?.filter((et) => et._id === item.type)[0]?.title}</TableCell>
+                 <TableCell>
+                  {item.owner === "" 
                     ? "-" 
-                    : `${users?.filter((usr) => usr._id === item.author)[0]?.firstname} ${users?.filter((usr) => usr._id === item.author)[0]?.lastname.charAt(0)}.`}
-                    {/* : `${users?.filter((usr) => usr._id === item.author)[0]?.firstname} ${users?.filter((usr) => usr._id === item.author)[0]?.lastname}`} */}
-                  </TableCell>
-                <TableCell>{item.file !== "" ? "Oui" : "Non"}</TableCell>
-                <TableCell>{item.important === true ? "Oui ": "Non" }</TableCell>
-                <TableCell>{item.type === "Actuality" ? "Actualité" : item.type === "reference" ? "Contenu de référence" : "Article"}</TableCell>
+                    : users?.filter((usr) => usr._id === item.owner)[0]?.firstname === undefined ? <span style={{fontStyle: "italic"}}>Utilisateur non disponible</span>
+                    : `${users?.filter((usr) => usr._id === item.owner)[0]?.firstname} ${users?.filter((usr) => usr._id === item.owner)[0]?.lastname.charAt(0)}.`
+                  }
+                </TableCell>
                 <TableCell>
                   <ButtonGroup variant="contained">
-                    <Link to={`/${item.type}/${item._id}`}>
+                    <Link to={`/calendar`}>
                       <Button variant='contained' color="warning">
                         <ArrowForwardRoundedIcon/>
                       </Button>
@@ -129,7 +126,7 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
         >
           <div style={{padding: "50px"}}>
             <div>
-              Vous allez supprimer définitivement le contenu "{articles?.filter((us) => us._id === articleToDelete)[0]?.title}", confirmez vous ?
+              Vous allez supprimer définitivement l'évènement "{events?.filter((us) => us._id === eventToDelete)[0]?.title}", confirmez vous ?
             </div>
             <div style={{margin: "20px 0 0 auto"}}>
               <ButtonGroup sx={{width: '100%'}}>
@@ -144,4 +141,4 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
   );
 }
 
-export default ListContents;
+export default ListEvents;

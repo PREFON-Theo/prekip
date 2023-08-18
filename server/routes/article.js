@@ -4,7 +4,7 @@ const Article = require('../models/Article')
 
 
 router.get('/', async (req, res) => {
-  const getArticles = await Article.find()
+  const getArticles = await Article.find().sort({created_at: -1})
   res.json(getArticles);
 })
 
@@ -183,7 +183,7 @@ router.patch('/:id', (req, res) => {
   try {
       Article.updateOne({_id: req.params.id}, req.body).then(() => {
           res.status(200).json({
-              message: "Updated"
+              message: `Event ${req.params.id} updated`
           })
       })
   }
@@ -197,28 +197,26 @@ router.patch('/:id', (req, res) => {
 //Delete one article - 
 router.delete('/:id', (req, res) => {
   try {
-      Article.findOne({_id: req.params.id}).then((r) => {
-        console.log(r)
-        /*fs.remove(`../uploadsFile/${r.file}`)
-          fs.remove(`../uploadsImage/${r.image}`)*/
-      })
-      Article.deleteOne({_id: req.params.id}).then(() => {
-          /*res.status(200).json({
-              message: "Deleted"
-          })*/
-          res.json({
+    Article.findOne({_id: req.params.id}).then((r) => {
+      console.log(r)
+      /*fs.remove(`../uploadsFile/${r.file}`)
+        fs.remove(`../uploadsImage/${r.image}`)*/
+    })
+    Article.deleteOne({_id: req.params.id}).then(() => {
+        /*res.status(200).json({
             message: "Deleted"
-          })
-      }).catch((error) => {
-          res.status(400).json({
-              error: error
-          });
-      });
+        })*/
+        res.json({
+          message: `Article ${req.params.id} deleted`
+        })
+    }).catch((error) => {
+        res.status(400).json({
+            error: error
+        });
+    });
   }
   catch (error) {
-      res.status(400).json({
-          error: error
-      });
+      res.status(400).json(error);
   }
 });
 

@@ -21,16 +21,25 @@ import ListItemText from '@mui/material/ListItemText';
 
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import NewspaperRoundedIcon from '@mui/icons-material/NewspaperRounded';
+import ForumRoundedIcon from '@mui/icons-material/ForumRounded';
+import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
+import EventNoteRoundedIcon from '@mui/icons-material/EventNoteRounded';
+import FormatListBulletedRoundedIcon from '@mui/icons-material/FormatListBulletedRounded';
 
 
 import { Routes, Route, Link } from 'react-router-dom';
 import ListUsers from "./Main/User/ListUsers";
 import UserPage from "./Main/User/UserPage";
 import ListContents from "./Main/Content/ListContents";
-import ContentPage from "./Main/Content/ContentPage";
 import IndexAdmin from "./Main/IndexAdmin/IndexAdmin";
 import NotFoundAdmin from "./Errors/404/NotFoundAdmin";
 import NewUser from "./Main/User/NewUser";
+import ListForums from "./Main/Forum/ListForums";
+import ListEvents from './Main/Events/ListEvents';
+import ListRubriqueType from './Main/Content/RubriqueType/ListRubriqueType';
+import ListComments from './Main/Content/Comments/ListComments';
+import ListAnswers from './Main/Forum/Answers/ListAnswers';
+import NewRubrique from "./Main/Content/RubriqueType/NewRubrique";
 
 const drawerWidth = 240;
 
@@ -124,9 +133,13 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
           </IconButton>
         </DrawerHeader>
 
+
+        {/* Utilisateurs */}
+
         <Divider />
         <Typography sx={{margin: "20px 0 0 20px", fontWeight: "bold"}}>Utilisateurs</Typography>
         <List>
+          {/* Liste des utilisateurs */}
           <Link to="user/list" style={{textDecoration: "none"}}>
             <ListItem key="contentList" disablePadding>
               <ListItemButton>
@@ -139,9 +152,13 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
           </Link>
         </List>
 
+
+        {/* Contenus */}
+
         <Divider />
         <Typography sx={{margin: "20px 0 0 20px", fontWeight: "bold"}}>Contenus</Typography>
         <List>
+          {/* Liste des contenus */}
           <Link to="content/list" style={{textDecoration: "none"}}>
             <ListItem key="contentList" disablePadding>
               <ListItemButton>
@@ -152,7 +169,84 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
               </ListItemButton>
             </ListItem>
           </Link>
+          
+          {/* Liste des types de rubriques des contenus */}
+          <Link to="rubrique-type/list" style={{textDecoration: "none"}}>
+            <ListItem key="rubriqueTypeList" disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <FormatListBulletedRoundedIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Types de rubriques des contenus" sx={{color: "rgb(0,0,0,0.87)"}}/>
+              </ListItemButton>
+            </ListItem>
+          </Link>
+
+          {/* Liste des commentaires sur les contenus */}
+          <Link to="comment/list" style={{textDecoration: "none"}}>
+            <ListItem key="commentList" disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <ChatBubbleOutlineRoundedIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Commentaires sur les contenus" sx={{color: "rgb(0,0,0,0.87)"}}/>
+              </ListItemButton>
+            </ListItem>
+          </Link>
         </List>
+
+
+        {/* Forums */}
+
+        <Divider />
+        <Typography sx={{margin: "20px 0 0 20px", fontWeight: "bold"}}>Forums</Typography>
+        <List>
+
+          {/* Liste des forums */}
+          <Link to="forum/list" style={{textDecoration: "none"}}>
+            <ListItem key="forumList" disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <ForumRoundedIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Liste des forums" sx={{color: "rgb(0,0,0,0.87)"}}/>
+              </ListItemButton>
+            </ListItem>
+          </Link>
+
+          {/* Liste des réponses aux forums */}
+          <Link to="answer/list" style={{textDecoration: "none"}}>
+            <ListItem key="forumList" disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <ChatBubbleOutlineRoundedIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Réponses aux forums" sx={{color: "rgb(0,0,0,0.87)"}}/>
+              </ListItemButton>
+            </ListItem>
+          </Link>
+
+        </List>
+
+
+        {/* Evènements */}
+
+        <Divider />
+        <Typography sx={{margin: "20px 0 0 20px", fontWeight: "bold"}}>Evènements</Typography>
+        <List>
+          {/* Liste des évènements */}
+          <Link to="event/list" style={{textDecoration: "none"}}>
+            <ListItem key="eventList" disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <EventNoteRoundedIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Liste des évènements" sx={{color: "rgb(0,0,0,0.87)"}}/>
+              </ListItemButton>
+            </ListItem>
+          </Link>
+        </List>
+
 
         <Divider />
       </Drawer>
@@ -166,7 +260,14 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
           <Route path="user/new" element={<NewUser handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
 
           <Route path="content/list" element={<ListContents handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-          <Route path="content/page/:id" element={<ContentPage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+
+          <Route path="forum/list" element={<ListForums handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+          <Route path="event/list" element={<ListEvents handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+          <Route path="rubrique-type/list" element={<ListRubriqueType handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+          <Route path="rubrique-type/new" element={<NewRubrique handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+          <Route path="comment/list" element={<ListComments handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+          <Route path="answer/list" element={<ListAnswers handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+
           <Route path='*' element={<NotFoundAdmin/>}/>
         </Routes>
       </Main>

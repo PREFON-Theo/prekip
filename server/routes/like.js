@@ -49,14 +49,14 @@ router.post('/', async (req, res) => {
 
 
 //Delete one like - OK
-router.delete('/:userId/:articleId', (req, res) => {
+router.delete('/user/:userId/:articleId', (req, res) => {
   try {
       Like.deleteMany({
           user_id: req.params.userId,
           article_id: req.params.articleId
       }).then(() => {
           res.status(200).json({
-              message: "Deleted"
+              message: `Like for the user ${req.userId} on the article ${req.params.articleId} deleted`
           })
       }).catch((error) => {
           res.status(400).json({
@@ -76,7 +76,7 @@ router.delete('/:id', (req, res) => {
   try {
       Like.deleteOne({_id: req.params.id}).then(() => {
           res.status(200).json({
-              message: "Deleted"
+              message: `Like ${req.params.id} deleted`
           })
       })
   }
@@ -86,5 +86,21 @@ router.delete('/:id', (req, res) => {
       });
   }
 });
+
+//Delete all like on an article - OK
+router.delete('/article/:article_id', (req, res) => {
+    try {
+        Like.deleteMany({article_id: req.params.article_id}).then(() => {
+            res.status(200).json({
+                message: `Likes on article ${req.params.article_id} deleted`
+            })
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+  });
 
 module.exports = router;

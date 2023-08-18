@@ -33,9 +33,14 @@ import Search from './pages/Site/Main/Search/Search';
 import ListUsers from './pages/Admin/Main/User/ListUsers';
 import UserPage from './pages/Admin/Main/User/UserPage';
 import ListContents from './pages/Admin/Main/Content/ListContents';
-import ContentPage from './pages/Admin/Main/Content/ContentPage';
 import NotFoundAdmin from './pages/Admin/Errors/404/NotFoundAdmin';
 import NewUser from './pages/Admin/Main/User/NewUser';
+import ListForums from './pages/Admin/Main/Forum/ListForums';
+import ListEvents from './pages/Admin/Main/Events/ListEvents';
+import ListRubriqueType from './pages/Admin/Main/Content/RubriqueType/ListRubriqueType';
+import ListComments from './pages/Admin/Main/Content/Comments/ListComments';
+import ListAnswers from './pages/Admin/Main/Forum/Answers/ListAnswers';
+import NewRubrique from './pages/Admin/Main/Content/RubriqueType/NewRubrique';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -108,7 +113,12 @@ const App = () => {
                 <Route path="/admin/user/page/:id" element={<UserPage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path="/admin/user/new/" element={<NewUser handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path="/admin/content/list" element={<ListContents handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-                <Route path="/admin/content/page/:id" element={<ContentPage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="/admin/forum/list" element={<ListForums handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="/admin/event/list" element={<ListEvents handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="/admin/rubrique-type/list" element={<ListRubriqueType handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="/admin/rubrique-type/new" element={<NewRubrique handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="/admin/comment/list" element={<ListComments handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="/admin/answer/list" element={<ListAnswers handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path="/admin/*" element={<NotFoundAdmin/>}/>
               </Route>
               <Route path='/register' element={<Signin handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>

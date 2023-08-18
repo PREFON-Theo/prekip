@@ -74,7 +74,7 @@ router.patch('/:id', (req, res) => {
   try {
       Forum.updateOne({_id: req.params.id}, req.body).then(() => {
           res.status(200).json({
-              message: "Updated"
+              message: `Forum ${req.params.id} updated`
           })
       })
   }
@@ -98,7 +98,7 @@ router.delete('/:id', (req, res) => {
               message: "Deleted"
           })*/
           res.json({
-            message: "Deleted"
+            message: `Forum ${req.params.id} deleted`
           })
       }).catch((error) => {
           res.status(400).json({

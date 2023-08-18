@@ -26,7 +26,6 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
   const fetchUsers = async () => {
     const usersRaw = await axios.get('/user')
     setUsers(usersRaw.data)
-    console.log(usersRaw.data)
   }
 
   useEffect(() => {
@@ -44,7 +43,7 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
   }
 
 
-  const deleteUser = async (user_id) => {
+  const deleteUser = async () => {
     try {
       await axios.delete(`/user/${userToDelete}`)
       handleOpenAlert()
@@ -69,24 +68,24 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Prénom Nom</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Date d'arrivée</TableCell>
-              <TableCell>Date de départ</TableCell>
-              <TableCell>Roles</TableCell>
-              <TableCell>Compte valide ?</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Prénom Nom</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Email</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Date d'arrivée</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Date de départ</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Roles</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Compte valide ?</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {users?.map((item, index) => (
               <TableRow key={index}>
-                <TableCell>{item.firstname} {item.lastname}</TableCell>
-                <TableCell>{item.email}</TableCell>
-                <TableCell>{item.joiningDate === null ? "-" : new Date(item.joiningDate).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell>{item.leavingDate === null ? "-" : new Date(item.leavingDate).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell>{item.roles}</TableCell>
-                <TableCell>{item.valid === true ? <VerifiedRoundedIcon color='success'/> : <DoDisturbOnRoundedIcon color='error'/>}</TableCell>
+                <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.firstname} {item.lastname}</TableCell>
+                <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.email}</TableCell>
+                <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.joiningDate === null ? "-" : new Date(item.joiningDate).toLocaleDateString('fr-FR')}</TableCell>
+                <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.leavingDate === null ? "-" : new Date(item.leavingDate).toLocaleDateString('fr-FR')}</TableCell>
+                <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.roles[0]} {item.roles[1]} {item.roles[2]}</TableCell>
+                <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.valid === true ? <VerifiedRoundedIcon color='success'/> : <DoDisturbOnRoundedIcon color='error'/>}</TableCell>
                 <TableCell>
                   <ButtonGroup variant="contained">
                     <Link to={`/admin/user/page/${item._id}`}>
@@ -94,13 +93,13 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
                           <ModeEditRoundedIcon/>
                       </Button>
                     </Link>
-                    <Button color='action'>
+                    {/* <Button color='action'>
                       {!item.valid === true ? 
                         <VerifiedRoundedIcon color='success'/>
                       :
                         <DoDisturbOnRoundedIcon color='error'/>
                       }
-                    </Button>
+                    </Button> */}
                     <Button color='error' onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                   </ButtonGroup>
                 </TableCell>
@@ -110,18 +109,18 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
         </Table>
       </TableContainer>
 
-      <div className={styles.login_form}>
+      <div className={styles.dialog_delete}>
         <Dialog
           open={dialogOpened}
           onClose={() => setDialogOpened(false)}
         >
           <div style={{padding: "50px"}}>
             <div>
-              Vous allez supprimer définitivement l'utilisateur {users?.filter((us) => us._id === userToDelete)[0]?.firstname} {users?.filter((us) => us._id === userToDelete)[0]?.lastname}, confirmez vous ?
+              Vous allez supprimer définitivement l'utilisateur "{users?.filter((us) => us._id === userToDelete)[0]?.firstname} {users?.filter((us) => us._id === userToDelete)[0]?.lastname}", confirmez vous ?
             </div>
             <div style={{margin: "20px 0 0 auto"}}>
               <ButtonGroup sx={{width: '100%'}}>
-                <Button variant='outlined' sx={{width: '50%'}} color="actions" onClick={() => deletionComplete()}>Annuler</Button>
+                <Button variant='outlined' sx={{width: '50%'}} color="primary" onClick={() => deletionComplete()}>Annuler</Button>
                 <Button variant='contained' sx={{width: '50%'}} color="error" onClick={() => deleteUser()}>Supprimer</Button>
               </ButtonGroup>
             </div>

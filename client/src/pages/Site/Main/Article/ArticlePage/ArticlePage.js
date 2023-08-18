@@ -1,11 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styles from "./ArticlePage.module.scss"
-import { Link, Navigate, redirect, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import axios from 'axios';
-import dayjs from 'dayjs';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
-//import Link from '@mui/material/Link';
 import { Button } from '@mui/material';
 import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
@@ -14,10 +12,12 @@ import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
-import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 
+
+import { Dialog } from '@mui/material';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 const usersList = await axios.get('/user')
 const rubriquesRaw = await axios.get('/rubrique-type')
@@ -35,6 +35,8 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
   const [listOfLikes, setListOfLikes] = useState()
   const [commentText, setCommentText] = useState('')
   const [redirectionError, setRedirectionError] = useState(false)
+
+  const [dialogOpened, setDialogOpened] = useState(false)
 
   const [article, setArticle] = useState(
     {
@@ -112,7 +114,7 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
         if(articleLiked) {
           setNbLike(nbLike-1)
           setArticleLiked(false)
-          await axios.delete(`/like/${user._id}/${id}`)
+          await axios.delete(`/like/user/${user._id}/${id}`)
           console.log("deleted")
         }
         else {
@@ -157,10 +159,26 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
   }
 
   
+  const deleteUser = async () => {
+    try {
+      axios.delete(`/article/${id}`)
+      axios.delete(`/like/article/${id}`)
+      axios.delete(`/comment/article/${id}`)
+      setRedirectGoto(true)
+      handleOpenAlert()
+      changeAlertValues('success', 'Actualité supprimée')
+      setDialogOpened(false)
+    }
+    catch (err) {
+      handleOpenAlert()
+      changeAlertValues('error', err)
+    }
+  
+  }
 
   return (
     <>
-      {redirectionGoto ? <Navigate to={`/rubrique/${rubriquesList.filter((rub) => rub._id === article.category)[0]?.link}`} /> : <></>}
+      {redirectionGoto ? <Navigate to={"/"} /> : <></>}
       {redirectionError ? <Navigate to='/404error' replace /> : <></>}
       <div className={styles.breadcrumbs}>
         <Breadcrumbs aria-label="breadcrumb">
@@ -177,12 +195,7 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
               <Link to={`/edit-article/${id}`} style={{marginRight: '10px'}}>
                 <Button variant='contained' color='warning'>Modifier l'article</Button>
               </Link>
-              <Button variant='contained' color='error' onClick={() => {
-                axios.delete(`/article/${id}`)
-                setRedirectGoto(true)
-                handleOpenAlert()
-                changeAlertValues('success', 'Article supprimé')
-              }}>Supprimer l'article</Button>
+              <Button variant='contained' color='error' onClick={() => setDialogOpened(true)}>Supprimer l'article</Button>
             </div>
             :
               <></>
@@ -286,6 +299,24 @@ const ArticlePage = ({ handleOpenAlert, changeAlertValues }) => {
           ))}
         </div>
 
+      </div>
+      <div className={styles.dialog_delete}>
+        <Dialog
+          open={dialogOpened}
+          onClose={() => setDialogOpened(false)}
+        >
+          <div style={{padding: "50px"}}>
+            <div>
+              Vous allez supprimer définitivement le contenu "{article.title}", confirmez vous ?
+            </div>
+            <div style={{margin: "20px 0 0 auto"}}>
+              <ButtonGroup sx={{width: '100%'}}>
+                <Button variant='outlined' sx={{width: '50%'}} color="primary" onClick={() => setDialogOpened(false)()}>Annuler</Button>
+                <Button variant='contained' sx={{width: '50%'}} color="error" onClick={() => deleteUser()}>Supprimer</Button>
+              </ButtonGroup>
+            </div>
+          </div>
+        </Dialog>
       </div>
     </>
   )

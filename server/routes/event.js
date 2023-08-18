@@ -4,7 +4,7 @@ const Event = require('../models/Event')
 
 //Get All - OK
 router.get('/', async (req, res) => {
-  const getEvents = await Event.find()
+  const getEvents = await Event.find().sort({startDate: -1})
   res.json(getEvents);
 })
 
@@ -47,7 +47,7 @@ router.patch('/:id', (req, res) => {
   try {
       Event.updateOne({_id: req.params.id}, req.body).then(() => {
           res.status(200).json({
-              message: "Updated"
+              message: `Event ${req.params.id} updated`
           })
       })
   }
@@ -63,7 +63,7 @@ router.delete('/:id', (req, res) => {
   try {
       Event.deleteOne({_id: req.params.id}).then(() => {
           res.status(200).json({
-              message: "Deleted"
+              message: `Event ${req.params.id} deleted`
           })
       }).catch((error) => {
           res.status(400).json({

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import styles from "./ListContents.module.scss"
+import styles from "./ListForums.module.scss"
 import axios from 'axios'
 
 import Table from '@mui/material/Table';
@@ -15,22 +15,16 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-const ListContents = ({handleOpenAlert, changeAlertValues}) => {
-  const [articles, setArticles] = useState()
-  const [categories, setCategories] = useState()
+const ListForums = ({handleOpenAlert, changeAlertValues}) => {
+  const [forums, setForums] = useState()
   const [users, setUsers] = useState()
 
   const [dialogOpened, setDialogOpened] = useState(false)
-  const [articleToDelete, setArticleToDelete] = useState("")
+  const [forumToDelete, setForumToDelete] = useState("")
 
-  const fetchArticles = async () => {
-    const articlesRaw = await axios.get('/article')
-    setArticles(articlesRaw.data)
-  }
-
-  const fetchCategories = async () => {
-    const categoriesRaw = await axios.get('/rubrique-type')
-    setCategories(categoriesRaw.data)
+  const fetchForums = async () => {
+    const forumsRaw = await axios.get('/forum')
+    setForums(forumsRaw.data)
   }
 
   const fetchUsers = async () => {
@@ -39,30 +33,28 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
   }
 
   useEffect(() => {
-    fetchArticles();
-    fetchCategories();
+    fetchForums();
     fetchUsers();
   }, [])
 
-  const dialogApears = (article_id) => {
-    setArticleToDelete(article_id)
+  const dialogApears = (forum_id) => {
+    setForumToDelete(forum_id)
     setDialogOpened(true)
   }
 
   const deletionComplete = () => {
-    setArticleToDelete("")
+    setForumToDelete("")
     setDialogOpened(false)
   }
 
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/article/${articleToDelete}`)
-      await axios.delete(`/like/article/${articleToDelete}`)
-      await axios.delete(`/comment/article/${articleToDelete}`)
+      await axios.delete(`/forum/${forumToDelete}`)
+      await axios.delete(`/answer/forum/${forumToDelete}`)
       handleOpenAlert()
-      changeAlertValues('success', 'Contenu supprimé')
-      fetchArticles();
+      changeAlertValues('success', 'Forum supprimé')
+      fetchForums();
       deletionComplete();
     }
     catch (err) {
@@ -74,7 +66,7 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
 
   return (
     <div className={styles.container}>
-      <h2>Liste des contenus</h2>
+      <h2>Liste des forums</h2>
       <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -82,33 +74,31 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
               <TableCell sx={{fontWeight: 'bold'}}>Titre</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Date d'ajout</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Catégorie</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Créateur</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Contient un fichier joint ?</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Contenu important ?</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Type de contenu</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Etat</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {articles?.map((item, index) => (
+            {forums?.map((item, index) => (
               <TableRow key={index}>
-                <TableCell>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
-                <TableCell>{item.preview?.length > 25 ? `${item.preview.substring(0,25)}...` : item.preview?.length === 0 ? "-" : item.preview}</TableCell>
-                <TableCell>{item.created_at === null ? "-" : new Date(item.created_at).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell>{item.category === "" ? "-" : categories?.filter((cat) => cat._id === item.category)[0]?.title}</TableCell>
-                <TableCell>
+                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
+                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
+                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.created_at === null ? "-" : new Date(item.created_at).toLocaleDateString('fr-FR')}</TableCell>
+                 <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>
                   {item.author === "" 
                     ? "-" 
-                    : `${users?.filter((usr) => usr._id === item.author)[0]?.firstname} ${users?.filter((usr) => usr._id === item.author)[0]?.lastname.charAt(0)}.`}
-                    {/* : `${users?.filter((usr) => usr._id === item.author)[0]?.firstname} ${users?.filter((usr) => usr._id === item.author)[0]?.lastname}`} */}
-                  </TableCell>
-                <TableCell>{item.file !== "" ? "Oui" : "Non"}</TableCell>
-                <TableCell>{item.important === true ? "Oui ": "Non" }</TableCell>
-                <TableCell>{item.type === "Actuality" ? "Actualité" : item.type === "reference" ? "Contenu de référence" : "Article"}</TableCell>
+                    : `${users?.filter((usr) => usr._id === item.author)[0]?.firstname} ${users?.filter((usr) => usr._id === item.author)[0]?.lastname.charAt(0)}.`
+                  }
+                </TableCell>
+                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.file !== "" ? "Oui" : "Non"}</TableCell>
+                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.important === true ? "Oui ": "Non" }</TableCell>
+                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.closed === true ? "Fermé ": "Ouvert" }</TableCell>
                 <TableCell>
                   <ButtonGroup variant="contained">
-                    <Link to={`/${item.type}/${item._id}`}>
+                    <Link to={`/forum`}>
                       <Button variant='contained' color="warning">
                         <ArrowForwardRoundedIcon/>
                       </Button>
@@ -129,7 +119,7 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
         >
           <div style={{padding: "50px"}}>
             <div>
-              Vous allez supprimer définitivement le contenu "{articles?.filter((us) => us._id === articleToDelete)[0]?.title}", confirmez vous ?
+              Vous allez supprimer définitivement le forum "{forums?.filter((us) => us._id === forumToDelete)[0]?.title}", confirmez vous ?
             </div>
             <div style={{margin: "20px 0 0 auto"}}>
               <ButtonGroup sx={{width: '100%'}}>
@@ -144,4 +134,4 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
   );
 }
 
-export default ListContents;
+export default ListForums;
