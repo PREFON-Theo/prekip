@@ -28,13 +28,17 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
     })
   }, [user])
 
+  useEffect(() => {
+    console.log(ready)
+  }, [ready])
+
   
-  if(!ready) {
+  if(ready === "waiting") {
     return 'Chargement...';
   }
 
 
-  if(!user) {
+  if(ready === "no") {
     return <Navigate replace to={"/"}/>
   }
 

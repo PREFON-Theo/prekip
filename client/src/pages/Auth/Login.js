@@ -12,7 +12,7 @@ const Login = ({setOpenLoginForm, handleOpenAlert, changeAlertValues}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
-    const {setUser} = useContext(UserContext)
+    const {setUser, setReady} = useContext(UserContext)
 
     
     const handleLoginSubmit = async () => {
@@ -28,6 +28,7 @@ const Login = ({setOpenLoginForm, handleOpenAlert, changeAlertValues}) => {
                 changeAlertValues('success', "Vous êtes connecté");
                 setOpenLoginForm(false);
                 setRedirect(true)
+                setReady("yes")
             }
         }
         catch (err) {

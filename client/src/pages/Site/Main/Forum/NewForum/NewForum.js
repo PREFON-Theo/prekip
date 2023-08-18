@@ -38,7 +38,7 @@ const NewForum = ({ handleOpenAlert, changeAlertValues }) => {
     setForum(prev => ({...prev, author: user?._id}))
   }, [user])
 
-  if(ready) {
+  if(ready === "yes") {
     if(!user){
       handleOpenAlert()
       changeAlertValues("error", "Vous n'êtes pas connecté")

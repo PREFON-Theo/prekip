@@ -77,7 +77,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
   }, [editorState]);
 
 
-  if(ready) {
+  if(ready === "yes") {
     //console.log(ready)
     //console.log(articleGet)
     if(!user){

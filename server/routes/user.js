@@ -127,8 +127,8 @@ router.get('/profil', (req, res) => {
   if(token) {
       jwt.verify(token, jwtSecret, {}, async (err, user) => {
           if (err) throw err;
-          const {_id, firstname, lastname, email, password, role, joiningDate, leavingDate, valid} = await User.findById(user.id); 
-          res.json({_id, firstname, lastname, email, password, role, joiningDate, leavingDate, valid})
+          const {_id, firstname, lastname, email, password, roles, joiningDate, leavingDate, valid} = await User.findById(user.id); 
+          res.json({_id, firstname, lastname, email, password, roles, joiningDate, leavingDate, valid})
       })
   }
   else {

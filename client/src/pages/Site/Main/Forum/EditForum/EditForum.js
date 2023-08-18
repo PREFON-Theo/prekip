@@ -44,7 +44,7 @@ const EditForum = ({ handleOpenAlert, changeAlertValues }) => {
   
 
 
-  if(ready) {
+  if(ready === "yes") {
     if(!user){
       handleOpenAlert()
       changeAlertValues("error", "Vous n'êtes pas connecté")
