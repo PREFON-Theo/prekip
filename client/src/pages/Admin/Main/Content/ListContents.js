@@ -105,7 +105,7 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
                   </TableCell>
                 <TableCell>{item.file !== "" ? "Oui" : "Non"}</TableCell>
                 <TableCell>{item.important === true ? "Oui ": "Non" }</TableCell>
-                <TableCell>{item.type === "Actuality" ? "Actualité" : item.type === "reference" ? "Contenu de référence" : "Article"}</TableCell>
+                <TableCell>{item.type === "actuality" ? "Actualité" : item.type === "reference" ? "Contenu de référence" : "Article"}</TableCell>
                 <TableCell>
                   <ButtonGroup variant="contained">
                     <Link to={`/${item.type}/${item._id}`}>

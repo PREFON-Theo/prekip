@@ -3,7 +3,6 @@ import styles from "./ActualityPage.module.scss"
 import { Link, Navigate, useParams } from 'react-router-dom'
 import axios from 'axios';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
-//import Link from '@mui/material/Link';
 import { Button } from '@mui/material';
 import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
@@ -22,11 +21,12 @@ const rubriquesRaw = await axios.get('/rubrique-type')
 const rubriquesList = rubriquesRaw.data
 const listOfUsers = usersList.data
 
+
 const parse = require('html-react-parser');
 
 const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
   const { id } = useParams();
-  const { user } = useContext(UserContext);
+  const { user, ready } = useContext(UserContext);
   const [redirectionGoto, setRedirectGoto] = useState(false)
   const [articleLiked, setArticleLiked] = useState(false)
   const [nbLike, setNbLike] = useState(0)
@@ -53,12 +53,17 @@ const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
   useEffect( () => {
     window.scrollTo(0, 0);
     fetchData();
-
-    getLikes();
-
-    
-     
+    getLikes();     
   }, [])
+
+  useEffect(() => {
+    setRedirectGoto(false)
+    if((ready === "yes" && (!user?.roles.includes("Administrateur") || !user?.roles.includes("Modérateur")) ) || ready === "no"){
+      setRedirectGoto(true)
+      handleOpenAlert()
+      changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
+    }
+  }, [user, ready])
 
   const fetchData = async () => {
     const articleData = await axios
@@ -272,7 +277,7 @@ const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
       <div className={styles.dialog_delete}>
         <Dialog
           open={dialogOpened}
-          onClose={setDialogOpened(false)}
+          onClose={() => {setDialogOpened(false)}}
         >
           <div style={{padding: "50px"}}>
             <div>

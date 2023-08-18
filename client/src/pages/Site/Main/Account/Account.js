@@ -110,7 +110,7 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
 
         <div className={styles.two}></div>
         <div className={styles.button}>
-            <Button variant="contained" color='warning' onClick={handleSumbitChanges}>Modfiier</Button>
+            <Button variant="contained" color='warning' onClick={handleSumbitChanges}>Modifiier</Button>
         </div>
       </div>
     </>

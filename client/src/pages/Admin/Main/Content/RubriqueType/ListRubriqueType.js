@@ -82,7 +82,7 @@ const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
                 <TableCell>{item.parent === "" ? "-" : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title === undefined ? <span style={{fontStyle: 'italic'}}>Non disponible</span> : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title}</TableCell>
                 <TableCell>
                   <ButtonGroup variant="contained">
-                    <Link to={`/rubrique/${item.title}`}>
+                    <Link to={`/rubrique/${item.link}`}>
                       <Button variant='contained' color="warning">
                         <ArrowForwardRoundedIcon/>
                       </Button>
