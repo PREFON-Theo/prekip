@@ -27,7 +27,7 @@ import EventNoteRoundedIcon from '@mui/icons-material/EventNoteRounded';
 import FormatListBulletedRoundedIcon from '@mui/icons-material/FormatListBulletedRounded';
 
 
-import { Routes, Route, Link, Navigate } from 'react-router-dom';
+import { Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import ListUsers from "./Main/User/ListUsers";
 import UserPage from "./Main/User/UserPage";
 import ListContents from "./Main/Content/ListContents";
@@ -91,7 +91,6 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
   const {user, ready} = useContext(UserContext)
   const [redirection, setRedirection] = useState(false);
 
-
   useEffect(() => {
     setRedirection(false)
     if((ready === "yes" && !user?.roles.includes("Administrateur")) || ready === "no"){
@@ -100,7 +99,6 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
       changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
     }
   }, [user, ready])
-
 
 
   const theme = useTheme();
@@ -160,7 +158,7 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
           <List>
             {/* Liste des utilisateurs */}
             <Link to="user/list" style={{textDecoration: "none"}}>
-              <ListItem key="contentList" disablePadding>
+              <ListItem key="contentList" disablePadding sx={{borderRight: useLocation().pathname === "/admin/user/list" ? "2px black solid" : ""}}>
                 <ListItemButton>
                   <ListItemIcon>
                     <GroupRoundedIcon/>
@@ -179,7 +177,7 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
           <List>
             {/* Liste des contenus */}
             <Link to="content/list" style={{textDecoration: "none"}}>
-              <ListItem key="contentList" disablePadding>
+              <ListItem key="contentList" disablePadding sx={{borderRight: useLocation().pathname === "/admin/content/list" ? "2px black solid" : ""}}>
                 <ListItemButton>
                   <ListItemIcon>
                     <NewspaperRoundedIcon/>
@@ -191,7 +189,7 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
             
             {/* Liste des types de rubriques des contenus */}
             <Link to="rubrique-type/list" style={{textDecoration: "none"}}>
-              <ListItem key="rubriqueTypeList" disablePadding>
+              <ListItem key="rubriqueTypeList" disablePadding sx={{borderRight: useLocation().pathname === "/admin/rubrique-type/list" ? "2px black solid" : ""}}>
                 <ListItemButton>
                   <ListItemIcon>
                     <FormatListBulletedRoundedIcon/>
@@ -203,7 +201,7 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
 
             {/* Liste des commentaires sur les contenus */}
             <Link to="comment/list" style={{textDecoration: "none"}}>
-              <ListItem key="commentList" disablePadding>
+              <ListItem key="commentList" disablePadding sx={{borderRight: useLocation().pathname === "/admin/comment/list" ? "2px black solid" : ""}}>
                 <ListItemButton>
                   <ListItemIcon>
                     <ChatBubbleOutlineRoundedIcon/>
@@ -223,7 +221,7 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
 
             {/* Liste des forums */}
             <Link to="forum/list" style={{textDecoration: "none"}}>
-              <ListItem key="forumList" disablePadding>
+              <ListItem key="forumList" disablePadding sx={{borderRight: useLocation().pathname === "/admin/forum/list" ? "2px black solid" : ""}}>
                 <ListItemButton>
                   <ListItemIcon>
                     <ForumRoundedIcon/>
@@ -235,7 +233,7 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
 
             {/* Liste des réponses aux forums */}
             <Link to="answer/list" style={{textDecoration: "none"}}>
-              <ListItem key="forumList" disablePadding>
+              <ListItem key="forumList" disablePadding sx={{borderRight: useLocation().pathname === "/admin/answer/list" ? "2px black solid" : ""}}>
                 <ListItemButton>
                   <ListItemIcon>
                     <ChatBubbleOutlineRoundedIcon/>
@@ -255,7 +253,7 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
           <List>
             {/* Liste des évènements */}
             <Link to="event/list" style={{textDecoration: "none"}}>
-              <ListItem key="eventList" disablePadding>
+              <ListItem key="eventList" disablePadding sx={{borderRight: useLocation().pathname === "/admin/event/list" ? "2px black solid" : ""}}>
                 <ListItemButton>
                   <ListItemIcon>
                     <EventNoteRoundedIcon/>

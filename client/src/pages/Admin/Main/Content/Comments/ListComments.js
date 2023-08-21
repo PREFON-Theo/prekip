@@ -15,6 +15,10 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import Pagination from '@mui/material/Pagination';
+
+const nbItemPerPage = 10;
+
 const ListComments = ({handleOpenAlert, changeAlertValues}) => {
   const [comments, setComments] = useState()
   const [users, setUsers] = useState()
@@ -23,9 +27,13 @@ const ListComments = ({handleOpenAlert, changeAlertValues}) => {
   const [dialogOpened, setDialogOpened] = useState(false)
   const [commentToDelete, setCommentToDelete] = useState("")
 
+  const [page, setPage] = useState(1)
+  const [maxPage, setMaxPage] = useState(0)
+
   const fetchComments = async () => {
     const commentsRaw = await axios.get('/comment')
     setComments(commentsRaw.data)
+    setMaxPage(Math.ceil(commentsRaw.data.length / 10))
   }
 
   const fetchUsers = async () => {
@@ -70,6 +78,10 @@ const ListComments = ({handleOpenAlert, changeAlertValues}) => {
   
   }
 
+  const handleChangePage = (event, value) => {
+    setPage(value)
+  }
+
   return (
     <div className={styles.container}>
       <h2>Liste des commentaires sur les contenus</h2>
@@ -84,7 +96,7 @@ const ListComments = ({handleOpenAlert, changeAlertValues}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {comments?.map((item, index) => (
+            {comments?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.text?.length > 25 ? `${item.text.substring(0,25)}...` : item.text?.length === 0 ? "-" : item.text}</TableCell>
                 <TableCell>
@@ -96,20 +108,21 @@ const ListComments = ({handleOpenAlert, changeAlertValues}) => {
                 <TableCell>{item.date === null ? "-" : new Date(item.date).toLocaleDateString('fr-FR')}</TableCell>
 
                 <TableCell>
-                  <ButtonGroup variant="contained">
-                  <Link to={`/${contents?.filter((cont) => cont._id === item.article_id)[0]?.type}/${item.article_id}`}>
+                  <Link to={`/${contents?.filter((cont) => cont._id === item.article_id)[0]?.type}/${item.article_id}`} style={{marginRight: '10px'}}>
                     <Button variant='contained' color="warning">
                       <ArrowForwardRoundedIcon/>
                     </Button>
                   </Link>
-                    <Button color='error' onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
-                  </ButtonGroup>
+                    <Button color='error' variant='contained' onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <div className={styles.pagination}>
+        <Pagination count={maxPage} color="primary" value={page} onChange={handleChangePage}/> 
+      </div>
 
       <div className={styles.dialog_delete}>
         <Dialog

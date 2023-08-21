@@ -15,6 +15,10 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import Pagination from '@mui/material/Pagination';
+
+const nbItemPerPage = 10;
+
 const ListContents = ({handleOpenAlert, changeAlertValues}) => {
   const [articles, setArticles] = useState()
   const [categories, setCategories] = useState()
@@ -23,9 +27,13 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
   const [dialogOpened, setDialogOpened] = useState(false)
   const [articleToDelete, setArticleToDelete] = useState("")
 
+  const [page, setPage] = useState(1)
+  const [maxPage, setMaxPage] = useState(0)
+
   const fetchArticles = async () => {
     const articlesRaw = await axios.get('/article')
     setArticles(articlesRaw.data)
+    setMaxPage(Math.ceil(articlesRaw.data.length / 10))
   }
 
   const fetchCategories = async () => {
@@ -54,6 +62,9 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
     setDialogOpened(false)
   }
 
+  const handleChangePage = (event, value) => {
+    setPage(value)
+  }
 
   const deleteContent = async () => {
     try {
@@ -91,7 +102,7 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {articles?.map((item, index) => (
+            {articles?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
                 <TableCell>{item.preview?.length > 25 ? `${item.preview.substring(0,25)}...` : item.preview?.length === 0 ? "-" : item.preview}</TableCell>
@@ -107,20 +118,21 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
                 <TableCell>{item.important === true ? "Oui ": "Non" }</TableCell>
                 <TableCell>{item.type === "actuality" ? "Actualité" : item.type === "reference" ? "Contenu de référence" : "Article"}</TableCell>
                 <TableCell>
-                  <ButtonGroup variant="contained">
-                    <Link to={`/${item.type}/${item._id}`}>
-                      <Button variant='contained' color="warning">
-                        <ArrowForwardRoundedIcon/>
-                      </Button>
-                    </Link>
-                    <Button color='error' onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
-                  </ButtonGroup>
+                  <Link to={`/${item.type}/${item._id}`} style={{marginRight: '10px'}}>
+                    <Button variant='contained' color="warning">
+                      <ArrowForwardRoundedIcon/>
+                    </Button>
+                  </Link>
+                  <Button color='error' variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <div className={styles.pagination}>
+        <Pagination count={maxPage} color="primary" value={page} onChange={handleChangePage}/> 
+      </div>
 
       <div className={styles.dialog_delete}>
         <Dialog

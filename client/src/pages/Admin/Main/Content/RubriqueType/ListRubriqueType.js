@@ -15,15 +15,23 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import Pagination from '@mui/material/Pagination';
+
+const nbItemPerPage = 10;
+
 const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
   const [rubriqueTypes, setRubriqueTypes] = useState()
 
   const [dialogOpened, setDialogOpened] = useState(false)
   const [rubriqueToDelete, setRubriqueToDelete] = useState("")
 
+  const [page, setPage] = useState(1)
+  const [maxPage, setMaxPage] = useState(0)
+
   const fetchRubriques = async () => {
     const rubriqueTypeRaw = await axios.get('/rubrique-type')
     setRubriqueTypes(rubriqueTypeRaw.data)
+    setMaxPage(Math.ceil(rubriqueTypeRaw.data.length / 10))
   }
 
   useEffect(() => {
@@ -56,6 +64,10 @@ const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
   
   }
 
+  const handleChangePage = (event, value) => {
+    setPage(value)
+  }
+
   return (
     <div className={styles.container}>
       <h2>Liste des rubriques</h2>
@@ -74,27 +86,28 @@ const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rubriqueTypes?.map((item, index) => (
+            {rubriqueTypes?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
                 <TableCell>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
                 <TableCell>{item.link}</TableCell>
                 <TableCell>{item.parent === "" ? "-" : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title === undefined ? <span style={{fontStyle: 'italic'}}>Non disponible</span> : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title}</TableCell>
                 <TableCell>
-                  <ButtonGroup variant="contained">
-                    <Link to={`/rubrique/${item.link}`}>
-                      <Button variant='contained' color="warning">
-                        <ArrowForwardRoundedIcon/>
-                      </Button>
-                    </Link>
-                    <Button color='error' onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
-                  </ButtonGroup>
+                  <Link to={`/rubrique/${item.link}`} style={{marginRight: '10px'}}>
+                    <Button variant='contained' color="warning">
+                      <ArrowForwardRoundedIcon/>
+                    </Button>
+                  </Link>
+                  <Button color='error' variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <div className={styles.pagination}>
+        <Pagination count={maxPage} color="primary" value={page} onChange={handleChangePage}/> 
+      </div>
 
       <div className={styles.dialog_delete}>
         <Dialog

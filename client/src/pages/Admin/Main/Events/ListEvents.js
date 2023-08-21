@@ -15,6 +15,10 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import Pagination from '@mui/material/Pagination';
+
+const nbItemPerPage = 10;
+
 const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
   const [events, setEvents] = useState()
   const [users, setUsers] = useState()
@@ -23,10 +27,13 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
   const [dialogOpened, setDialogOpened] = useState(false)
   const [eventToDelete, setEventToDelete] = useState("")
 
+  const [page, setPage] = useState(1)
+  const [maxPage, setMaxPage] = useState(0)
+
   const fetchEvents = async () => {
     const eventsRaw = await axios.get('/event')
     setEvents(eventsRaw.data)
-    console.log(eventsRaw.data)
+    setMaxPage(Math.ceil(eventsRaw.data.length / 10))
   }
 
   const fetchUsers = async () => {
@@ -72,6 +79,10 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
   
   }
 
+  const handleChangePage = (event, value) => {
+    setPage(value)
+  }
+
   return (
     <div className={styles.container}>
       <h2>Liste des évènements</h2>
@@ -89,7 +100,7 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {events?.map((item, index) => (
+            {events?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
                 <TableCell>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
@@ -104,20 +115,21 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
                   }
                 </TableCell>
                 <TableCell>
-                  <ButtonGroup variant="contained">
-                    <Link to={`/calendar`}>
-                      <Button variant='contained' color="warning">
-                        <ArrowForwardRoundedIcon/>
-                      </Button>
-                    </Link>
-                    <Button color='error' onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
-                  </ButtonGroup>
+                  <Link to={`/calendar`} style={{marginRight: '10px'}}>
+                    <Button variant='contained' color="warning">
+                      <ArrowForwardRoundedIcon/>
+                    </Button>
+                  </Link>
+                  <Button color='error' variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <div className={styles.pagination}>
+        <Pagination count={maxPage} color="primary" value={page} onChange={handleChangePage}/> 
+      </div>
 
       <div className={styles.dialog_delete}>
         <Dialog

@@ -17,15 +17,23 @@ import ModeEditRoundedIcon from '@mui/icons-material/ModeEditRounded';
 import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import Pagination from '@mui/material/Pagination';
+
+const nbItemPerPage = 10;
+
 const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
   const [users, setUsers] = useState()
 
   const [dialogOpened, setDialogOpened] = useState(false)
   const [userToDelete, setUserToDelete] = useState("")
 
+  const [page, setPage] = useState(1)
+  const [maxPage, setMaxPage] = useState(0)
+
   const fetchUsers = async () => {
     const usersRaw = await axios.get('/user')
     setUsers(usersRaw.data)
+    setMaxPage(Math.ceil(usersRaw.data.length / 10))
   }
 
   useEffect(() => {
@@ -57,13 +65,20 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
     }
   
   }
+  
+  const handleChangePage = (event, value) => {
+    setPage(value)
+  }
+
 
   return (
     <div className={styles.container}>
       <h2>Liste des utilisateurs</h2>
-      <Link to="/admin/user/new" style={{textDecoration: "none"}}>
-        <Button variant='contained' color='success' sx={{display: 'flex', margin: '10px 0 20px auto'}}>Ajouter un utilisateur</Button>
-      </Link>
+          <Link to="/admin/user/new" style={{textDecoration: "none", color: "white", display: "contents"}}>
+        <Button variant='contained' color='success' sx={{display: 'flex', margin: '10px 0 20px auto'}}>
+            Ajouter un utilisateur
+        </Button>
+          </Link>
       <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -78,7 +93,7 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users?.map((item, index) => (
+            {users?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.firstname} {item.lastname}</TableCell>
                 <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.email}</TableCell>
@@ -87,27 +102,21 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
                 <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.roles[0]} {item.roles[1]} {item.roles[2]}</TableCell>
                 <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.valid === true ? <VerifiedRoundedIcon color='success'/> : <DoDisturbOnRoundedIcon color='error'/>}</TableCell>
                 <TableCell>
-                  <ButtonGroup variant="contained">
-                    <Link to={`/admin/user/page/${item._id}`}>
-                      <Button>
-                          <ModeEditRoundedIcon/>
-                      </Button>
-                    </Link>
-                    {/* <Button color='action'>
-                      {!item.valid === true ? 
-                        <VerifiedRoundedIcon color='success'/>
-                      :
-                        <DoDisturbOnRoundedIcon color='error'/>
-                      }
-                    </Button> */}
-                    <Button color='error' onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
-                  </ButtonGroup>
+                  <Link to={`/admin/user/page/${item._id}`} style={{marginRight: '10px'}}>
+                    <Button variant="contained">
+                        <ModeEditRoundedIcon/>
+                    </Button>
+                  </Link>
+                  <Button color='error' variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <div className={styles.pagination}>
+        <Pagination count={maxPage} color="primary" value={page} onChange={handleChangePage}/> 
+      </div>
 
       <div className={styles.dialog_delete}>
         <Dialog

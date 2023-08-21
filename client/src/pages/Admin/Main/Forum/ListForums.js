@@ -15,6 +15,10 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import Pagination from '@mui/material/Pagination';
+
+const nbItemPerPage = 10;
+
 const ListForums = ({handleOpenAlert, changeAlertValues}) => {
   const [forums, setForums] = useState()
   const [users, setUsers] = useState()
@@ -22,9 +26,13 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
   const [dialogOpened, setDialogOpened] = useState(false)
   const [forumToDelete, setForumToDelete] = useState("")
 
+  const [page, setPage] = useState(1)
+  const [maxPage, setMaxPage] = useState(0)
+
   const fetchForums = async () => {
     const forumsRaw = await axios.get('/forum')
     setForums(forumsRaw.data)
+    setMaxPage(Math.ceil(forumsRaw.data.length / 10))
   }
 
   const fetchUsers = async () => {
@@ -63,6 +71,10 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
     }
   
   }
+  
+  const handleChangePage = (event, value) => {
+    setPage(value)
+  }
 
   return (
     <div className={styles.container}>
@@ -82,7 +94,7 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {forums?.map((item, index) => (
+            {forums?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
                 <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
@@ -97,20 +109,21 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
                 <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.important === true ? "Oui ": "Non" }</TableCell>
                 <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.closed === true ? "Fermé ": "Ouvert" }</TableCell>
                 <TableCell>
-                  <ButtonGroup variant="contained">
-                    <Link to={`/forum`}>
-                      <Button variant='contained' color="warning">
-                        <ArrowForwardRoundedIcon/>
-                      </Button>
-                    </Link>
-                    <Button color='error' onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
-                  </ButtonGroup>
+                  <Link to={`/forum`} style={{marginRight: '10px'}}>
+                    <Button variant='contained' color="warning">
+                      <ArrowForwardRoundedIcon/>
+                    </Button>
+                  </Link>
+                  <Button color='error' variant='contained' onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <div className={styles.pagination}>
+        <Pagination count={maxPage} color="primary" value={page} onChange={handleChangePage}/> 
+      </div>
 
       <div className={styles.dialog_delete}>
         <Dialog

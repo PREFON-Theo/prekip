@@ -15,6 +15,10 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import Pagination from '@mui/material/Pagination';
+
+const nbItemPerPage = 10;
+
 const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
   const [answers, setAnswers] = useState()
   const [users, setUsers] = useState()
@@ -23,9 +27,13 @@ const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
   const [dialogOpened, setDialogOpened] = useState(false)
   const [answerToDelete, setAnswerToDelete] = useState("")
 
+  const [page, setPage] = useState(1)
+  const [maxPage, setMaxPage] = useState(0)
+
   const fetchAnswers = async () => {
     const answersRaw = await axios.get('/answer')
     setAnswers(answersRaw.data)
+    setMaxPage(Math.ceil(answersRaw.data.length / 10))
   }
 
   const fetchUsers = async () => {
@@ -70,6 +78,10 @@ const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
   
   }
 
+  const handleChangePage = (event, value) => {
+    setPage(value)
+  }
+
   return (
     <div className={styles.container}>
       <h2>Liste des réponses aux forums</h2>
@@ -86,7 +98,7 @@ const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {answers?.map((item, index) => (
+            {answers?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.text?.length > 25 ? `${item.text.substring(0,25)}...` : item.text?.length === 0 ? "-" : item.text}</TableCell>
                 <TableCell>{item.vote}</TableCell>
@@ -106,20 +118,21 @@ const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
                   }
                 </TableCell>
                 <TableCell>
-                  <ButtonGroup variant="contained">
-                    <Link to={`/forum`}>
-                      <Button variant='contained' color="warning">
-                        <ArrowForwardRoundedIcon/>
-                      </Button>
-                    </Link>
-                    <Button color='error' onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
-                  </ButtonGroup>
+                  <Link to={`/forum`} style={{marginRight: '10px'}}>
+                    <Button variant='contained' color="warning">
+                      <ArrowForwardRoundedIcon/>
+                    </Button>
+                  </Link>
+                  <Button color='error' variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <div className={styles.pagination}>
+        <Pagination count={maxPage} color="primary" value={page} onChange={handleChangePage}/> 
+      </div>
 
       <div className={styles.dialog_delete}>
         <Dialog
