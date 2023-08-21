@@ -28,13 +28,17 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
     })
   }, [user])
 
+  useEffect(() => {
+    console.log(ready)
+  }, [ready])
+
   
-  if(!ready) {
+  if(ready === "waiting") {
     return 'Chargement...';
   }
 
 
-  if(!user) {
+  if(ready === "no") {
     return <Navigate replace to={"/"}/>
   }
 
@@ -106,7 +110,7 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
 
         <div className={styles.two}></div>
         <div className={styles.button}>
-            <Button variant="contained" color='warning' onClick={handleSumbitChanges}>Modfiier</Button>
+            <Button variant="contained" color='warning' onClick={handleSumbitChanges}>Modifiier</Button>
         </div>
       </div>
     </>

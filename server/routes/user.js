@@ -15,7 +15,39 @@ router.get('/', async (req, res) => {
   res.json(getUser);
 })
 
-//Update one event - OK
+
+//Get one - TODO
+router.get('/one/:id', async (req, res) => {
+  try {
+      const UserInfo = await User.findOne({_id: req.params.id})
+      res.status(200).json(UserInfo)
+  }
+  catch (e){
+      res.status(400).json(e)
+  }
+})
+
+router.get('/stats', async (req, res) => {
+  try {
+    const getRoleModo = await User.find({roles: 'Modérateur'})
+    const getRoleAdmin = await User.find({roles: 'Administrateur'})
+    const getUsersLength = await User.find();
+
+    res.json({
+      user: getUsersLength.length - (getRoleAdmin.length + getRoleModo.length),
+      modo: getRoleModo.length,
+      admin: getRoleAdmin.length,
+      total: getUsersLength.length
+    })
+  }
+  catch (err) {
+    res.status(400).json({
+      error: err
+  });
+  }
+})
+
+//Update one user - OK
 router.patch('/:id', (req, res) => {
   try {
       if(req.body.password){
@@ -23,7 +55,7 @@ router.patch('/:id', (req, res) => {
       }
       User.updateOne({_id: req.params.id}, req.body).then(() => {
           res.status(200).json({
-              message: "Updated"
+              message: `User ${req.params.id} updated`
           })
       })
   }
@@ -95,8 +127,8 @@ router.get('/profil', (req, res) => {
   if(token) {
       jwt.verify(token, jwtSecret, {}, async (err, user) => {
           if (err) throw err;
-          const {_id, firstname, lastname, email, password, role, joiningDate, leavingDate, valid} = await User.findById(user.id); 
-          res.json({_id, firstname, lastname, email, password, role, joiningDate, leavingDate, valid})
+          const {_id, firstname, lastname, email, password, roles, joiningDate, leavingDate, valid} = await User.findById(user.id); 
+          res.json({_id, firstname, lastname, email, password, roles, joiningDate, leavingDate, valid})
       })
   }
   else {
@@ -108,7 +140,7 @@ router.delete('/:id', (req, res) => {
   try {
       User.deleteOne({_id: req.params.id}).then(() => {
           res.status(200).json({
-              message: "Deleted"
+              message: `User ${req.params.id} deleted`
           })
       }).catch((error) => {
           res.status(400).json({

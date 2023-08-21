@@ -100,6 +100,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteForum = async (id) => {
     await axios.delete(`/forum/${forumInfo._id}`)
+    await axios.delete(`/answer/forum/${forumInfo._id}`)
     .then(() => {
       setRedirection(true)
       fetchLastForums()

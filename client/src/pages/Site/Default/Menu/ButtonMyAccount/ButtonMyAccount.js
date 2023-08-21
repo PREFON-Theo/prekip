@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PersonIcon from '@mui/icons-material/Person';
 import { useContext } from 'react';
 
@@ -12,7 +12,8 @@ import Tooltip from '@mui/material/Tooltip';
 import Logout from '@mui/icons-material/Logout';
 
 import { Link } from "react-router-dom"
-import styles from "./ButtonMyAccount.module.scss"
+
+import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
 
 import axios from 'axios';
 import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
@@ -22,7 +23,11 @@ const ButtonMyAccount = ({handleOpenAlert, changeAlertValues}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  const {setUser} = useContext(UserContext);
+  const {user, setUser, setReady} = useContext(UserContext);
+
+  useEffect(() => {
+    console.log(user)
+  }, [])
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -36,6 +41,7 @@ const ButtonMyAccount = ({handleOpenAlert, changeAlertValues}) => {
     setUser(null)
     handleOpenAlert();
     changeAlertValues('success', "Vous êtes déconnecté");
+    setReady("no")
 }
 
   return (
@@ -89,23 +95,38 @@ const ButtonMyAccount = ({handleOpenAlert, changeAlertValues}) => {
       >
         <div>
 
+          <MenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <Avatar fontSize="small" />
+            </ListItemIcon>
+            <Link to={'/compte'} style={{color: '#000', textDecoration: 'none'}}>
+              Mon compte
+            </Link>
+          </MenuItem>
+          <Divider />
+          {
+          user.roles.includes('Administrateur') ?
+          <>
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
-                <Avatar fontSize="small" />
+                <SecurityRoundedIcon fontSize="small" />
               </ListItemIcon>
-              <Link to={'/compte'} style={{color: '#000', textDecoration: 'none'}}>
-                Mon compte
+              <Link to={'/admin'} style={{color: '#000', textDecoration: 'none'}}>
+                Zone Administrateur
               </Link>
             </MenuItem>
             <Divider />
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon sx={{color: 'red'}}>
-                <Logout fontSize="small" />
-              </ListItemIcon>
-              <a onClick={handleLogoutSubmit} style={{color: 'red', textDecoration: 'none'}}>
-                Déconnexion
-              </a>
-            </MenuItem>
+          </>
+          : <></>
+          }
+          <MenuItem onClick={handleClose}>
+            <ListItemIcon sx={{color: 'red'}}>
+              <Logout fontSize="small" />
+            </ListItemIcon>
+            <a onClick={handleLogoutSubmit} style={{color: 'red', textDecoration: 'none'}}>
+              Déconnexion
+            </a>
+          </MenuItem>
         </div>
 
       </Menu>

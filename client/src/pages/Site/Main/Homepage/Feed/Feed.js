@@ -27,7 +27,7 @@ const Feed = () => {
           <div className={styles.item_feed} key={index}>
             <div className={styles.text}>{item.title}</div>
             <div className={styles.link}>
-              <Link to={`/article/${item._id}`}> Voir l'article</Link>
+              <Link to={`/actuality/${item._id}`}> Voir l'article</Link>
             </div>
           </div>
         ))}

@@ -4,7 +4,7 @@ const Answer = require('../models/Answer')
 
 //Get All - OK
 router.get('/', async (req, res) => {
-  const getAnswer = await Answer.find()
+  const getAnswer = await Answer.find().sort({created_at: -1})
   res.json(getAnswer);
 })
 
@@ -55,7 +55,7 @@ router.patch('/:id', (req, res) => {
   try {
       Answer.updateOne({_id: req.params.id}, req.body).then(() => {
           res.status(200).json({
-              message: "Updated"
+              message: `Answer ${req.params.id} updated`
           })
       })
   }
@@ -71,7 +71,7 @@ router.delete('/:id', (req, res) => {
   try {
       Answer.deleteOne({_id: req.params.id}).then(() => {
           res.status(200).json({
-              message: "Deleted"
+              message: `Answer ${req.params.id} deleted`
           })
       }).catch((error) => {
           res.status(400).json({
@@ -85,5 +85,25 @@ router.delete('/:id', (req, res) => {
       });
   }
 });
+
+//Delete one answer - OK
+router.delete('/forum/:forum_id', (req, res) => {
+    try {
+        Answer.deleteMany({forum_id: req.params.forum_id}).then(() => {
+            res.status(200).json({
+                message: `Answer for the forum ${req.params.forum_id} deleted`
+            })
+        }).catch((error) => {
+            res.status(400).json({
+                error: error
+            });
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+  });
 
 module.exports = router;

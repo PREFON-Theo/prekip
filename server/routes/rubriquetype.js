@@ -62,7 +62,7 @@ router.patch('/:id', (req, res) => {
   try {
       RubriqueType.updateOne({_id: req.params.id}, req.body).then(() => {
           res.status(200).json({
-              message: "Updated"
+              message: `Rubrique ${req.params.id} updated`
           })
       })
   }
@@ -78,7 +78,7 @@ router.delete('/:id', (req, res) => {
   try {
       RubriqueType.deleteOne({_id: req.params.id}).then(() => {
           res.status(200).json({
-              message: "Deleted"
+              message: `Rubrique ${req.params.id} deleted`
           })
       }).catch((error) => {
           res.status(400).json({

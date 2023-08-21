@@ -44,7 +44,7 @@ router.patch('/:id', (req, res) => {
   try {
       EventType.updateOne({_id: req.params.id}, req.body).then(() => {
           res.status(200).json({
-              message: "Updated"
+              message: `Event type ${req.params.id} updated`
           })
       })
   }
@@ -60,7 +60,7 @@ router.delete('/:id', (req, res) => {
   try {
       EventType.deleteOne({_id: req.params.id}).then(() => {
           res.status(200).json({
-              message: "Deleted"
+              message: `Event type ${req.params.id} deleted`
           })
       }).catch((error) => {
           res.status(400).json({

@@ -28,6 +28,22 @@ router.get('/:id', async (req, res) => {
   }
 })
 
+router.get('/stats/global', async (req, res) => {
+  try {
+    const openedTopic = await Forum.find({closed: false})
+    const closedTopic = await Forum.find({closed: true})
+
+    res.status(200).json({
+      opened: openedTopic.length,
+      closed: closedTopic.length,
+      total: openedTopic.length + closedTopic.length
+    })
+  }
+  catch (err) {
+    res.status(400).json(e)
+  }
+})
+
 
 //Add one forum - OK
 router.post('/', async (req, res) => {
@@ -58,7 +74,7 @@ router.patch('/:id', (req, res) => {
   try {
       Forum.updateOne({_id: req.params.id}, req.body).then(() => {
           res.status(200).json({
-              message: "Updated"
+              message: `Forum ${req.params.id} updated`
           })
       })
   }
@@ -82,7 +98,7 @@ router.delete('/:id', (req, res) => {
               message: "Deleted"
           })*/
           res.json({
-            message: "Deleted"
+            message: `Forum ${req.params.id} deleted`
           })
       }).catch((error) => {
           res.status(400).json({
