@@ -74,11 +74,11 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
   return (
     <div className={styles.container}>
       <h2>Liste des utilisateurs</h2>
-          <Link to="/admin/user/new" style={{textDecoration: "none", color: "white", display: "contents"}}>
+      <Link to="/admin/user/new" style={{textDecoration: "none", color: "white", display: "contents"}}>
         <Button variant='contained' color='success' sx={{display: 'flex', margin: '10px 0 20px auto'}}>
             Ajouter un utilisateur
         </Button>
-          </Link>
+      </Link>
       <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

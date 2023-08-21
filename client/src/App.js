@@ -1,28 +1,25 @@
 import React, { useState } from 'react'
 import axios from 'axios';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-import Main from './pages/Site/Main/Main';
-import Admin from './pages/Admin/Admin';
-import NotFound from './pages/Errors/404/NotFound';
-
-import Account from './pages/Site/Main/Account/Account';
 import { UserContextProvider } from './utils/Context/UserContext/UserContext';
-import Calendar from './pages/Site/Main/Calendar/Calendar';
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { createTheme, ThemeProvider } from '@mui/material';
 import { frFR as coreFrFR } from '@mui/material/locale';
 import { frFR } from '@mui/x-date-pickers/locales';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
+import Main from './pages/Site/Main/Main';
+import Admin from './pages/Admin/Admin';
+import NotFound from './pages/Errors/404/NotFound';
+import Account from './pages/Site/Main/Account/Account';
+import Calendar from './pages/Site/Main/Calendar/Calendar';
 import NewArticle from './pages/Site/Main/Article/NewArticle/NewArticle';
 import ArticlePage from './pages/Site/Main/Article/ArticlePage/ArticlePage';
 import Signin from './pages/Auth/Signin'
-
 import StatsPrefon from './pages/Site/Main/StatsPrefon/StatsPrefon';
-
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import Rubrique from './pages/Site/Main/Rubrique/Rubrique';
 import EditArticle from './pages/Site/Main/Article/EditArticle/EditArticle';
 import Forum from './pages/Site/Main/Forum/ForumPage/Forum';
@@ -121,6 +118,7 @@ const App = () => {
                 <Route path="/admin/answer/list" element={<ListAnswers handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                 <Route path="/admin/*" element={<NotFoundAdmin/>}/>
               </Route>
+
               <Route path='/register' element={<Signin handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
 
             </Routes>

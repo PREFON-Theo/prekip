@@ -71,8 +71,10 @@ const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
   return (
     <div className={styles.container}>
       <h2>Liste des rubriques</h2>
-      <Link to="/admin/rubrique-type/new" style={{textDecoration: "none"}}>
-        <Button variant='contained' color='success' sx={{display: 'flex', margin: '10px 0 20px auto'}}>Ajouter une rubrique</Button>
+      <Link to="/admin/rubrique-type/new" style={{textDecoration: "none", color: "white", display: "contents"}}>
+        <Button variant='contained' color='success' sx={{display: 'flex', margin: '10px 0 20px auto'}}>
+          Ajouter une rubrique
+        </Button>
       </Link>
       <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
