@@ -12,26 +12,31 @@ import FormAddEvent from './FormAddEvent/FormAddEvent'
 import FormEditEvent from "./FormEditEvent/FormEditEvent"
 
 import Dialog from '@mui/material/Dialog';
+import Button from '@mui/material/Button';
+
+import dayjs from 'dayjs';
+import "dayjs/locale/fr"
 
 import { UserContext } from "../../../../utils/Context/UserContext/UserContext"
 import FormNotConnected from './FormNotConnected/FormNotConnected'
+import { Paper } from '@mui/material'
 
-
-const eventTypes = await axios.get('/event-type')
-const listEvenTypes = []
-for(const i in eventTypes.data){
-  if(eventTypes.data[i].parent === ''){
-    listEvenTypes.push(eventTypes.data[i])
-    for(const j in eventTypes.data){
-      if(eventTypes.data[j].parent === eventTypes.data[i]._id){
-        listEvenTypes.push(eventTypes.data[j])
-      }
-    }
-  }
-}
 
 const usersList = await axios.get('/user')
 const listOfUsers = usersList.data
+
+
+const eventTypesList = [
+  {
+    title: "Télétravail",
+    internalName: "teletravail",
+  },
+  {
+    title: "Réunion d'entreprise",
+    internalName: "reunion_entreprise",
+  }
+]
+
 
 const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) => {
 
@@ -39,37 +44,48 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
   const { user } = useContext(UserContext)
 
   const [events, setEvents] = useState([])
-  const [openAddEvent, setOpenAddEvent] = useState(false)
+  const [eventsObj, setEventsObj] = useState()
+
   const [dayInformations, setDayInformations] = useState()
-  const [openEvent, setOpenEvent] = useState(false)
+
+  const [openDialog, setOpenDialog] = useState(false)
+  const [openAddEvent, setOpenAddEvent] = useState(false)
+  const [openEditEvent, setOpenEditEvent] = useState(false)
   const [openNotConnected, setOpenNotConnected] = useState(false)
   const [idEventToEdit, setIdEventToEdit] = useState("")
+
+  const [dateSelected, setDateSelected] = useState()
+
+  const [eventsOfTheDaySelected, setEventsOfTheDaySelected] = useState()
   
   const fetchData = async () => {
     setEvents([])
     const eventData = await axios.get('/event')
+    let obj = {};
     eventData.data.map((item) => (
+        obj = {...obj, 
+          [`${item.startDate.substring(0,10)}T00:00:00.000Z`]: {
+            count: `${isNaN(obj[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) ? 1 : parseInt(obj[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) + 1}`,
+            evId: `${item.startDate.substring(0,10)}T00:00:00.000Z`,
+            start: new Date(item.startDate.substring(0,10)),
+            description: `Évènements du jour ${`${item.startDate.substring(0,10)}T00:00:00.000Z`}`,
+          } 
+        }
+    ))
+    
+    Object.values(obj).map((item) => (
       setEvents((eve) => [...eve, {
-          eventId: item._id,
-          title: listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Absences" 
-          ? 
-            `Absence ${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''} de ${listOfUsers.filter((u) => u._id === item.owner)[0]?.firstname} ${listOfUsers.filter((u) => u._id === item.owner)[0]?.lastname}` 
-          : 
-            listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Equipe"
-          ?
-            `${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''} de ${listOfUsers.filter((u) => u._id === item.owner)[0]?.firstname} ${listOfUsers.filter((u) => u._id === item.owner)[0]?.lastname}` 
-          : 
-            listEvenTypes.filter((e) => e._id === listEvenTypes.filter((et) => et._id === item.type)[0]?.parent)[0]?.title === "Global"
-          ? 
-          `${listEvenTypes.filter((i) => i._id === item.type)[0]?.title || ''}` 
-          :
-            "Autre",
-          start: item.startDate,
-          end: item.finishDate,
-          description: item.description,
-          color: listEvenTypes.filter((i) => i._id === item.type)[0]?.color || "orange"
+        eventId: item.evId,
+        title: `${item.count} ${item.count > 1 ? "évènements": "évènement"} ce jour`,
+        start: item.start,
+        end: item.start,
+        description: item.description,
+        //color
       }])
     ))
+
+    setEventsObj(obj)
+
   };
 
 
@@ -77,10 +93,27 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
     fetchData();
   },[])
 
+  useEffect(() => {
+    console.log(events);
+  },[events])
 
-  const handleFormAddEvent = (day) => {
+  const showDialog = async (day, date) => {
+    setDateSelected(new Date(date).toLocaleDateString())
+    setOpenAddEvent(false)
+    setOpenEditEvent(false)
+    setDayInformations(day)
+    console.log(day)
+    setOpenDialog(true)
+    const eventsOfThisDay = await axios.get(`/event/day/${date}`)
+    setEventsOfTheDaySelected(eventsOfThisDay.data)
+    console.log(eventsOfThisDay.data)
+  }
+
+
+  const handleFormAddEvent = () => {
+    setOpenDialog(false)
+    setOpenEditEvent(false)
     if(user) {
-      setDayInformations(day)
       setOpenAddEvent(true)
     }
     else {
@@ -89,44 +122,88 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
   }
 
 
-  const handleEditFormEvent = (day) => {
-    setIdEventToEdit(day.event._def.extendedProps.eventId)
-    setOpenEvent(true)
+  const handleEditFormEvent = (id) => {
+    setOpenAddEvent(false)
+    setOpenDialog(false)
+    setOpenEditEvent(true)
+
+    setIdEventToEdit(id)
   }
 
 
   return (
     <>
       <div className={styles.container}>
-        <div className={styles.edit_event_form}>
+        <div className={styles.show_dialog}>
           <Dialog
-            open={openEvent}
-            onClose={() => setOpenEvent(false)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
+            open={openDialog}
+            onClose={() => setOpenDialog(false)}
           >
-            <FormEditEvent 
-              idEventToEdit={idEventToEdit}
-              eventTypes={listEvenTypes}
-              user={user}
-              userList={listOfUsers}
-              handleCloseForm={() => setOpenEvent(false)}
-              handleOpenAlert={handleOpenAlert}
-              changeAlertValues={changeAlertValues}
-              actualisateData={() => fetchData()}
-            />
+            <Paper sx={{
+              overflowX: "auto",
+              width: "auto",
+              height: "auto",
+              margin: "auto",
+              padding: "5vh 4vw",
+              backgroundColor: "rgba(210, 210, 210, 0.13)",
+            }}>
+              <div style={{textAlign: 'left'}}>
+                <h1>Évènements du {dayjs(dateSelected).locale('fr').format('dddd DD MMM YYYY')}</h1>
+              </div>
+              {
+              user ?
+                <div style={{display: "flex", flexDirection: "row-reverse"}}>
+                  <Button variant='contained' color='success' onClick={handleFormAddEvent}>
+                    Ajouter un évènement
+                  </Button>
+                </div>
+              :
+                <></>
+              }
+              <div style={{margin: "20px 0"}}>
+                {
+                  eventsOfTheDaySelected === undefined ?
+                    "Chargement..."
+                  :
+                  eventsOfTheDaySelected.length === 0 ?
+                    "Pas d'évènements pour ce jour"
+                  :
+                  <>
+                    <h3>Liste des évènements du jour: </h3>
+                    <div style={{maxHeight: "50vh", overflowY: "auto"}}>
+                      {eventsOfTheDaySelected?.map((item, index) => (
+                        <div
+                          key={index}
+                          onClick={() => handleEditFormEvent(item._id)} 
+                          style={{
+                            cursor: "pointer",
+                            padding: "10px"
+                          }}
+                        >
+                          {eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title === undefined ? <span style={{fontStyle: "italic"}}>type inconnu</span> : eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title} de {listOfUsers?.filter((et) => et._id === item.owner)[0]?.firstname === undefined ? 
+                              <span style={{fontStyle: "italic"}}>Utilisateur inconnu</span>
+                            : 
+                              `${listOfUsers?.filter((et) => et._id === item.owner)[0]?.firstname} ${listOfUsers?.filter((et) => et._id === item.owner)[0]?.lastname}`
+                          }
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                }
+              </div>
+              
+            </Paper>
           </Dialog>
         </div>
+
+
         <div className={styles.new_event_form}>
           <Dialog
             open={openAddEvent}
             onClose={() => setOpenAddEvent(false)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
           >
             <FormAddEvent
               dayInformations={dayInformations}
-              eventTypes={listEvenTypes}
               user={user}
               userList={listOfUsers}
               handleCloseForm={() => setOpenAddEvent(false)}
@@ -137,12 +214,26 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
             />  
           </Dialog>
         </div>
+        <div className={styles.edit_event_form}>
+          <Dialog
+            open={openEditEvent}
+            onClose={() => setOpenEditEvent(false)}
+          >
+            <FormEditEvent 
+              idEventToEdit={idEventToEdit}
+              user={user}
+              userList={listOfUsers}
+              handleCloseForm={() => setOpenEditEvent(false)}
+              handleOpenAlert={handleOpenAlert}
+              changeAlertValues={changeAlertValues}
+              actualisateData={() => fetchData()}
+            />
+          </Dialog>
+        </div>
         <div className={styles.form_not_connected}>
           <Dialog
             open={openNotConnected}
             onClose={() => setOpenNotConnected(false)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
           >
             <FormNotConnected
               handleCloseForm={() => setOpenNotConnected(false)}
@@ -175,11 +266,10 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
           titleFormat={
             { year: 'numeric', month: 'long', day: 'numeric' }
           }
-          dateClick={(e) => handleFormAddEvent(e)}
+          dateClick={(e) => showDialog(e,`${e.dateStr}T00:00:00.000Z`)}
+          eventClick={(e) => showDialog(e, e.event.extendedProps.eventId)}
           dayCellClassNames={"event_case"}
           locale= 'fr'
-
-          eventClick={(e) => handleEditFormEvent(e)}
         />
       </div>
     </>
