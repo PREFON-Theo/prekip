@@ -19,6 +19,21 @@ router.get('/:id', async (req, res) => {
   }
 })
 
+//Get all event of a day - OK
+router.get('/day/:date', async (req, res) => {
+    try {
+        const d = new Date(req.params.date)
+        const dplus = new Date(req.params.date).setDate(d.getDate()+1)
+        console.log(d)
+        console.log(dplus)
+        const EventsOfThisDay = await Event.find({$and : [ {startDate: {$gte: d}}, {startDate: {$lte: dplus}}]})
+        res.status(200).json(EventsOfThisDay)
+    }
+    catch (e){
+        res.status(400).json(e)
+    }
+  })
+
 //Add one event - OK
 router.post('/', async (req, res) => {
   try {

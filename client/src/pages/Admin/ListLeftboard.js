@@ -117,10 +117,10 @@ const ListLeftboard = () => {
             </List>
 
 
-            {/* Evènements */}
+            {/* Évènements */}
 
             <Divider />
-            <Typography sx={{margin: "20px 0 0 20px", fontWeight: "bold"}}>Evènements</Typography>
+            <Typography sx={{margin: "20px 0 0 20px", fontWeight: "bold"}}>Évènements</Typography>
             <List>
               {/* Liste des évènements */}
               <Link to="event/list" style={{textDecoration: "none"}}>

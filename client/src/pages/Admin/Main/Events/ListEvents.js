@@ -68,7 +68,7 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
     try {
       await axios.delete(`/event/${eventToDelete}`)
       handleOpenAlert()
-      changeAlertValues('success', 'Evènement supprimé')
+      changeAlertValues('success', 'Évènement supprimé')
       fetchEvents();
       deletionComplete();
     }
