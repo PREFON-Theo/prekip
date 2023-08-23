@@ -1,21 +1,23 @@
 .container {
     width: 100%;
-    color: #fff;
-    margin-bottom: 75px;
+    color: #000000;
+    // margin-bottom: 75px;
 
 
-    h2 {
+    h3 {
         color: #000;
+        font-size: 20px;
+        font-weight: 800;
     }
     a {
-        color: #fff;
+        color: #000;
         text-decoration: none;
         .wrapper {
-            background-color: #0B2F83;
+            // background-color: #0B2F83;
             padding: 20px;
             .title {
-                font-size: 80px;
-                margin-bottom: 50px;
+                font-size: 60px;
+                margin-bottom: 20px;
             }
             .preview {
                 font-weight: 100;
@@ -23,9 +25,10 @@
 
             }
             .more {
+                text-decoration: underline;
+                text-align: right;
                 display: flex;
-                flex-direction: row-reverse;
-
+                justify-content: right;
             }
         }
     }

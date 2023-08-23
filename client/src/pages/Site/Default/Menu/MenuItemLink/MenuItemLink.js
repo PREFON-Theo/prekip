@@ -1,8 +1,6 @@
 import React from 'react'
-import Menu from '@mui/material/Menu';
 import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const MenuItemLink = ({title, link}) => {
     
@@ -11,7 +9,7 @@ const MenuItemLink = ({title, link}) => {
         <>
             <Button
               id="basic-button"
-              sx={{color: 'black', textTransform: 'none'}}
+              sx={{fontWeight: "600", color: 'black', textTransform: 'none', margin: "auto 0", textTransform: "uppercase"}}
               >
                 <Link to={link}>
                   {title}

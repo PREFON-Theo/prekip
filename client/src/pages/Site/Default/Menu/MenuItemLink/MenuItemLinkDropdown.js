@@ -2,7 +2,8 @@ import React from 'react'
 import Menu from '@mui/material/Menu';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 
 const MenuItemLinkDropdown = ({title,list}) => {
     
@@ -17,16 +18,16 @@ const MenuItemLinkDropdown = ({title,list}) => {
     
     return (
         <>
-          <div>
             <Button
               id="basic-button"
               aria-controls={open ? 'basic-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
-              sx={{color: 'black', textTransform: 'none'}}
+              sx={{color: 'black', fontWeight: "600", margin: "auto 0", textTransform: "uppercase"}}
               >
               {title}
+              <KeyboardArrowDownRoundedIcon sx={{verticalAlign: 'bottom'}} fontSize="small"/>
             </Button>
             <Menu
               id="basic-menu"
@@ -47,7 +48,6 @@ const MenuItemLinkDropdown = ({title,list}) => {
                   ))}
                 </span>
               </Menu>
-          </div>
         </>
     );
 

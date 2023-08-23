@@ -1,20 +1,17 @@
-import React, { useContext, useEffect, useState  } from 'react'
+import React, { useContext, useState  } from 'react'
 import styles from "./Menu.module.scss"
 import {UserContext} from "../../../../utils/Context/UserContext/UserContext"
-import { Link, Navigate, createSearchParams, useNavigate, useSearchParams } from "react-router-dom"
-import ButtonMyAccount from './ButtonMyAccount/ButtonMyAccount';
+import { Link, createSearchParams, useNavigate } from "react-router-dom"
 import MenuItemLink from "./MenuItemLink/MenuItemLink"
 
-import logo from "../../../../utils/assets/Logo PREKIP.png"
+import logo2 from "../../../../utils/assets/Logo PREKIP v2.png"
 
-import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import MenuItemLinkDropdown from './MenuItemLink/MenuItemLinkDropdown';
 import SearchIcon from '@mui/icons-material/Search';
-import Box from '@mui/material/Box';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import axios from 'axios';
-import { TextField } from '@mui/material';
 
 const RubriquesRaw = await axios.get("/rubrique-type/parents")
 const RubriqueList = RubriquesRaw.data
@@ -43,10 +40,50 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
     }
   }
 
-
   return (
     <>
       <header>
+        <div className={styles.top_menu}>
+          <Link to={'/'}>
+            <img src={logo2} alt="Logo de PREKIP" />
+          </Link>
+          <div>
+            <Button variant='contained' color='success' sx={{height: 'auto', margin: "auto 0"}}>Se connecter</Button>
+          </div>
+        </div>
+
+        <nav 
+          className={styles.nav_menu}
+          //style={{boxShadow: useLocation().pathname === "/" ? "0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1)" : ""}}
+        >
+          <div className={styles.items_menu}>
+            <div className={styles.home}>
+             <Link to={'/'} style={{display: 'contents'}}>
+                <HomeRoundedIcon sx={{margin: "auto 0"}}/>
+              </Link>
+            </div>
+            <div className={styles.item_middlemenu}>
+              <MenuItemLinkDropdown title="Rubriques" list={RubriqueList}/>
+            </div>
+            <div className={styles.item_middlemenu}>
+              <MenuItemLink title="Calendrier" link="/calendar"/>
+            </div>
+            <div className={styles.item_middlemenu}>
+              <MenuItemLink title="Chiffres" link="/stats"/>
+            </div>
+            <div className={styles.item_middlemenu}>
+              <MenuItemLink title="Forum" link="/forum"/>
+            </div>
+            <div className={styles.search}>
+              <Link to={'/search'} style={{display: 'contents'}}>
+                <SearchIcon sx={{margin: "auto 0"}}/>
+              </Link>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      {/* <header>
 
         <nav className={styles.container}>
           <div className={styles.left}>
@@ -118,7 +155,7 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
           </div>
 
         </nav>
-      </header>
+      </header> */}
     </>
   );
 }

@@ -1,9 +1,8 @@
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styles from "./StatsPrefon.module.scss"
 import { Link } from "react-router-dom"
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import axios from 'axios';
 
 const statsInfo = [
   {
@@ -38,7 +37,7 @@ const StatsPrefon = () => {
 
         <div className={styles.stats}>
           {statsInfo.map((item, index) => (
-              <div className={styles.stat_item}>
+              <div key={index} className={styles.stat_item}>
                 <div className={styles.item_number}>{item.value.toLocaleString("fr-FR")  }{item.currency}</div>
                 <div className={styles.item_text}>{item.text}</div>
                 <div className={styles.more}>
