@@ -1,10 +1,9 @@
-import { React, useEffect, useState } from 'react'
+import { useState } from 'react'
 import styles from "./Main.module.scss"
 import Menu from '../Default/Menu/Menu';
 import Footer from '../Default/Footer/Footer';
 import Login from '../../Auth/Login';
 import Homepage from "../Main/Homepage/Homepage"
-import axios from 'axios';
 
 import { Routes, Route } from 'react-router-dom';
 
@@ -27,21 +26,6 @@ import Search from './Search/Search';
 
 
 const Main = ({ handleOpenAlert, changeAlertValues }) => {
-
-    const [usersList, setUsersList] = useState([])
-
-useEffect(() => {
-
-    const fetchUser =  async () => {
-        const { data } = await axios.get('/user')
-        setUsersList(data)
-    }
-    fetchUser();
-}, []);
-
-/*useEffect(() => {
-    console.log(usersList)
-}, [usersList])*/
 
 const [openLoginForm, setOpenLoginForm] = useState(false);
 const handleCloseLoginForm = () => {

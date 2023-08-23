@@ -44,7 +44,6 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
   const { user } = useContext(UserContext)
 
   const [events, setEvents] = useState([])
-  const [eventsObj, setEventsObj] = useState()
 
   const [dayInformations, setDayInformations] = useState()
 
@@ -83,8 +82,6 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
         //color
       }])
     ))
-
-    setEventsObj(obj)
 
   };
 

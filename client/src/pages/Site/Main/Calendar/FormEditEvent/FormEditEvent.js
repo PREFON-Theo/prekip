@@ -16,11 +16,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import axios from 'axios';
 
-import ListSubheader from '@mui/material/ListSubheader';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
-import OutlinedInput from '@mui/material/OutlinedInput';
-
 
 const eventTypesList = [
   {
@@ -61,7 +56,7 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
     setEventTypeSelected(eventData.data.type)
 
     if(user){
-      if(eventData.data.owner == user._id || user.roles.includes('Modérateur') || user.roles.includes('Administrateur')){
+      if(eventData.data.owner === user._id || user.roles.includes('Modérateur') || user.roles.includes('Administrateur')){
         setAuthorizedToEdit(true)
       }
       else {
