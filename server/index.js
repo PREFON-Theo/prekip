@@ -29,7 +29,6 @@ app.use('/uploads', express.static('uploads'))
 
 const UserRoutes = require('./routes/user');
 const EventRoutes = require('./routes/event');
-const EventTypeRoutes = require('./routes/eventtype');
 const ArticleRoutes = require('./routes/article');
 const StatRoutes = require('./routes/stat');
 const StatTypeRoutes = require('./routes/stattype');
@@ -42,7 +41,6 @@ const HomelinkRoutes = require('./routes/homelink');
 
 app.use('/user', UserRoutes);
 app.use('/event', EventRoutes);
-app.use('/event-type', EventTypeRoutes);
 app.use('/article', ArticleRoutes);
 
 app.post('/article/with-file', upload.any('image',), async (req, res) => {
