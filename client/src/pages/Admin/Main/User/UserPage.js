@@ -41,6 +41,7 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
   const [missingValue, setMissingValue] = useState(false)
   const [diffPassword, setDiffPassword] = useState(false)
   const [emailIncorrect, setEmailIncorrect] = useState(false)
+  const [emailAlreadyUsed, setEmailAlreadyUsed] = useState(false)
 
   const [redirection, setRedirection] = useState(false);
   const [redirectionErr, setRedirectionErr] = useState(false);
@@ -81,6 +82,7 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
     setMissingValue(false)
     setDiffPassword(false)
     setEmailIncorrect(false)
+    setEmailAlreadyUsed(false)
     if(
       userInfo.firstname === "" 
       || userInfo.lastname === "" 
@@ -138,13 +140,21 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
               handleOpenAlert()
               changeAlertValues('success', 'Utilisateur créé')
               setRedirection(true)
+              console.log("ok")
             }
             catch (err) {
-              console.log(err)
-              handleOpenAlert()
-              changeAlertValues('error', 'Erreur lors de la création')
+              if(err.response.data.error.code === 11000){
+                console.log("email already used")
+                setEmailAlreadyUsed(true)
+                handleOpenAlert()
+                changeAlertValues('error', 'Erreur, le mail est déjà utilisé')
+              }
+              else {
+                console.log(err)
+                handleOpenAlert()
+                changeAlertValues('error', 'Erreur lors de la création')
+              }
             }
-            console.log("ok")
           }
         }
       }
@@ -176,6 +186,11 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
             emailIncorrect ?
               <div style={{margin: "20px 0", color: "red"}}>
                 Veuillez renseigner un mail correct
+              </div>
+            :
+              emailAlreadyUsed ?
+              <div style={{margin: "20px 0", color: "red"}}>
+                Ce mail est déjà utilisé, veuillez renseigner un autre mail.
               </div>
             :
               <></>
