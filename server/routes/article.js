@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Article = require('../models/Article')
+const fs = require('fs')
 
 
 router.get('/', async (req, res) => {
@@ -198,22 +199,28 @@ router.patch('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   try {
     Article.findOne({_id: req.params.id}).then((r) => {
-      console.log(r)
-      /*fs.remove(`../uploadsFile/${r.file}`)
-        fs.remove(`../uploadsImage/${r.image}`)*/
+      if(Object.values(r.file).length > 0){
+        const path = "/api/" + r.file.path
+        if(fs.existsSync(path)){
+          fs.unlinkSync(path);
+        }
+      }
+      if(Object.values(r.image).length > 0){
+        const path = "/api/" + r.image.path
+        if(fs.existsSync(path)){
+          fs.unlinkSync(path);
+        }
+      }
     })
     Article.deleteOne({_id: req.params.id}).then(() => {
-        /*res.status(200).json({
-            message: "Deleted"
-        })*/
-        res.json({
+        res.status(200).json({
           message: `Article ${req.params.id} deleted`
         })
     }).catch((error) => {
         res.status(400).json({
             error: error
         });
-    });
+    })
   }
   catch (error) {
       res.status(400).json(error);
