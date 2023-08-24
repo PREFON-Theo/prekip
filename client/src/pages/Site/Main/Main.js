@@ -24,6 +24,8 @@ import ActualityPage from './Article/ActualityPage/ActualityPage';
 import ReferencePage from './Article/ReferencePage/ReferencePage';
 import Search from './Search/Search';
 
+import ContentPage from "./Article/ContentPage/ContentPage"
+
 
 const Main = ({ handleOpenAlert, changeAlertValues }) => {
 
@@ -47,9 +49,9 @@ const handleOpenLoginForm = () => {
                     <Route path="compte" element={<Account handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path="calendar" element={<Calendar handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues} handleOpenLoginForm={handleOpenLoginForm}/>}/>
                     <Route path='new-article' element={<NewArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-                    <Route path='article/:id' element={<ArticlePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-                    <Route path='actuality/:id' element={<ActualityPage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-                    <Route path='reference/:id' element={<ReferencePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='article/:id' element={<ContentPage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='actuality/:id' element={<ContentPage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                    <Route path='reference/:id' element={<ContentPage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='edit-article/:id' element={<EditArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='stats' element={<StatsPrefon/>}/>
                     <Route path='rubrique/:element' element={<Rubrique/>}/>

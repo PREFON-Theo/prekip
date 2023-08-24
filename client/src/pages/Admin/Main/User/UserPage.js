@@ -43,19 +43,25 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
   const [emailIncorrect, setEmailIncorrect] = useState(false)
 
   const [redirection, setRedirection] = useState(false);
+  const [redirectionErr, setRedirectionErr] = useState(false);
 
   const fetchUser = async () => {
-    const userData = await axios.get(`/user/one/${id}`);
-    console.log(userData.data.roles)
-    setUserInfo({
-      firstname: userData.data.firstname,
-      lastname: userData.data.lastname,
-      email: userData.data.email,
-      roles: userData.data.roles,
-      joiningDate: userData.data.joiningDate,
-      leavingDate: userData.data.leavingDate,
-      valid: userData.data.valid
-    })
+    try {
+      const userData = await axios.get(`/user/one/${id}`);
+      console.log(userData.data.roles)
+      setUserInfo({
+        firstname: userData.data.firstname,
+        lastname: userData.data.lastname,
+        email: userData.data.email,
+        roles: userData.data.roles,
+        joiningDate: userData.data.joiningDate,
+        leavingDate: userData.data.leavingDate,
+        valid: userData.data.valid
+      })
+    }
+    catch (err) { 
+      setRedirectionErr(true)
+    }
   }
 
   useEffect(() => {
@@ -143,15 +149,15 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
         }
       }
     }
-    // change role name to label
   }
 
   return (
     <>
       {redirection ? <Navigate to={'/admin/user/list'}/> : <></>}
+      {redirectionErr ? <Navigate to={'/admin/*'}/> : <></>}
       <div className={styles.container}>
         <div className={styles.box}>
-          <h2>Nouvel utilisateur : </h2>
+          <h2>Utilisateur {id} : </h2>
           {/* Prénom / Nom */}
           <div style={{marginBottom: '40px', display: "flex", justifyContent:"space-between"}}>
             <Paper elevation={2} sx={{width: '48%'}}>
