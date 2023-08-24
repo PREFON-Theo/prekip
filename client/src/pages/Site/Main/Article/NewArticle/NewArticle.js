@@ -60,16 +60,20 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
     setArticle(prev => ({...prev, author: user?._id}))
   }, [user])
 
-  if(ready === "yes") {
-    if(!user){
-      handleOpenAlert()
-      changeAlertValues("error", "Vous n'êtes pas connecté")
-      return <Navigate replace to="/"/>
-    }
+
+  if(ready === "no"){
+    handleOpenAlert()
+    changeAlertValues("error", "Vous n'êtes pas connecté")
+    return <Navigate replace to="/"/>
   }
 
   const handleAddArticle = async () => {
     try {
+      if(ready === "no"){
+        handleOpenAlert()
+        changeAlertValues("error", "Vous n'êtes pas connecté")
+        return <Navigate replace to="/"/>
+      }
       if(article.title === '' || article.preview === '' || article.category === '' || article.content === '<p></p>') {
         handleOpenAlert()
         changeAlertValues('warning', "Il manque des informations pour ajouter l'article")
@@ -111,13 +115,16 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
   const handleAddActuality = async () => {
     try {
-      console.log("1")
+      if(ready === "no"){
+        handleOpenAlert()
+        changeAlertValues("error", "Vous n'êtes pas connecté")
+        return <Navigate replace to="/"/>
+      }
       if(article.title === '' || article.content === '<p></p>') {
         handleOpenAlert()
         changeAlertValues('warning', "Il manque des informations pour ajouter l'article")
       }
       else {
-        console.log("2")
         const newActuality = await axios
           .post('/article', 
           {
@@ -129,7 +136,6 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
             type: contentType,
             important: article.important,
           })
-          console.log("3")
           setIdArticle(newActuality.data._id)
           handleOpenAlert()
           changeAlertValues('success', 'Actualité ajoutée')
@@ -147,6 +153,11 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
   const handleAddReference = async () => {
     try {
+      if(ready === "no"){
+        handleOpenAlert()
+        changeAlertValues("error", "Vous n'êtes pas connecté")
+        return <Navigate replace to="/"/>
+      }
       if(article.title === '' || article.category === '' || article.content === '<p></p>') {
         handleOpenAlert()
         changeAlertValues('warning', "Il manque des informations pour ajouter l'article")

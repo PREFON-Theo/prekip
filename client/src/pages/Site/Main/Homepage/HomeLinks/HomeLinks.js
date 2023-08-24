@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import style from "./HomeLinks.module.scss"
+import React, { useEffect, useState, useContext } from 'react'
+import styles from "./HomeLinks.module.scss"
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 
 const HomeLinks = () => {
+  const { user } = useContext(UserContext)
   const [links, setLinks] = useState()
 
   const fetchDataLink = async () => {
@@ -20,12 +22,17 @@ const HomeLinks = () => {
 
   return (
     <>
-    <div className={style.container}>
-      <div className={style.title}>
+    <div className={styles.container}>
+      <div className={styles.title}>
         <h2>Liens utiles</h2>
-        <Link to="edit-static-link">
-          <EditRoundedIcon color='primary'/>
-        </Link>
+        {
+        !!user && user.roles.includes("Administrateur") ?
+          <Link to="edit-static-link">
+            <DriveFileRenameOutlineIcon color='action'/>
+          </Link>
+        :
+          <></>
+        }
       </div>
       <ul>
         {links?.length === 0 ?

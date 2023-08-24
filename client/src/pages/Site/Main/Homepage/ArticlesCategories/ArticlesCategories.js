@@ -36,10 +36,10 @@ const ArticlesCategories = ({title, itemImg, itemArticle}) => {
 
           <div className={styles.wrapper}>
             <div className={styles.left}>
-              <Link to='/'>
+              {/* <Link to='/'> */}
                 <img src={itemImg?.img} alt={itemImg?.alt} />
-                <div>Qualifications EHF Euro 2022 France-Ukraine - Le Havre</div>
-              </Link>
+                <div></div>
+              {/* </Link> */}
             </div>
 
 

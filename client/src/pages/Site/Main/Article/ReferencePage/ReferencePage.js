@@ -28,7 +28,7 @@ const parse = require('html-react-parser');
 
 const ReferencePage = ({ handleOpenAlert, changeAlertValues }) => {
   const { id } = useParams();
-  const { user } = useContext(UserContext);
+  const { user, ready } = useContext(UserContext);
   const [redirectionGoto, setRedirectGoto] = useState(false)
   const [articleLiked, setArticleLiked] = useState(false)
   const [nbLike, setNbLike] = useState(0)
@@ -158,9 +158,14 @@ const ReferencePage = ({ handleOpenAlert, changeAlertValues }) => {
   
   const deleteArticle = async () => {
     try {
-      axios.delete(`/article/${id}`)
-      axios.delete(`/like/article/${id}`)
-      axios.delete(`/comment/article/${id}`)
+      if((ready === "yes" && !user?.roles.includes("Administrateur")) || ready === "no"){
+        setRedirectGoto(true)
+        handleOpenAlert()
+        changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
+      }
+      await axios.delete(`/article/${id}`)
+      await axios.delete(`/like/article/${id}`)
+      await axios.delete(`/comment/article/${id}`)
       setRedirectGoto(true)
       handleOpenAlert()
       changeAlertValues('success', 'Actualité supprimée')
@@ -187,7 +192,7 @@ const ReferencePage = ({ handleOpenAlert, changeAlertValues }) => {
         </Breadcrumbs>
         {
           user ?
-            article.author === user?._id ?
+            article.author === user?._id || user?.roles.includes("Administrateur") ?
             <div>
               <Link to={`/edit-article/${id}`} style={{marginRight: '10px'}}>
                 <Button variant='contained' color='warning'>Modifier l'article</Button>
@@ -255,9 +260,11 @@ const ReferencePage = ({ handleOpenAlert, changeAlertValues }) => {
 
           {comments?.map((item, index) => (
             
+            <div className={styles.item_com} key={index}>
+              {
               item.user_id === user?._id ?
-              <>
-                <div className={styles.item_com} key={index}>
+
+                <>
                   <div className={styles.second}></div>
                   <div className={styles.text}>
                     <div className={styles.t}>{item.text}</div>
@@ -265,20 +272,19 @@ const ReferencePage = ({ handleOpenAlert, changeAlertValues }) => {
                       Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
-                </div>
-              </>
+                </>
               :
                 <>
-                  <div className={styles.item_com} key={index}>
-                    <div className={styles.text}>
-                      <div className={styles.t}>{item.text}</div>
-                      <div className={styles.a}>
-                        Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
-                      </div>
+                  <div className={styles.text}>
+                    <div className={styles.t}>{item.text}</div>
+                    <div className={styles.a}>
+                      Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
                     </div>
-                    <div className={styles.second}></div>
                   </div>
+                  <div className={styles.second}></div>
                 </>
+              }
+            </div>
           ))}
         </div>
 

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styles from "./Account.module.scss"
 import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
-import { Navigate, Link, Routes, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { TextField } from '@mui/material';
 import { Button } from '@mui/material';

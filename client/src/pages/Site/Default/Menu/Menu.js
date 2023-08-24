@@ -1,26 +1,29 @@
-import React, { useContext, useEffect, useState  } from 'react'
+import React, { useContext, useState  } from 'react'
 import styles from "./Menu.module.scss"
 import {UserContext} from "../../../../utils/Context/UserContext/UserContext"
-import { Link, Navigate, createSearchParams, useNavigate, useSearchParams } from "react-router-dom"
-import ButtonMyAccount from './ButtonMyAccount/ButtonMyAccount';
+import { Link, createSearchParams, useNavigate } from "react-router-dom"
 import MenuItemLink from "./MenuItemLink/MenuItemLink"
 
-import logo from "../../../../utils/assets/Logo PREKIP.png"
+import logo2 from "../../../../utils/assets/Logo PREKIP v2.png"
 
-import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
+import ButtonMyAccount from "./ButtonMyAccount/ButtonMyAccount"
 import MenuItemLinkDropdown from './MenuItemLink/MenuItemLinkDropdown';
 import SearchIcon from '@mui/icons-material/Search';
-import Box from '@mui/material/Box';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import axios from 'axios';
-import { TextField } from '@mui/material';
+
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 
 const RubriquesRaw = await axios.get("/rubrique-type/parents")
 const RubriqueList = RubriquesRaw.data
 
 const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => {
-  const {user} = useContext(UserContext)
+  const {user, setUser, setReady} = useContext(UserContext)
   const [textToSearch, setTextToSearch] = useState('')
 
   const navigate = useNavigate()
@@ -43,10 +46,80 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
     }
   }
 
+  const handleLogoutSubmit = async () => {
+    axios.post('/user/logout');
+    setUser(null)
+    handleOpenAlert();
+    changeAlertValues('success', "Vous êtes déconnecté");
+    setReady("no")
+}
 
   return (
     <>
       <header>
+        <div className={styles.top_menu}>
+          <Link to={'/'}>
+            <img src={logo2} alt="Logo de PREKIP" />
+          </Link>
+          <div>
+            {!!user ? 
+              <div className={styles.after_connection}>
+                <div>
+                  <Link to={'/compte'} style={{color: '#000', textDecoration: 'none'}}>
+                    <Button variant='contained' color='primary' sx={{height: 'auto', margin: "auto 0"}}><AccountCircleRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Mon compte</Button>
+                  </Link>
+                </div>
+                {
+                user.roles.includes('Administrateur') ?
+                  <div>
+                    <Link to={'/admin'} style={{color: '#000', textDecoration: 'none'}}>
+                      <Button variant='contained' color='warning' sx={{height: 'auto', margin: "auto 0 auto 20px"}}><SecurityRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Zone Administrateur</Button>
+                    </Link>
+                  </div>
+                :
+                  <></>
+                }
+                <div>
+                  <Button variant='contained' onClick={handleLogoutSubmit} color='error' sx={{height: 'auto', margin: "auto 0 auto 20px"}}><LogoutRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Déconnexion</Button>
+                </div>
+              </div>
+            :
+              <Button variant='contained' onClick={() => handleOpenLoginForm(true)} color='success' sx={{height: 'auto', margin: "auto 0"}}><LoginRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Se connecter</Button>
+            }
+
+          </div>
+          
+        </div>
+
+        <nav className={styles.nav_menu}>
+          <div className={styles.items_menu}>
+            <div className={styles.home}>
+             <Link to={'/'} style={{display: 'contents'}}>
+                <HomeRoundedIcon sx={{margin: "auto 0"}}/>
+              </Link>
+            </div>
+            <div className={styles.item_middlemenu}>
+              <MenuItemLinkDropdown title="Rubriques" list={RubriqueList}/>
+            </div>
+            <div className={styles.item_middlemenu}>
+              <MenuItemLink title="Calendrier" link="/calendar"/>
+            </div>
+            <div className={styles.item_middlemenu}>
+              <MenuItemLink title="Chiffres" link="/stats"/>
+            </div>
+            <div className={styles.item_middlemenu}>
+              <MenuItemLink title="Forum" link="/forum"/>
+            </div>
+            <div className={styles.search}>
+              <Link to={'/search'} style={{display: 'contents'}}>
+                <SearchIcon sx={{margin: "auto 0"}}/>
+              </Link>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      {/* <header>
 
         <nav className={styles.container}>
           <div className={styles.left}>
@@ -118,7 +191,7 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
           </div>
 
         </nav>
-      </header>
+      </header> */}
     </>
   );
 }

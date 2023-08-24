@@ -53,7 +53,7 @@ const Rubrique = () => {
               :
                 <>
                   {article.filter((art) => art.category === item._id).map((itemC, indexC) => (
-                    <Link className={styles.article} key={indexC} to={`/article/${itemC._id}`}>
+                    <Link className={styles.article} key={indexC} to={`/${itemC.type}/${itemC._id}`}>
                       <div>{itemC.title}</div>
                     </Link>
                   ))}

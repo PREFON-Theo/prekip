@@ -1,10 +1,82 @@
 .container {
-    width: 100%;
-    //height: 100%;
-    padding: 0 30px;
+    width: 100vw;
+    height: 110px;
+    color: #fff;
+    background-color: #0B2F83;
+
+    .actualities_menu {
+        width: 1154px;
+        margin: 0 auto;
+        padding: 1% 0;
+        height: auto;
+        .actualities_items{
+            display: flex;
+            height: 100%;
+            text-align: center;
+
+            .box_actualities{
+                flex: 4;
+                border-right: 2px solid rgba(255, 255, 255, 0.467);
+                text-decoration: none;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                
+                .actualities {
+                    //margin: auto 0;
+                }
+
+                .info_actu {
+                    text-align: right;
+                    color: #ffffff60;
+                    font-size: small;
+                    text-decoration: none;
+                }
+            }
+
+            .box_more {
+                flex: 2;
+                display: flex;
+                justify-content: center;
+
+                .more{
+                    margin: auto 0;
+                }
+            }
+            .more{
+                margin: auto 0;
+            }
+
+            .box_actualities, .box_more {
+                height: auto;
+                width: 100%;
+                color: #fff;
+                // text-align: center;
+                padding: 1rem 2rem;
+                
+            }
+
+            .box_actualities:hover{
+                .actualities{
+                    text-decoration: underline;
+    
+                    .info_actu {
+                        text-decoration: none;
+                    }
+
+                }
+            } 
+            
+            .box_more:hover {
+                text-decoration: none;
+                
+            }
+            
+        }
+    }
 
 
-    .list_item_feed {
+    /*.list_item_feed {
 
         .item_feed:nth-child(odd) {
             background-color: rgb(224, 224, 224);
@@ -29,5 +101,5 @@
                 }
             }
         }
-    }
+    }*/
 }
