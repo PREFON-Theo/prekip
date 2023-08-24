@@ -130,61 +130,63 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
       {redirection ? <Navigate to={'/'}/> : <></>}
       {articlePosted ? <Navigate to={`/article/${id}`} /> : <></>}
       <div className={styles.container}>
-        <h2>Modifier l'article</h2>
-        <div>Article important ?  <Switch checked={article.important} onChange={(e) => setArticle(prev => ({...prev, important: e.target.checked}))}/></div>
-        <div className={styles.title}>
-          <TextField
-            required
-            label="Titre de l'article"
-            sx={{width: '100%'}}
-            value={article.title}
-            onChange={e => setArticle(prevValues => ({...prevValues, title: e.target.value}) )}
-          />
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Catégorie de l'article</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={article.category}
-              label="Catégorie de l'article"
-              onChange={e => setArticle(prevValues => ({...prevValues, category: e.target.value}) )}
-            >
-              {rubriqueList.map((item, index) => (
-                item.parent === "" 
-                ? 
-                  <MenuItem key={index} value={item._id} sx={{textAlign: 'left', fontWeight: 'bold'}}>{item.title}</MenuItem>
-                :
-                  <MenuItem key={index} value={item._id} sx={{textAlign: 'left', paddingLeft: "30px"}}>{item.title}</MenuItem>
+        <div className={styles.wrapper}>
+          <h2>Modifier l'article</h2>
+          <div>Article important ?  <Switch checked={article.important} onChange={(e) => setArticle(prev => ({...prev, important: e.target.checked}))}/></div>
+          <div className={styles.title}>
+            <TextField
+              required
+              label="Titre de l'article"
+              sx={{width: '100%'}}
+              value={article.title}
+              onChange={e => setArticle(prevValues => ({...prevValues, title: e.target.value}) )}
+            />
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Catégorie de l'article</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={article.category}
+                label="Catégorie de l'article"
+                onChange={e => setArticle(prevValues => ({...prevValues, category: e.target.value}) )}
+              >
+                {rubriqueList.map((item, index) => (
+                  item.parent === "" 
+                  ? 
+                    <MenuItem key={index} value={item._id} sx={{textAlign: 'left', fontWeight: 'bold'}}>{item.title}</MenuItem>
+                  :
+                    <MenuItem key={index} value={item._id} sx={{textAlign: 'left', paddingLeft: "30px"}}>{item.title}</MenuItem>
 
-              ))}
-            </Select>
-          </FormControl>
-        </div>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
 
-        <div className={styles.preview}>
-          <TextField
-            required
-            label="Introduction de l'article"
-            sx={{width: '100%'}}
-            value={article.preview}
-            onChange={e => setArticle(prevValues => ({...prevValues, preview: e.target.value}) )}
-          />
-        </div>
+          <div className={styles.preview}>
+            <TextField
+              required
+              label="Introduction de l'article"
+              sx={{width: '100%'}}
+              value={article.preview}
+              onChange={e => setArticle(prevValues => ({...prevValues, preview: e.target.value}) )}
+            />
+          </div>
 
-        <div className={styles.content}>
-          <Editor
-            toolbarClassName="toolbarClassName"
-            wrapperClassName="wrapperClassName"
-            editorClassName="editorClassName"
-            defaultEditorState={article.content}
-            editorState={editorState}
-            onEditorStateChange={setEditorState}
-            placeholder='Reseignez votre article ici'
-          />
-        </div>
+          <div className={styles.content}>
+            <Editor
+              toolbarClassName="toolbarClassName"
+              wrapperClassName="wrapperClassName"
+              editorClassName="editorClassName"
+              defaultEditorState={article.content}
+              editorState={editorState}
+              onEditorStateChange={setEditorState}
+              placeholder='Reseignez votre article ici'
+            />
+          </div>
           <div className={styles.button_submit}>
             <Button variant="contained" color='warning' onClick={handleAddArticle}>Modifier l'article</Button>
           </div>
+        </div>
       </div>
     </>
   )

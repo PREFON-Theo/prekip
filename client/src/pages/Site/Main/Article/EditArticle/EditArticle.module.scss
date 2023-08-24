@@ -1,35 +1,40 @@
 .container {
     margin: 0 auto;
-    background-color: rgb(241, 241, 241);
-    padding: 5vh 3vw;
-
-    .title {
-        display: flex;
-        >:last-child {
-            width: 45%;
-        }
-        >:first-child {
-            margin-right: 5%;
-            width: 50%;
-
-        }
+    padding: 5vh 0;
+    
+    .wrapper {
+      background-color: rgb(241, 241, 241);
+      padding: 5vh 3vw;
+      
+      .title {
+          display: flex;
+          >:last-child {
+              width: 45%;
+          }
+          >:first-child {
+              margin-right: 5%;
+              width: 50%;
+  
+          }
+      }
+  
+      .preview {
+  
+      }
+  
+      .editorClassName {
+        color: #fff;
+      }
+  
+      > div {
+          margin: 3vh 0;
+      }
+  
+      > div:first-child {
+          margin-top: 0;
+      }
     }
 
-    .preview {
-
-    }
-
-    .editorClassName {
-      color: #fff;
-    }
-
-    > div {
-        margin: 3vh 0;
-    }
-
-    > div:first-child {
-        margin-top: 0;
-    }
 
 }
 
