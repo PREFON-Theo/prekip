@@ -64,9 +64,11 @@ const NewRubrique = ({handleOpenAlert, changeAlertValues}) => {
         setRedirection(true)
       }
       catch (err) {
-        console.log(err)
-        if(err.status === 401){
+        if(err.response.data.error.code === 11000){
+          console.log("link already used")
           setLinkAlreadtExists(true)
+          handleOpenAlert()
+          changeAlertValues('error', 'Erreur, le lien est déjà utilisé')
         }
         else {
           handleOpenAlert()
@@ -108,7 +110,7 @@ const NewRubrique = ({handleOpenAlert, changeAlertValues}) => {
           {
             linkAlreadtExists ?
               <div style={{margin: "20px 0", color: "red"}}>
-                Veuillez renseigner un lien qui n'existe pas
+                Le lien est déjà utilisé, veuillez renseigner un lien qui n'existe pas
               </div>
             :
               <></>
