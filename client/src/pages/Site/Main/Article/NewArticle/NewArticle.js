@@ -319,38 +319,6 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                   />
                 </div>
 
-                {/*<Button
-                  variant="contained"
-                  component="label"
-                >
-                  Ajouter un fichier
-                  <input
-                    type="file"
-                    onChange={(e) => setArticle(prevValues => ({...prevValues, file: e.target.files[0]}))}
-                    hidden
-                    accept='.pdf'
-                  />
-
-                </Button>
-
-                <div>{article.file?.name}</div>
-
-                <Button
-                  variant="contained"
-                  component="label"
-                >
-                  Ajouter une image
-                  <input
-                    type="file"
-                    onChange={(e) => setArticle(prevValues => ({...prevValues, image: e.target.files[0]}))}
-                    hidden
-                    accept='.jpg, .jpeg, .png'
-                  />
-
-                </Button>
-
-                <div>{article.image?.name}</div>*/}
-
                 <div className={styles.content}>
                   <Editor
                     toolbarClassName="toolbarClassName"
