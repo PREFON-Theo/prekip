@@ -58,7 +58,7 @@ const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
 
   useEffect(() => {
     setRedirectGoto(false)
-    if((ready === "yes" && (!user?.roles.includes("Administrateur") || !user?.roles.includes("Modérateur")) ) || ready === "no"){
+    if(ready === "no"){
       setRedirectGoto(true)
       handleOpenAlert()
       changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
@@ -68,8 +68,7 @@ const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
   const fetchData = async () => {
     const articleData = await axios
       .get(`/article/${id}`)
-
-      console.log(articleData.data)
+      console.log(articleData.data.type)
       articleData.data.type === 'actuality' ? <></> : setRedirectionError(true)
       setArticle({
         id: articleData.data._id,
@@ -94,12 +93,10 @@ const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
     let list = await axios.get(`/like/article/${id}`)
     setListOfLikes(list.data)
     setNbLike(list.data.length)
-    console.log(list.data)
   }
 
   useEffect(() => {
     if(user){
-      console.log(user)
       for (let l = 0; l < listOfLikes?.length; l++) {
         if(listOfLikes[l].user_id === user._id){
           setArticleLiked(true);
@@ -118,7 +115,6 @@ const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
           setNbLike(nbLike-1)
           setArticleLiked(false)
           await axios.delete(`/like/user/${user._id}/${id}`)
-          console.log("deleted")
         }
         else {
           setNbLike(nbLike+1)
@@ -127,7 +123,6 @@ const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
             user_id: user._id,
             article_id: id
           })
-          console.log("created")
         }
       }
       else {
@@ -164,9 +159,14 @@ const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
 
   const deleteArticle = async () => {
     try {
-      axios.delete(`/article/${id}`)
-      axios.delete(`/like/article/${id}`)
-      axios.delete(`/comment/article/${id}`)
+      if((ready === "yes" && !user?.roles.includes("Administrateur")) || ready === "no"){
+        setRedirectGoto(true)
+        handleOpenAlert()
+        changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
+      }
+      await axios.delete(`/article/${id}`)
+      await axios.delete(`/like/article/${id}`)
+      await axios.delete(`/comment/article/${id}`)
       setRedirectGoto(true)
       handleOpenAlert()
       changeAlertValues('success', 'Actualité supprimée')
@@ -189,7 +189,7 @@ const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
         </Breadcrumbs>
         {
           user ?
-            article.author === user?._id ?
+            article.author === user?._id || user?.roles.includes("Administrateur") ?
             <div>
               <Link to={`/edit-article/${id}`} style={{marginRight: '10px'}}>
                 <Button variant='contained' color='warning'>Modifier l'actualité</Button>
@@ -246,9 +246,11 @@ const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
 
           {comments?.map((item, index) => (
             
+            <div className={styles.item_com} key={index}>
+              {
               item.user_id === user?._id ?
-              <>
-                <div className={styles.item_com} key={index}>
+
+                <>
                   <div className={styles.second}></div>
                   <div className={styles.text}>
                     <div className={styles.t}>{item.text}</div>
@@ -256,20 +258,19 @@ const ActualityPage = ({ handleOpenAlert, changeAlertValues }) => {
                       Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
-                </div>
-              </>
+                </>
               :
                 <>
-                  <div className={styles.item_com} key={index}>
-                    <div className={styles.text}>
-                      <div className={styles.t}>{item.text}</div>
-                      <div className={styles.a}>
-                        Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
-                      </div>
+                  <div className={styles.text}>
+                    <div className={styles.t}>{item.text}</div>
+                    <div className={styles.a}>
+                      Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
                     </div>
-                    <div className={styles.second}></div>
                   </div>
+                  <div className={styles.second}></div>
                 </>
+              }
+              </div>
           ))}
         </div>
 

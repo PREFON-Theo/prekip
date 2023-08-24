@@ -27,10 +27,21 @@ const Homepage = () => {
   return (
     <>
       <div className={styles.container}>
-
+        
         <Feed/>
         <div className={styles.wrapper_main_homepage}>
-          <RecentArticle/>
+          <div className={styles.firstline}>
+            <RecentArticle/>
+            <HomeLinks/>
+          </div>
+          <div className={styles.artcat}>
+            <div className={styles.left}>
+              {rubriqueData?.map((item, index) => (
+                <ArticlesCategories key={index} title={item.title} itemArticle={item.reference}/>
+              ))}
+            </div>
+            <div className={styles.right}></div>
+          </div>
         </div>
 
         {/* <div className={styles.firstline}>
@@ -46,14 +57,7 @@ const Homepage = () => {
 
           </div>
 
-
-          <div className={styles.right}>
-            <Feed/>
-            <HomeLinks/>
-
-          </div>
-
-        </div> */}
+         </div> */}
 
       </div>
     </>

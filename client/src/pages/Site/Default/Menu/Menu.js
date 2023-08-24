@@ -8,16 +8,22 @@ import logo2 from "../../../../utils/assets/Logo PREKIP v2.png"
 
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
+import ButtonMyAccount from "./ButtonMyAccount/ButtonMyAccount"
 import MenuItemLinkDropdown from './MenuItemLink/MenuItemLinkDropdown';
 import SearchIcon from '@mui/icons-material/Search';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import axios from 'axios';
 
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
+
 const RubriquesRaw = await axios.get("/rubrique-type/parents")
 const RubriqueList = RubriquesRaw.data
 
 const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => {
-  const {user} = useContext(UserContext)
+  const {user, setUser, setReady} = useContext(UserContext)
   const [textToSearch, setTextToSearch] = useState('')
 
   const navigate = useNavigate()
@@ -40,6 +46,14 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
     }
   }
 
+  const handleLogoutSubmit = async () => {
+    axios.post('/user/logout');
+    setUser(null)
+    handleOpenAlert();
+    changeAlertValues('success', "Vous êtes déconnecté");
+    setReady("no")
+}
+
   return (
     <>
       <header>
@@ -48,14 +62,36 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
             <img src={logo2} alt="Logo de PREKIP" />
           </Link>
           <div>
-            <Button variant='contained' color='success' sx={{height: 'auto', margin: "auto 0"}}>Se connecter</Button>
+            {!!user ? 
+              <div className={styles.after_connection}>
+                <div>
+                  <Link to={'/compte'} style={{color: '#000', textDecoration: 'none'}}>
+                    <Button variant='contained' color='primary' sx={{height: 'auto', margin: "auto 0"}}><AccountCircleRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Mon compte</Button>
+                  </Link>
+                </div>
+                {
+                user.roles.includes('Administrateur') ?
+                  <div>
+                    <Link to={'/admin'} style={{color: '#000', textDecoration: 'none'}}>
+                      <Button variant='contained' color='warning' sx={{height: 'auto', margin: "auto 0 auto 20px"}}><SecurityRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Zone Administrateur</Button>
+                    </Link>
+                  </div>
+                :
+                  <></>
+                }
+                <div>
+                  <Button variant='contained' onClick={handleLogoutSubmit} color='error' sx={{height: 'auto', margin: "auto 0 auto 20px"}}><LogoutRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Déconnexion</Button>
+                </div>
+              </div>
+            :
+              <Button variant='contained' onClick={() => handleOpenLoginForm(true)} color='success' sx={{height: 'auto', margin: "auto 0"}}><LoginRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Se connecter</Button>
+            }
+
           </div>
+          
         </div>
 
-        <nav 
-          className={styles.nav_menu}
-          //style={{boxShadow: useLocation().pathname === "/" ? "0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1)" : ""}}
-        >
+        <nav className={styles.nav_menu}>
           <div className={styles.items_menu}>
             <div className={styles.home}>
              <Link to={'/'} style={{display: 'contents'}}>

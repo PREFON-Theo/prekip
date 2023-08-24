@@ -30,6 +30,8 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
   const { id } = useParams();
   let articleRaw = {}
 
+  const [redirection, setRedirection] = useState(false)
+
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
   const fetchArticle = async () => { 
@@ -51,12 +53,17 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
       )
     )
 
-    //articleGet = true;
-    //console.log(articleGet)
   }
   
   useEffect(() => {
-    fetchArticle();
+    if((ready === "yes" && !user?.roles.includes("Administrateur")) || ready === "no"){
+      setRedirection(true)
+      handleOpenAlert()
+      changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
+    }
+    else {
+      fetchArticle();
+    }
   }, [])
 
   
@@ -78,23 +85,12 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
 
   if(ready === "yes") {
-    //console.log(ready)
-    //console.log(articleGet)
     if(!user){
       handleOpenAlert()
       changeAlertValues("error", "Vous n'êtes pas connecté")
       return <Navigate replace to="/"/>
     }
-    /*if(articleGet){
-      console.log(articleRaw)
-      if (user?._id !== articleRaw.data?.author){
-        console.log(user?._id)
-        console.log("author: ", articleRaw.data?.author)
-        handleOpenAlert()
-        changeAlertValues("error", "Vous n'êtes pas authorisé à modifier cet article")
-        return <Navigate replace to="/"/>
-      }
-    }*/
+    
   }
 
 
@@ -131,6 +127,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
   return (
     <>
+      {redirection ? <Navigate to={'/'}/> : <></>}
       {articlePosted ? <Navigate to={`/article/${id}`} /> : <></>}
       <div className={styles.container}>
         <h2>Modifier l'article</h2>
