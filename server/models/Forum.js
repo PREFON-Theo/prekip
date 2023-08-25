@@ -6,8 +6,6 @@ const ForumSchema = Schema({
     title: String,
     description: String,
     author: String,
-    image: Object,
-    file: Object,
     closed: {
         type: Boolean,
         default: false

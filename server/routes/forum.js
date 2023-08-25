@@ -88,16 +88,9 @@ router.patch('/:id', (req, res) => {
 //Delete one forum - OK
 router.delete('/:id', (req, res) => {
   try {
-      Forum.findOne({_id: req.params.id}).then((r) => {
-        /*fs.remove(`../uploadsFile/${r.file}`)
-          fs.remove(`../uploadsImage/${r.image}`)*/
-      })
       Forum.deleteOne({_id: req.params.id}).then(() => {
-          /*res.status(200).json({
-              message: "Deleted"
-          })*/
-          res.json({
-            message: `Forum ${req.params.id} deleted`
+          res.status(200).json({
+              message: `Forum ${req.params.id} deleted`
           })
       }).catch((error) => {
           res.status(400).json({
