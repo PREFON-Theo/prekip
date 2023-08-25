@@ -36,7 +36,6 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
   const fetchArticle = async () => { 
     articleRaw = await axios.get(`/article/${id}`)
-    //console.log("author: ", articleRaw.data.author)
     setArticle({
       title: articleRaw.data?.title,
       category: articleRaw.data?.category,
@@ -56,15 +55,22 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
   }
   
   useEffect(() => {
-    if((ready === "yes" && !user?.roles.includes("Administrateur")) || ready === "no"){
+    if(ready === "no"){
       setRedirection(true)
       handleOpenAlert()
-      changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
+      changeAlertValues("error", "Vous n'êtes pas connecté")
     }
-    else {
-      fetchArticle();
+    else if (ready === "yes"){
+      if(!user?.roles.includes("Administrateur") && !user?.roles.includes("Modérateur")){
+        setRedirection(true)
+        handleOpenAlert()
+        changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
+      }
+      else {
+        fetchArticle();
+      }
     }
-  }, [])
+  }, [ready])
 
   
   const [articlePosted, setArticlePosted] = useState(false);
@@ -84,13 +90,10 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
   }, [editorState]);
 
 
-  if(ready === "yes") {
-    if(!user){
+  if(ready === "no" || (ready === "yes") && !user) {
       handleOpenAlert()
       changeAlertValues("error", "Vous n'êtes pas connecté")
       return <Navigate replace to="/"/>
-    }
-    
   }
 
 
@@ -110,7 +113,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
             category: article.category,
             content: article.content,
             updated_at: new Date(),
-            important: article.important,
+            important: user?.roles.includes('Administrateur') || user?.roles.includes('Modérateur') ? article.important : false,
             updated_by: user._id
           })
           handleOpenAlert()
@@ -133,7 +136,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
       <div className={styles.container}>
         <div className={styles.wrapper}>
           <h2>Modifier l'article</h2>
-          <div>Article important ?  <Switch checked={article.important} onChange={(e) => setArticle(prev => ({...prev, important: e.target.checked}))}/></div>
+          {user?.roles.includes('Administrateur') || user?.roles.includes('Modérateur') ? <div>Article important ? {article.important === true ? "Oui" : "Non" } <Switch checked={article.important} onChange={(e) => setArticle(prev => ({...prev, important: e.target.checked}))}/></div> : <></>}
           <div className={styles.title}>
             <TextField
               required

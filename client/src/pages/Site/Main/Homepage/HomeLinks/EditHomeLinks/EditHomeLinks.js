@@ -28,18 +28,12 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
     const LinkRaw = await axios
       .get('/homelink')
     setLinks(LinkRaw.data)
-    console.log(LinkRaw.data)
   }
 
   useEffect(() => {
     fetchDataLink();
   }, [])
 
-  useEffect(() =>{
-    if(links !== undefined){
-      console.log(links)
-    }
-  }, [links])
 
 
   const onSortEnd = (oldIndex, newIndex) => {
@@ -59,7 +53,7 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
     links.map((item) => (
       axios.patch(`/homelink/${item._id}`, { 
         place: item.place
-      }).then((res) => console.log(res)).then(() => {
+      }).then(() => {
         handleOpenAlert()
         changeAlertValues('success', "Modification de l'ordre réussi")
       })
@@ -73,9 +67,6 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
     }
     else if (type === 'new'){
       setupLinkAddition()
-    }
-    else {
-      console.log("error")
     }
   }
 

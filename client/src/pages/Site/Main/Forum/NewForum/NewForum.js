@@ -57,7 +57,6 @@ const NewForum = ({ handleOpenAlert, changeAlertValues }) => {
         axios
           .post('/forum', forum)
           .then((res) => setIdForum(res.data._id))
-          .then(() => console.log("5"))
           .then(() => handleOpenAlert())
           .then(() => changeAlertValues('success', 'Article ajouté'))
           .then(() => {setForumPosted(true)})

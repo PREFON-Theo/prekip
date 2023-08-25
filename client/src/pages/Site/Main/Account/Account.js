@@ -28,10 +28,6 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
     })
   }, [user])
 
-  useEffect(() => {
-    console.log(ready)
-  }, [ready])
-
   
   if(ready === "waiting") {
     return 'Chargement...';
@@ -66,7 +62,6 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
         }
       }
       else {
-        console.log(userInfor)
         if(user._id){
           axios.patch(`/user/${user?._id}`, userInfor)
           handleOpenAlert()

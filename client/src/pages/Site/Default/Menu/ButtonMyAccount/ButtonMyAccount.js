@@ -25,9 +25,6 @@ const ButtonMyAccount = ({handleOpenAlert, changeAlertValues}) => {
 
   const {user, setUser, setReady} = useContext(UserContext);
 
-  useEffect(() => {
-    console.log(user)
-  }, [])
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

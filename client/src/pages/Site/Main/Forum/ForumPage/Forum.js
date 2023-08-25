@@ -29,7 +29,6 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
       .then((res) => {
         setLengthOfForums(res.data.length)
       })
-      console.log("fetched")
   }
 
   const fetchLastForums = async () => {
@@ -114,11 +113,9 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
   const changeLengthToLoad = async (more) => {
     if(more) {
       setLengthToLoad(lenghtToLoad+5)
-      console.log("more", lenghtToLoad)
     }
     else {
       setLengthToLoad(lenghtToLoad-5)
-      console.log("less", lenghtToLoad)
     }
   }
 

@@ -13,13 +13,10 @@ export const UserContextProvider = ({children}) => {
         .then(({data}) => {
           if(data === null) {
             setReady("no")
-            console.log("not ready")
-            console.log(ready)
           }
           else {
             setUser(data);
             setReady("yes")
-            console.log("ready")
           }
         })
       }

@@ -44,7 +44,6 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
   const fetchEventTypes = async () => {
     const eventTypesRaw = await axios.get('/event-type')
     setEventTypes(eventTypesRaw.data)
-    console.log(eventTypesRaw.data)
   }
 
   useEffect(() => {

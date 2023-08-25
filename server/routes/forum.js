@@ -89,7 +89,6 @@ router.patch('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   try {
       Forum.findOne({_id: req.params.id}).then((r) => {
-        console.log(r)
         /*fs.remove(`../uploadsFile/${r.file}`)
           fs.remove(`../uploadsImage/${r.image}`)*/
       })

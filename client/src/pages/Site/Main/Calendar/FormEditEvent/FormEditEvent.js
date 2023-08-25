@@ -81,7 +81,6 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
             title: eventTypeSelected === "teletravail" ? "" : eventInfo.title,
             description: eventTypeSelected === "teletravail" ? "" : eventInfo.description
           })
-          console.log("Updated")
           handleOpenAlert()
           handleCloseForm()
           changeAlertValues('success', 'Évènement modifié')
@@ -101,7 +100,6 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
       if(authorizedToEdit){
         await axios
           .delete('/event/' + idEventToEdit)
-          console.log(`Event ${idEventToEdit} deleted`)
           handleOpenAlert()
           handleCloseForm()
           changeAlertValues('success', 'Évènement supprimé')

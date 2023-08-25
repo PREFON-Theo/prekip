@@ -88,7 +88,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
         formData.append('image', article.image)
         formData.append('image', article.file)
         formData.append('type', contentType)
-        formData.append('important', article.important)
+        formData.append('important', user?.roles.includes('Administrateur') ? article.important : false)
         formData.append('created_at', new Date())
         formData.append('updated_at', new Date())
 
@@ -134,13 +134,12 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
             created_at: new Date(),
             updated_at: new Date(),
             type: contentType,
-            important: article.important,
+            important: user?.roles.includes('Administrateur') ? article.important : false,
           })
           setIdArticle(newActuality.data._id)
           handleOpenAlert()
           changeAlertValues('success', 'Actualité ajoutée')
           setArticlePosted(true)
-          console.log("4")
 
       }
 
@@ -225,7 +224,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
           {
             contentType === "article" ?
             <>
-              <div>Article important ?  <Switch checked={article.important} onChange={(e) => setArticle(prev => ({...prev, important: e.target.checked}))}/></div>
+              {user?.roles.includes('Administrateur') ? <div>Article important ?  <Switch checked={article.important} onChange={(e) => setArticle(prev => ({...prev, important: e.target.checked}))}/></div> : <></>}
               <div className={styles.title}>
                 <TextField
                   required
@@ -370,7 +369,6 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                     type="file"
                     onChange={(e) => {
                       setArticle(prevValues => ({...prevValues, file: e.target.files[0]}))
-                      console.log(e.target.files)
                     }}
                     hidden
                     accept='.pdf'

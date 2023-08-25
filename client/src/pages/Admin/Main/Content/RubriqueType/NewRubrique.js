@@ -36,7 +36,6 @@ const NewRubrique = ({handleOpenAlert, changeAlertValues}) => {
   },[])
 
   const handleSubmitForm = async () => {
-    // check if all input are full
     setLinkAlreadtExists(false)
     setMissingValue(false)
     if(
@@ -44,7 +43,6 @@ const NewRubrique = ({handleOpenAlert, changeAlertValues}) => {
       || newRubrique.description === "" 
       || newRubrique.link === "" || (newRubrique.parent === "" && isParent === false)
     ){
-      //manque de valeur
       setMissingValue(true)
  
     }
@@ -65,7 +63,6 @@ const NewRubrique = ({handleOpenAlert, changeAlertValues}) => {
       }
       catch (err) {
         if(err.response.data.error.code === 11000){
-          console.log("link already used")
           setLinkAlreadtExists(true)
           handleOpenAlert()
           changeAlertValues('error', 'Erreur, le lien est déjà utilisé')
@@ -74,9 +71,7 @@ const NewRubrique = ({handleOpenAlert, changeAlertValues}) => {
           handleOpenAlert()
           changeAlertValues('error', 'Erreur lors de la création')
         }
-      }
-      console.log("ok")
-      
+      }      
       
     }
   }

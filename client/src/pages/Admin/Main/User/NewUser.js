@@ -93,17 +93,14 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
             handleOpenAlert()
             changeAlertValues('success', 'Utilisateur créé')
             setRedirection(true)
-            console.log("ok")
           }
           catch (err) {
             if(err.response.data.error.code === 11000){
-              console.log("email already used")
               setEmailAlreadyUsed(true)
               handleOpenAlert()
               changeAlertValues('error', 'Erreur, le mail est déjà utilisé')
             }
             else {
-              console.log(err)
               handleOpenAlert()
               changeAlertValues('error', 'Erreur lors de la création')
             }

@@ -68,7 +68,6 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
   }, [])
 
   const fetchData = async () => {
-    // console.log(pathnameOfThisPage.split('/')[1])
     try {
       const articleData = await axios
         .get(`/article/${id}`)
@@ -104,12 +103,10 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
     let list = await axios.get(`/like/article/${id}`)
     setListOfLikes(list.data)
     setNbLike(list.data.length)
-    console.log(list.data)
   }
 
   useEffect(() => {
     if(user){
-      console.log(user)
       for (let l = 0; l < listOfLikes?.length; l++) {
         if(listOfLikes[l].user_id === user._id){
           setContentLiked(true);
@@ -128,7 +125,6 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
           setNbLike(nbLike-1)
           setContentLiked(false)
           await axios.delete(`/like/user/${user._id}/${id}`)
-          console.log("deleted")
         }
         else {
           setNbLike(nbLike+1)
@@ -137,7 +133,6 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
             user_id: user._id,
             article_id: id
           })
-          console.log("created")
         }
       }
       else {
@@ -174,7 +169,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
 
   const deleteArticle = async () => {
     try {
-      if((ready === "yes" && !user?.roles.includes("Administrateur")) || ready === "no"){
+      if((ready === "yes" && !user?.roles.includes("Administrateur") || !user?.roles.includes("Modérateur")) ||  ready === "no"){
         setRedirectGoto(true)
         handleOpenAlert()
         changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
@@ -215,7 +210,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
         }
         {
           user ?
-            article.author === user?._id || user?.roles.includes("Administrateur") ?
+            article.author === user?._id || user?.roles.includes("Administrateur") || user?.roles.includes("Modérateur") ?
             <div>
               <Link to={`/edit-article/${id}`} style={{marginRight: '10px'}}>
                 <Button variant='contained' color='warning'>Modifier le contenu</Button>

@@ -10,28 +10,6 @@ const IndexAdmin = () => {
   const [forumsStats, setForumsStats] = useState();
 
   const fetchUsers = async () => {
-    /*const usersData = await axios.get('/user')
-    console.log(usersData.data)
-    setUsers(usersData.data)
-    let user = 0, modo = 0, admin = 0;
-    for (let usr = 0; usr < usersData.data.length; usr++) {
-      if(usersData.data[usr].roles.includes("Administateur")){
-        admin = admin +1;
-      }
-      else if(usersData.data[usr].roles.includes("Modérateur")){
-        modo = modo +1;
-      }
-      else {
-        user = user + 1;
-      }
-    }
-    setRolesInUsers(
-      {
-        user: user,
-        modo: modo,
-        admin: admin
-      }
-    )*/
 
     const usersStats = await axios.get('/user/stats')
     setUserStats({
@@ -43,21 +21,6 @@ const IndexAdmin = () => {
   }
 
   const fetchContentsGlobal = async () => {
-    /*const contentData = await axios.get('/article')
-    console.log(contentData.data)
-    setContents(contentData.data)
-    let article = 0, actuality = 0, reference = 0;
-    for (let ctnt = 0; ctnt < contentData.data.length; ctnt++) {
-      if(contentData.data[ctnt].type === "article"){
-        article = article +1;
-      }
-      else if(contentData.data[ctnt].type === "actuality"){
-        actuality = actuality +1;
-      }
-      else if(contentData.data[ctnt].type === "reference"){
-        reference = reference + 1;
-      }
-    }*/
     
     const contentsStats = await axios.get('/article/stats/global')
     setTypeOfContentGlobal(

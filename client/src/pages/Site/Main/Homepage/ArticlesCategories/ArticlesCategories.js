@@ -17,7 +17,6 @@ const ArticlesCategories = ({title, itemImg, itemArticle}) => {
   
   useEffect(() => {
     if(itemArticle !== undefined){
-      // console.log(title, " ", itemArticle)
       if(itemArticle?.length > 0){
         setFirstSemiLength(itemArticle.length % 2 > 0 ? (itemArticle.length/2) +0.5 : itemArticle.length/2)
         setFSecondSemiLength(itemArticle.length % 2 > 0 ? (itemArticle.length/2) -0.5 : itemArticle.length/2)
@@ -26,7 +25,6 @@ const ArticlesCategories = ({title, itemImg, itemArticle}) => {
   }, [itemArticle])
 
   useEffect(() => {
-    // console.log(title, ' ', firstSemiLength, ' ', secondSemiLength)
   }, [firstSemiLength, secondSemiLength])
 
   return (

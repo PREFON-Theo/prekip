@@ -96,7 +96,6 @@ router.post('/login', async (req, res) => {
     const userInfo = await User.findOne({email});
     if(userInfo) {
       const checkPwd = bcrypt.compareSync(password, userInfo.password)
-      console.log(checkPwd)
       if(checkPwd) {
         jwt.sign({id: userInfo._id}, jwtSecret, {}, (err, token) => {
           if(err) throw err;

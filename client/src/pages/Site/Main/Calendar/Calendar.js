@@ -90,20 +90,15 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
     fetchData();
   },[])
 
-  useEffect(() => {
-    console.log(events);
-  },[events])
 
   const showDialog = async (day, date) => {
     setDateSelected(new Date(date).toLocaleDateString())
     setOpenAddEvent(false)
     setOpenEditEvent(false)
     setDayInformations(day)
-    console.log(day)
     setOpenDialog(true)
     const eventsOfThisDay = await axios.get(`/event/day/${date}`)
     setEventsOfTheDaySelected(eventsOfThisDay.data)
-    console.log(eventsOfThisDay.data)
   }
 
 

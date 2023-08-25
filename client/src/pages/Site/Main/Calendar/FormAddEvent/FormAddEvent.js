@@ -49,7 +49,6 @@ const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, 
             startDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(9) : eventInfo.startDate,
             finishDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(18) : eventInfo.finishDate
           })
-          console.log("Added")
           handleOpenAlert()
           handleCloseForm()
           changeAlertValues('success', 'Évènement ajouté')
@@ -60,13 +59,6 @@ const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, 
       changeAlertValues('error', err)
     }
   }
-
-
-  useEffect(() => {
-    console.log(eventInfo)
-  }, [eventInfo])
-
-
 
   return (
     <>
