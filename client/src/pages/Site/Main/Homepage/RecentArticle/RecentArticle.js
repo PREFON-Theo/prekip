@@ -21,7 +21,7 @@ const RecentArticle = () => {
 
   return (
     <div className={styles.container}>
-        <h3>Article important !</h3>
+        <h2>Article important !</h2>
         
         {
         article === undefined ?

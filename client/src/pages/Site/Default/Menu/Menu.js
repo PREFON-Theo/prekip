@@ -8,7 +8,6 @@ import logo2 from "../../../../utils/assets/Logo PREKIP v2.png"
 
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-import ButtonMyAccount from "./ButtonMyAccount/ButtonMyAccount"
 import MenuItemLinkDropdown from './MenuItemLink/MenuItemLinkDropdown';
 import SearchIcon from '@mui/icons-material/Search';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
@@ -18,6 +17,7 @@ import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
+import { TextField, Box } from '@mui/material'
 
 const RubriquesRaw = await axios.get("/rubrique-type/parents")
 const RubriqueList = RubriquesRaw.data
@@ -116,87 +116,23 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
               <MenuItemLink title="Forum" link="/forum"/>
             </div>
             <div className={styles.search}>
-              <Link to={'/search'} style={{display: 'contents'}}>
-                <SearchIcon sx={{margin: "auto 0"}}/>
-              </Link>
+              <Box sx={{ display: 'flex', alignItems: 'flex-end', margin: 'auto 15px', height: "fit-content" }}>
+
+                <TextField
+                  placeholder="Recherche..."
+                  variant="standard"
+                  value={textToSearch}
+                  onChange={(e) => setTextToSearch(e.target.value)}
+                  onKeyUp={handleKeyUp}
+                />
+
+                <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5, cursor: 'pointer' }} onClick={searching} />
+
+              </Box>
             </div>
           </div>
         </nav>
       </header>
-
-      {/* <header>
-
-        <nav className={styles.container}>
-          <div className={styles.left}>
-            <Link to={'/'}>
-              <img src={logo} alt="Logo of the website"/>
-            </Link>
-          </div>
-
-
-          <div className={styles.middle}>
-            <div className={styles.item_middlemenu}>
-              <MenuItemLinkDropdown title="Rubrique" list={RubriqueList}/>
-            </div>
-            <div className={styles.item_middlemenu}>
-              <MenuItemLink title="Calendrier" link="/calendar"/>
-            </div>
-            <div className={styles.item_middlemenu}>
-              <MenuItemLink title="Chiffres" link="/stats"/>
-            </div>
-            <div className={styles.item_middlemenu}>
-              <MenuItemLink title="Forum" link="/forum"/>
-            </div>
-          </div>
-
-          <div className={styles.right}>
-           {!!user && (
-              <Link to='/new-article'>
-                <Button 
-                  variant="contained" 
-                  color="success" 
-                  className={styles.link_login}
-                  >
-
-                  <AddIcon/>Contenu
-                </Button>
-              </Link>
-            )}
-            <Box sx={{ display: 'flex', alignItems: 'flex-end', margin: '0 15px' }}>
-
-              <TextField
-                placeholder="Recherche..."
-                variant="standard"
-                value={textToSearch}
-                onChange={(e) => setTextToSearch(e.target.value)}
-                onKeyUp={handleKeyUp}
-              />
-
-              <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5, cursor: 'pointer' }} onClick={searching} />
-
-            </Box>
-            {!!user && (
-              <>
-                <div className={styles.account}>
-                  <span>Bonjour, {user.firstname} {user.lastname}</span> 
-                </div>
-              </>
-            )}
-            {!!user ? 
-            <ButtonMyAccount handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>
-            :
-              //<MenuItem>
-
-                <Button onClick={() => handleOpenLoginForm(true)} variant="contained" color="success" className={styles.link_login}>
-                  Connexion
-                </Button>
-
-              //</MenuItem>
-            }
-          </div>
-
-        </nav>
-      </header> */}
     </>
   );
 }
