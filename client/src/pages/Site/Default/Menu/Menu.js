@@ -66,14 +66,19 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
               <div className={styles.after_connection}>
                 <div>
                   <Link to={'/compte'} style={{color: '#000', textDecoration: 'none'}}>
-                    <Button variant='contained' color='primary' sx={{height: 'auto', margin: "auto 0"}}><AccountCircleRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Mon compte</Button>
+                    <Button variant='contained' color='primary' sx={{height: 'auto', margin: "auto 0"}}><AccountCircleRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Compte</Button>
+                  </Link>
+                </div>
+                <div>
+                  <Link to={'/new-article'} style={{color: '#000', textDecoration: 'none', margin: "auto 0 auto 20px"}}>
+                    <Button variant='contained' color='success' sx={{height: 'auto', margin: "auto 0"}}><AddIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Contenu</Button>
                   </Link>
                 </div>
                 {
                 user.roles.includes('Administrateur') ?
                   <div>
-                    <Link to={'/admin'} style={{color: '#000', textDecoration: 'none'}}>
-                      <Button variant='contained' color='warning' sx={{height: 'auto', margin: "auto 0 auto 20px"}}><SecurityRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Zone Administrateur</Button>
+                    <Link to={'/admin'} style={{color: '#000', textDecoration: 'none', margin: "auto 0 auto 20px"}}>
+                      <Button variant='contained' color='warning' sx={{height: 'auto'}}><SecurityRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Zone Admin</Button>
                     </Link>
                   </div>
                 :

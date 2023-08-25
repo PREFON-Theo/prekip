@@ -22,6 +22,7 @@ import EditHomeLinks from './Homepage/HomeLinks/EditHomeLinks/EditHomeLinks';
 import Search from './Search/Search';
 
 import ContentPage from "./Article/ContentPage/ContentPage"
+import Actualities from './Actualities/Actualities';
 
 
 const Main = ({ handleOpenAlert, changeAlertValues }) => {
@@ -52,6 +53,7 @@ const handleOpenLoginForm = () => {
                     <Route path='edit-article/:id' element={<EditArticle handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='stats' element={<StatsPrefon/>}/>
                     <Route path='rubrique/:element' element={<Rubrique/>}/>
+                    <Route path='actuality-list' element={<Actualities/>}/>
                     <Route path='forum' element={<Forum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='new-forum' element={<NewForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                     <Route path='edit-forum/:id' element={<EditForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
