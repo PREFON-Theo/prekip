@@ -54,7 +54,8 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
       category: "",
       author: "",
       created_at: "",
-      updated_at: ""
+      updated_at: "",
+      updated_by: ""
     },
   )
 
@@ -80,12 +81,14 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
           content: articleData.data.content,
           category: articleData.data.category,
           author: articleData.data.author,
+          updated_by: articleData.data.updated_by,
           image: articleData.data.image,
           file: articleData.data.file,
           important: articleData.data.important,
           authorName: `${listOfUsers.filter((usr) => usr._id === articleData.data.author)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === articleData.data.author)[0]?.lastname}`,
           created_at: new Date(articleData.data.created_at).toLocaleDateString('fr-FR'),
-          updated_at: new Date(articleData.data.updated_at).toLocaleDateString('fr-FR')
+          updated_at: new Date(articleData.data.updated_at).toLocaleDateString('fr-FR'),
+          updatorName: `${listOfUsers.filter((usr) => usr._id === articleData.data.updated_by)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === articleData.data.updated_by)[0]?.lastname}`,
         });
         const commentData = await axios.get(`/comment/article/${id}`)
         setComments(commentData.data);
@@ -234,7 +237,13 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
 
         <div className={styles.article_author_informations}>
           <div className={styles.author}>
-            Par {article.authorName}, le {article.created_at} {article.created_at !== article.updated_at ? ` et modifié le ${article.updated_at}`: <></>}
+            Par {article.authorName}, le {article.created_at} {
+              article.created_at !== article.updated_at ? 
+                article.author !== article.updated_by ? 
+                  ` et modifié le ${article.updated_at} par ${article.updatorName}`
+                : ` et modifié le ${article.updated_at}`
+                : <></>
+            }
           </div>
           <div className={styles.likes}>
           

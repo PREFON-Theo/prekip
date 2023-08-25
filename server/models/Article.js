@@ -16,6 +16,7 @@ const ArticleSchema = Schema({
     },
     category: String,
     author: String,
+    updated_by: String,
     image: Object,
     file: Object,
     important: {

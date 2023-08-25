@@ -111,6 +111,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
             content: article.content,
             updated_at: new Date(),
             important: article.important,
+            updated_by: user._id
           })
           handleOpenAlert()
           changeAlertValues('success', 'Article modifié')
