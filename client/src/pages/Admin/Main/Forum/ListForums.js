@@ -32,7 +32,7 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
   const fetchForums = async () => {
     const forumsRaw = await axios.get('/forum')
     setForums(forumsRaw.data)
-    setMaxPage(Math.ceil(forumsRaw.data.length / 10))
+    setMaxPage(Math.ceil(forumsRaw.data.length / nbItemPerPage))
   }
 
   const fetchUsers = async () => {

@@ -11,7 +11,6 @@ import Dialog from '@mui/material/Dialog';
 import Account from './Account/Account';
 import Calendar from './Calendar/Calendar';
 import NewArticle from './Article/NewArticle/NewArticle';
-import ArticlePage from './Article/ArticlePage/ArticlePage';
 import StatsPrefon from './StatsPrefon/StatsPrefon';
 import Rubrique from './Rubrique/Rubrique';
 import NotFound from '../../Errors/404/NotFound';
@@ -20,8 +19,6 @@ import Forum from './Forum/ForumPage/Forum';
 import NewForum from './Forum/NewForum/NewForum';
 import EditForum from './Forum/EditForum/EditForum';
 import EditHomeLinks from './Homepage/HomeLinks/EditHomeLinks/EditHomeLinks';
-import ActualityPage from './Article/ActualityPage/ActualityPage';
-import ReferencePage from './Article/ReferencePage/ReferencePage';
 import Search from './Search/Search';
 
 import ContentPage from "./Article/ContentPage/ContentPage"
