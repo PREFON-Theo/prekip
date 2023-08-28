@@ -169,7 +169,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
 
   const deleteArticle = async () => {
     try {
-      if((ready === "yes" && !user?.roles.includes("Administrateur") || !user?.roles.includes("Modérateur")) ||  ready === "no"){
+      if((ready === "yes" && (!user?.roles.includes("Administrateur") || !user?.roles.includes("Modérateur"))) ||  ready === "no"){
         setRedirectGoto(true)
         handleOpenAlert()
         changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
@@ -230,6 +230,8 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
 
         <div className={styles.content}>{article.important ? <><CheckBoxRoundedIcon color='success' sx={{verticalAlign: 'middle'}}/> Contenu important</> : ""}</div>
 
+        <div className={styles.article_preview}>{article.preview}</div>
+        
         <div className={styles.article_author_informations}>
           <div className={styles.author}>
             Par {article.authorName}, le {article.created_at} {
@@ -253,14 +255,27 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
           </div>
         </div>
 
-        {
-          article.file ?
-          <Button variant='contained' color='error' endIcon={<DownloadRoundedIcon />} >
-            {article.file?.originalname}
-          </Button>
-          :
-          <></>
-        }
+        <div className={styles.article_image}>
+          {
+            article.image ?
+              <img src={`${process.env.REACT_APP_URL}:4000/${article.image.path}`} alt="img" />
+            :
+              <></>
+          }
+        </div>
+
+        <div className={styles.article_file}>
+          {
+            article.file ?
+            <a href={`${process.env.REACT_APP_URL}:4000/${article.file.path}`} target='_blank' rel="noreferrer">
+              <Button variant='contained' color='error' endIcon={<DownloadRoundedIcon />}>
+                {article.file?.originalname}
+              </Button>
+            </a>
+            :
+            <></>
+          }
+        </div>
 
         <div className={styles.content}>{parse(article.content)}</div>
 

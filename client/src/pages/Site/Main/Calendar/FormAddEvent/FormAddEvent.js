@@ -211,7 +211,7 @@ const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, 
                   user?.roles.includes("Administrateur") ?                 
                     <MenuItem value={"reunion_entreprise"} sx={{textAlign: 'left'}}>Réunion d'entreprise</MenuItem>
                   : 
-                    <></>
+                    ""
                   }
                 </Select>
               </FormControl>

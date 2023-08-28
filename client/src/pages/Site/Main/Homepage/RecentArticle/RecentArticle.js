@@ -28,16 +28,39 @@ const RecentArticle = () => {
           <div>Il n'y a aucun article important à afficher</div> 
         :
           <Link to={`/article/${article?._id}`}>
+
             <div className={styles.wrapper}>
               <div className={styles.title}>{article?.title}</div>
-              <div className={styles.image}>{article?.image?.link}</div>
-              <div className={styles.preview}>{article?.preview}</div>
-              <div className={styles.more}>
-                  <div>
-                    En savoir plus 
+
+              {
+                article.image ?
+                <div style={{display: 'flex'}}>
+                  <div className={styles.left}>
+                        <img src={`${process.env.REACT_APP_URL}:4000/${article.image.path}`} alt="img" />
                   </div>
-                  <ChevronRightRoundedIcon sx={{verticalAlign: 'bottom'}} fontSize="small"/>
-              </div>
+                  <div className={styles.right}>
+                    <div className={styles.preview}>{article?.preview}</div>
+                    <div className={styles.more}>
+                        <div>
+                          En savoir plus 
+                        </div>
+                        <ChevronRightRoundedIcon sx={{verticalAlign: 'bottom'}} fontSize="small"/>
+                    </div>
+                  </div>
+
+                </div>
+              :
+                <>
+                  <div className={styles.preview} style={{paddingLeft: article.image ? "20px" : "0px"}}>{article?.preview}</div>
+                  <div className={styles.more}>
+                    <div>
+                      En savoir plus 
+                    </div>
+                    <ChevronRightRoundedIcon sx={{verticalAlign: 'bottom'}} fontSize="small"/>
+                  </div>
+                </>
+              }
+
             </div>
             
           </Link>

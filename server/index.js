@@ -3,9 +3,19 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require("cookie-parser")
 require('dotenv').config();
+const path = require('path')
 
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/')
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${path.parse(file.originalname.replace(/\s/g, '_')).name}_${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}_${new Date().getHours()}${new Date().getMinutes()}${new Date().getSeconds()}${path.extname(file.originalname)}`)
+    }
+})
+
+const upload = multer({storage: storage})
 
 const Article = require('./models/Article')
 
@@ -43,7 +53,7 @@ app.use('/user', UserRoutes);
 app.use('/event', EventRoutes);
 app.use('/article', ArticleRoutes);
 
-app.post('/article/with-file', upload.any('image',), async (req, res) => {
+app.post('/article/with-file', upload.any('image'), async (req, res) => {
     try {
         let image = '';
         let file = '';

@@ -2,13 +2,6 @@ import React, { useEffect, useState } from 'react'
 import styles from "./ArticlesCategories.module.scss"
 import { Link } from 'react-router-dom'
 
-const content = [
-  {
-    title:"lkj",
-    link:""
-  },
-]
-
 
 const ArticlesCategories = ({title, itemImg, itemArticle}) => {
 
@@ -34,10 +27,24 @@ const ArticlesCategories = ({title, itemImg, itemArticle}) => {
 
           <div className={styles.wrapper}>
             <div className={styles.left}>
-              {/* <Link to='/'> */}
-                <img src={itemImg?.img} alt={itemImg?.alt} />
-                <div></div>
-              {/* </Link> */}
+              {
+                title === "Informatique" ?
+                  <img src="https://cdn-icons-png.flaticon.com/512/1055/1055683.png" style={{width: "100%"}} alt="img informatique" />
+                :
+                title === "Marketing" ?
+                  <img src="https://cdn-icons-png.flaticon.com/512/1055/1055644.png" style={{width: "100%"}} alt="img marketing" />
+                :
+                title === "Ressources Humaines" ?
+                  <img src="https://cdn-icons-png.flaticon.com/512/1055/1055647.png" style={{width: "100%"}} alt="img ressources humaines" />
+                :
+                title === "Direction" ?
+                  <img src="https://cdn-icons-png.flaticon.com/512/1055/1055679.png" style={{width: "100%"}} alt="img direction" />
+                :
+                title === "Agence" ?
+                  <img src="https://cdn-icons-png.flaticon.com/512/1055/1055675.png" style={{width: "100%"}} alt="img agence" />
+                :
+                  <></>
+              }
             </div>
 
 

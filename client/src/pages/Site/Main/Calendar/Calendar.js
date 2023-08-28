@@ -73,6 +73,8 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
             evId: `${item.startDate.substring(0,10)}T00:00:00.000Z`,
             start: new Date(item.startDate.substring(0,10)),
             description: `Évènements du jour ${`${item.startDate.substring(0,10)}T00:00:00.000Z`}`,
+            owner: `${isNaN(objTT[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) ? "" : `${objTT[`${item.startDate.substring(0,10)}T00:00:00.000Z`].owner}, `} ${listOfUsers?.filter((et) => et._id === item.owner)[0]?.firstname === undefined ? '' : `${listOfUsers?.filter((et) => et._id === item.owner)[0]?.firstname} ${listOfUsers?.filter((et) => et._id === item.owner)[0]?.lastname}` }`
+            
           } 
         }
       : item.type === "reunion_entreprise" ?
@@ -98,7 +100,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
     Object.values(objTT).map((item) => (
       setEvents((eve) => [...eve, {
         eventId: item.evId,
-        title: `${item.count} ${item.count > 1 ? "personnes": "personne"} en télétravail`,
+        title: `${item.count > 1 ? `${item.count} personnes en télétravail: ${item.owner}` : `${item.owner} en télétravail`}`,
         start: new Date(dayjs(item.start).hour(9)),
         end: new Date(dayjs(item.start).hour(18)),
         description: item.description
@@ -127,6 +129,17 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
       }])
     ))
 
+    /*const publicHolidays = await axios.get("https://calendrier.api.gouv.fr/jours-feries/metropole.json")
+    Object.values(publicHolidays).map((item) => (
+      setEvents((eve) => [...eve, {
+        eventId: item,
+        title: "Jour férié",
+        start: new Date(dayjs(item.start).hour(9)),
+        end: new Date(dayjs(item.start).hour(18)),
+        description: item.description,
+        color: 'grey'
+      }])
+    ))*/
   };
 
 
@@ -217,11 +230,15 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
                             padding: "10px"
                           }}
                         >
-                          {eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title === undefined ? <span style={{fontStyle: "italic"}}>type inconnu</span> : eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title} de {listOfUsers?.filter((et) => et._id === item.owner)[0]?.firstname === undefined ? 
+                          {
+                          eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title === undefined ? 
+                            <span style={{fontStyle: "italic"}}>type inconnu</span>
+                          : eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title
+                          } de {listOfUsers?.filter((et) => et._id === item.owner)[0]?.firstname === undefined ? 
                               <span style={{fontStyle: "italic"}}>Utilisateur inconnu</span>
                             : 
                               `${listOfUsers?.filter((et) => et._id === item.owner)[0]?.firstname} ${listOfUsers?.filter((et) => et._id === item.owner)[0]?.lastname}`
-                          }
+                            }
                         </div>
                       ))}
                     </div>
