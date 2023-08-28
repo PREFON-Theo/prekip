@@ -18,11 +18,20 @@ import { Link } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
 
 const nbItemPerPage = 10;
+const eventTypesList = [
+  {
+    title: "Télétravail",
+    internalName: "teletravail",
+  },
+  {
+    title: "Réunion d'entreprise",
+    internalName: "reunion_entreprise",
+  }
+]
 
 const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
   const [events, setEvents] = useState()
   const [users, setUsers] = useState()
-  const [eventTypes, setEventTypes] = useState()
 
   const [dialogOpened, setDialogOpened] = useState(false)
   const [eventToDelete, setEventToDelete] = useState("")
@@ -41,15 +50,9 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
     setUsers(usersRaw.data)
   }
 
-  const fetchEventTypes = async () => {
-    const eventTypesRaw = await axios.get('/event-type')
-    setEventTypes(eventTypesRaw.data)
-  }
-
   useEffect(() => {
     fetchEvents();
     fetchUsers();
-    fetchEventTypes();
   }, [])
 
   const dialogApears = (event_id) => {
@@ -90,7 +93,7 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
           <TableHead>
             <TableRow>
               <TableCell sx={{fontWeight: 'bold'}}>Titre</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell> {/* TODO Check */}
+              <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell>{/* TODO Check */}
               <TableCell sx={{fontWeight: 'bold'}}>Date de début</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Date de fin</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Type</TableCell>
@@ -105,7 +108,7 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
                 <TableCell>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
                 <TableCell>{item.startDate === null ? "-" : new Date(item.startDate).toLocaleDateString('fr-FR')}</TableCell>
                 <TableCell>{item.finishDate === null ? "-" : new Date(item.finishDate).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell>{eventTypes?.filter((et) => et._id === item.type)[0]?.title === undefined ? <span style={{fontStyle: "italic"}}>Non disponible</span> : eventTypes?.filter((et) => et._id === item.type)[0]?.title}</TableCell>
+                <TableCell>{eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title === undefined ? <span style={{fontStyle: "italic"}}>Non disponible</span> : eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title}</TableCell>
                  <TableCell>
                   {item.owner === "" 
                     ? "-" 

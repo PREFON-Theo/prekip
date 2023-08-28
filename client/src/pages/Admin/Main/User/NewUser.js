@@ -18,6 +18,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import { Navigate } from 'react-router-dom';
+import "dayjs/locale/fr"
 
 const rolesData = [
   {name:"User", label: "Utilisateur"},
@@ -191,7 +192,7 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
           {/* Joining Date / Leaving Date */}
           <div style={{marginBottom: '40px', display: "flex", justifyContent:"space-between"}}>
             <Paper elevation={2} sx={{width: '48%'}}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr'>
                 <DatePicker
                   value={newUser.joiningDate === "" ? null : dayjs(newUser.joiningDate)}
                   format="DD/MM/YYYY"
@@ -205,7 +206,7 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
               </LocalizationProvider>
             </Paper>
             <Paper elevation={2} sx={{width: '48%'}}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr'>
                 <DatePicker
                   value={newUser.leavingDate === "" ? null : dayjs(newUser.leavingDate)}
                   format="DD/MM/YYYY"

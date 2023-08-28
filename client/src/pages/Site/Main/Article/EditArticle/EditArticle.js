@@ -23,7 +23,6 @@ import Switch from '@mui/material/Switch';
 
 const rubriquesRaw = await axios.get("/rubrique-type")
 const rubriqueList = rubriquesRaw.data
-//let articleGet = false;
 
 const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
   const {user, ready} = useContext(UserContext);
@@ -90,7 +89,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
   }, [editorState]);
 
 
-  if(ready === "no" || (ready === "yes") && !user) {
+  if(ready === "no" || (ready === "yes" && !user)) {
       handleOpenAlert()
       changeAlertValues("error", "Vous n'êtes pas connecté")
       return <Navigate replace to="/"/>
@@ -105,7 +104,6 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
         changeAlertValues('warning', "Il manque des informations pour modifier l'article")
       }
       else {
-        //if(user?._id !== articleRaw.data?.author){
         await axios
           .patch(`/article/${id}`, {
             title: article.title,
@@ -120,7 +118,6 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
           changeAlertValues('success', 'Article modifié')
           setArticlePosted(true)
         }
-      //}
 
     }
     catch (err) {

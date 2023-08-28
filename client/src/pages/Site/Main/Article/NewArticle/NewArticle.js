@@ -61,7 +61,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
   }, [user])
 
 
-  if(ready === "no"){
+  if(ready === "no" || (ready === "yes" && !user)) {
     handleOpenAlert()
     changeAlertValues("error", "Vous n'êtes pas connecté")
     return <Navigate replace to="/"/>

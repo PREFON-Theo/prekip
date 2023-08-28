@@ -105,7 +105,7 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
                     : `${users?.filter((usr) => usr._id === item.author)[0]?.firstname} ${users?.filter((usr) => usr._id === item.author)[0]?.lastname.charAt(0)}.`
                   }
                 </TableCell>
-                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.file !== "" ? "Oui" : "Non"}</TableCell>
+                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.file !== undefined ? "Oui" : "Non"}</TableCell> {/* TODO Check*/}
                 <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.important === true ? "Oui ": "Non" }</TableCell>
                 <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.closed === true ? "Fermé ": "Ouvert" }</TableCell>
                 <TableCell>

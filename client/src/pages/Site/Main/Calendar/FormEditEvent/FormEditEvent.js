@@ -15,6 +15,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import axios from 'axios';
+import "dayjs/locale/fr"
 
 
 const eventTypesList = [
@@ -79,7 +80,9 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
             ...eventInfo,
             type: eventTypeSelected,
             title: eventTypeSelected === "teletravail" ? "" : eventInfo.title,
-            description: eventTypeSelected === "teletravail" ? "" : eventInfo.description
+            description: eventTypeSelected === "teletravail" ? "" : eventInfo.description,
+            startDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(9) : eventInfo.startDate,
+            finishDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(18) : eventInfo.finishDate
           })
           handleOpenAlert()
           handleCloseForm()
@@ -139,9 +142,13 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
                   onChange={e =>  setEventTypeSelected(e.target.value)}
                   disabled={!authorizedToEdit}
                 >
-                  {eventTypesList.map((item, index) => (
-                    <MenuItem key={index} value={item.internalName} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
-                  ))}
+                  <MenuItem value={"teletravail"} sx={{textAlign: 'left'}}>Télétravail</MenuItem>
+                  {
+                  user?.roles.includes("Administrateur") ?                 
+                    <MenuItem value={"reunion_entreprise"} sx={{textAlign: 'left'}}>Réunion d'entreprise</MenuItem>
+                  : 
+                    <></>
+                  }
                 </Select>
               </FormControl>
             </Box>
@@ -152,13 +159,13 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
               <div style={{marginBottom: '2vh'}}>Sélectionnez un type d'évènement</div>
             :
             eventTypeSelected === "teletravail" ?
-              <>
-                <div className={styles.input_dates}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}}>
-                      <DatePicker label="Date de l'absence" disabled={!authorizedToEdit} format="DD/MM/YYYY" value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )}/>
-                  </LocalizationProvider>
-                </div>
-              </>
+            <>
+              <div className={styles.input_dates}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}} adapterLocale='fr'>
+                    <DatePicker label="Date de l'absence" disabled={!authorizedToEdit} format="DD/MM/YYYY" value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )}/>
+                </LocalizationProvider>
+              </div>
+            </>
             :
             eventTypeSelected === "reunion_entreprise" ?
               <>
@@ -169,10 +176,10 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
                   <TextField value={eventInfo.description} disabled={!authorizedToEdit} multiline maxRows={3} label="Description" variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, description: e.target.value}) )}/>
                 </div>
                 <div className={styles.input_dates}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}} adapterLocale='fr'>
                       <DateTimePicker format="DD/MM/YYYY HH:mm:ss" disabled={!authorizedToEdit} ampm={false} label="Date de début" maxDate={dayjs(eventInfo.finishDate)} value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )} />
                   </LocalizationProvider>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr'>
                       <DateTimePicker format="DD/MM/YYYY HH:mm:ss" disabled={!authorizedToEdit} ampm={false} label="Date de fin" minDate={dayjs(eventInfo.startDate)} value={dayjs(eventInfo.finishDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, finishDate: e}) )} />
                   </LocalizationProvider>
                 </div>
@@ -180,8 +187,9 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
             :
               <></>
           }
+
           { 
-            user && user._id === eventInfo.owner ?
+            authorizedToEdit ?
               <div className={styles.button}>
                 <Button variant="contained" color='warning' onClick={handleUpdateEvent}>Modifier l'évènement</Button>
                 <Button variant="contained" color='error' onClick={handleDeleteEvent}>Supprimer l'évènement</Button>

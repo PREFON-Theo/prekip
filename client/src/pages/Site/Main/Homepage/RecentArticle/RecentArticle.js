@@ -30,7 +30,7 @@ const RecentArticle = () => {
           <Link to={`/article/${article?._id}`}>
             <div className={styles.wrapper}>
               <div className={styles.title}>{article?.title}</div>
-              <div className={styles.image}>{article?.image}</div>
+              <div className={styles.image}>{article?.image?.link}</div>
               <div className={styles.preview}>{article?.preview}</div>
               <div className={styles.more}>
                   <div>

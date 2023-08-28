@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import styles from "./Calendar.module.scss"
 import "./Calendar.css"
 
+//https://calendrier.api.gouv.fr/jours-feries/metropole.json
 
 import FullCalendar from '@fullcalendar/react'
 import timeGridPlugin from "@fullcalendar/timegrid"
@@ -60,11 +61,33 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
   const fetchData = async () => {
     setEvents([])
     const eventData = await axios.get('/event')
-    let obj = {};
+    let objTT = {};
+    let objRE = {};
+    let objOther = {};
+
     eventData.data.map((item) => (
-        obj = {...obj, 
+      item.type === 'teletravail' ?
+        objTT = {...objTT, 
           [`${item.startDate.substring(0,10)}T00:00:00.000Z`]: {
-            count: `${isNaN(obj[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) ? 1 : parseInt(obj[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) + 1}`,
+            count: `${isNaN(objTT[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) ? 1 : parseInt(objTT[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) + 1}`,
+            evId: `${item.startDate.substring(0,10)}T00:00:00.000Z`,
+            start: new Date(item.startDate.substring(0,10)),
+            description: `Évènements du jour ${`${item.startDate.substring(0,10)}T00:00:00.000Z`}`,
+          } 
+        }
+      : item.type === "reunion_entreprise" ?
+        objRE = {...objRE, 
+          [`${item.startDate.substring(0,10)}T00:00:00.000Z`]: {
+            count: `${isNaN(objRE[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) ? 1 : parseInt(objRE[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) + 1}`,
+            evId: `${item.startDate.substring(0,10)}T00:00:00.000Z`,
+            start: new Date(item.startDate.substring(0,10)),
+            description: `Évènements du jour ${`${item.startDate.substring(0,10)}T00:00:00.000Z`}`,
+          } 
+        }
+      :
+        objOther = {...objOther, 
+          [`${item.startDate.substring(0,10)}T00:00:00.000Z`]: {
+            count: `${isNaN(objOther[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) ? 1 : parseInt(objOther[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) + 1}`,
             evId: `${item.startDate.substring(0,10)}T00:00:00.000Z`,
             start: new Date(item.startDate.substring(0,10)),
             description: `Évènements du jour ${`${item.startDate.substring(0,10)}T00:00:00.000Z`}`,
@@ -72,14 +95,35 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
         }
     ))
     
-    Object.values(obj).map((item) => (
+    Object.values(objTT).map((item) => (
       setEvents((eve) => [...eve, {
         eventId: item.evId,
-        title: `${item.count} ${item.count > 1 ? "évènements": "évènement"} ce jour`,
-        start: item.start,
-        end: item.start,
+        title: `${item.count} ${item.count > 1 ? "personnes": "personne"} en télétravail`,
+        start: new Date(dayjs(item.start).hour(9)),
+        end: new Date(dayjs(item.start).hour(18)),
+        description: item.description
+      }])
+    ))
+
+    Object.values(objRE).map((item) => (
+      setEvents((eve) => [...eve, {
+        eventId: item.evId,
+        title: `${item.count} ${item.count > 1 ? "réunions": "réunion"} d'entreprise`,
+        start: new Date(dayjs(item.start).hour(9)),
+        end: new Date(dayjs(item.start).hour(18)),
         description: item.description,
-        //color
+        color: "red"
+      }])
+    ))
+
+    Object.values(objOther).map((item) => (
+      setEvents((eve) => [...eve, {
+        eventId: item.evId,
+        title: `${item.count} ${item.count > 1 ? "autres": "autre"}`,
+        start: new Date(dayjs(item.start).hour(9)),
+        end: new Date(dayjs(item.start).hour(18)),
+        description: item.description,
+        color: 'black'
       }])
     ))
 
@@ -92,6 +136,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
 
 
   const showDialog = async (day, date) => {
+    console.log(day)
     setDateSelected(new Date(date).toLocaleDateString())
     setOpenAddEvent(false)
     setOpenEditEvent(false)
@@ -258,7 +303,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
           titleFormat={
             { year: 'numeric', month: 'long', day: 'numeric' }
           }
-          dateClick={(e) => showDialog(e,`${e.dateStr}T00:00:00.000Z`)}
+          dateClick={(e) => e.dateStr.length === 10 ? showDialog(e,`${e.dateStr}T00:00:00.000Z`) : showDialog(e,`${e.dateStr.substring(0,10)}T00:00:00.000Z`)}
           eventClick={(e) => showDialog(e, e.event.extendedProps.eventId)}
           dayCellClassNames={"event_case"}
           locale= 'fr'

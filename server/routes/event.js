@@ -35,15 +35,14 @@ router.get('/day/:date', async (req, res) => {
 //Add one event - OK
 router.post('/', async (req, res) => {
   try {
-      const {title, description, startDate, finishDate, owner, type, usersTagged} = req.body
+      const {title, description, startDate, finishDate, owner, type} = req.body
       const eventCreation = await Event.create({
           title,
           description,
           startDate,
           finishDate,
           owner,
-          type,
-          usersTagged
+          type
       })
       res.status(200).json(eventCreation)
   }
@@ -54,6 +53,20 @@ router.post('/', async (req, res) => {
   }
   
 })
+
+//Add multiple event - TODO
+router.post('/many', async (req, res) => {
+    try {
+        const eventsCreation = await Event.create(req.body)
+        res.status(200).json(eventsCreation)
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error
+        });
+    }
+    
+  })
 
 //Update one event - OK
 router.patch('/:id', (req, res) => {

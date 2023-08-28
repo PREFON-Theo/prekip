@@ -43,22 +43,6 @@ const Homepage = () => {
             <div className={styles.right}></div>
           </div>
         </div>
-
-        {/* <div className={styles.firstline}>
-
-          <div className={styles.left}>
-            <RecentArticle/>
-
-            <div className={styles.artcat}>
-              {rubriqueData?.map((item, index) => (
-                <ArticlesCategories key={index} title={item.title} itemArticle={item.reference}/>
-              ))}
-            </div>
-
-          </div>
-
-         </div> */}
-
       </div>
     </>
   );
