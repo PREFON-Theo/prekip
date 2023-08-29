@@ -15,6 +15,8 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import ModeEditRoundedIcon from '@mui/icons-material/ModeEditRounded';
+
 import Pagination from '@mui/material/Pagination';
 
 const nbItemPerPage = 10;
@@ -84,6 +86,7 @@ const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
               <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Lien</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Rubrique parente</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Lien du l'image</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -94,10 +97,16 @@ const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
                 <TableCell>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
                 <TableCell>{item.link}</TableCell>
                 <TableCell>{item.parent === "" ? "-" : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title === undefined ? <span style={{fontStyle: 'italic'}}>Non disponible</span> : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title}</TableCell>
+                <TableCell>{item.imgLink === undefined || item.imgLink === "" ? "-" : <a href={item.imgLink} target='_blank'>{item.imgLink.length > 20 ? `${item.imgLink.substring(0,20)}...`  : item.imgLink}</a>}</TableCell>
                 <TableCell>
                   <Link to={`/rubrique/${item.link}`} style={{marginRight: '10px'}}>
                     <Button variant='contained' color="warning">
                       <ArrowForwardRoundedIcon/>
+                    </Button>
+                  </Link>
+                  <Link to={`/admin/rubrique/edit/${item._id}`} style={{marginRight: '10px'}}>
+                    <Button variant='contained' color="primary">
+                      <ModeEditRoundedIcon/>
                     </Button>
                   </Link>
                   <Button color='error' variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>

@@ -27,6 +27,7 @@ import ListAnswers from './Main/Forum/Answers/ListAnswers';
 import NewRubrique from "./Main/Content/RubriqueType/NewRubrique";
 import { UserContext } from "../../utils/Context/UserContext/UserContext";
 import ListLeftboard from "./ListLeftboard";
+import RubriquePage from './Main/Content/RubriqueType/RubriquePage';
 
 
 const drawerWidth = 240;
@@ -180,6 +181,7 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
               <Route path="event/list" element={<ListEvents handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
               <Route path="rubrique-type/list" element={<ListRubriqueType handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
               <Route path="rubrique-type/new" element={<NewRubrique handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+              <Route path="rubrique/edit/:id" element={<RubriquePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
               <Route path="comment/list" element={<ListComments handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
               <Route path="answer/list" element={<ListAnswers handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
 

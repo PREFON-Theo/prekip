@@ -1,7 +1,7 @@
 .container {
   padding: 4vh;
   height: 100%;
-  background-color: #F9FBFA;
+  // background-color: #F9FBFA;
 
   .filters {
     display: flex;
@@ -10,6 +10,16 @@
   }
 
   .list_results {
+
+    .no_result {
+      cursor: pointer;
+      width: 50%;
+      background-color: #fff;
+      border-radius: 24px;
+      padding: 24px;
+      text-align: left;
+      margin: 0 0 40px 0;
+    }
     
     .item_result{
       cursor: pointer;

@@ -33,7 +33,7 @@ const typeData = [
 const Search = () => {
   const [ params, setParams ] = useSearchParams()
   const [articles, setArticles] = useState()
-  const [itemFocused, setItemFocused] = useState('')
+  //const [itemFocused, setItemFocused] = useState('')
   const [page, setPage] = useState(0);
 
   const [categorySelected, setCategorySelected] = useState('')
@@ -157,7 +157,7 @@ const Search = () => {
             <>Chargement</>
           : articles.length === 0 ?
           <div 
-            className={style.item_result}
+            className={style.no_result}
           >
             <>Aucun résultat...</>
           </div>
@@ -166,8 +166,8 @@ const Search = () => {
             <div 
               key={index}
               className={style.item_result}
-              onMouseEnter={() => setItemFocused(item._id)}
-              onMouseLeave={() => setItemFocused('')}
+              //onMouseEnter={() => setItemFocused(item._id)}
+              //onMouseLeave={() => setItemFocused('')}
               //style={{filter: itemFocused !== item._id && itemFocused !== '' ? 'blur(4px)' : 'blur(0)'}}
             >
               <Link style={{textDecoration: "none"}} to={`/${item.type}/${item._id}`}>

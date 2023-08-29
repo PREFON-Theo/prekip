@@ -37,7 +37,7 @@ const Homepage = () => {
           <div className={styles.artcat}>
             <div className={styles.left}>
               {rubriqueData?.map((item, index) => (
-                <ArticlesCategories key={index} title={item.title} itemArticle={item.reference}/>
+                <ArticlesCategories key={index} item={item}/>
               ))}
             </div>
             <div className={styles.right}></div>
