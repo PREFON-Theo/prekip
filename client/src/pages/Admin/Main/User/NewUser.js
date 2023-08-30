@@ -118,7 +118,7 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
         <div className={styles.box}>
           <h2>Nouvel utilisateur : </h2>
           {/* Prénom / Nom */}
-          <div style={{marginBottom: '40px', display: "flex", justifyContent:"space-between"}}>
+          <div style={{marginBottom: '40px', justifyContent:"space-between"}} className={styles.full_width}>
             <Paper elevation={2} sx={{width: '48%'}}>
               <TextField required value={newUser.firstname} sx={{width: '100%'}} label="Prénom" variant="outlined" onChange={e => setNewUser(prev => ({...prev, firstname: e.target.value}))}/>
             </Paper>
@@ -126,6 +126,13 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
               <TextField required value={newUser.lastname} sx={{width: '100%'}} label="Nom" variant="outlined" onChange={e => setNewUser(prev => ({...prev, lastname: e.target.value}))}/>
             </Paper>
           </div>
+
+          <Paper elevation={2} sx={{marginBottom: '30px'}} className={styles.semi_width}>
+            <TextField required value={newUser.firstname} sx={{width: '100%'}} label="Prénom" variant="outlined" onChange={e => setNewUser(prev => ({...prev, firstname: e.target.value}))}/>
+          </Paper>
+          <Paper elevation={2} sx={{marginBottom: '30px'}} className={styles.semi_width}>
+            <TextField required value={newUser.lastname} sx={{width: '100%'}} label="Nom" variant="outlined" onChange={e => setNewUser(prev => ({...prev, lastname: e.target.value}))}/>
+          </Paper>
 
           {/* Email */}
           <Paper elevation={2} sx={{marginBottom: '30px'}}>
@@ -146,8 +153,8 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
           }
 
 
-          {/* Password / Confirm Password TODO vérification de si les deux sont égaux*/}
-          <div style={{marginBottom: '30px', display: "flex", justifyContent:"space-between"}}>
+          {/* Password / Confirm Password */}
+          <div style={{marginBottom: '30px', justifyContent:"space-between"}} className={styles.full_width}>
             <Paper elevation={2} sx={{width: '48%'}}>
               <TextField required type='password' value={newUser.password} sx={{width: '100%'}} label="Mot de passe" variant="outlined" onChange={e => setNewUser(prev => ({...prev, password: e.target.value}))}/>
             </Paper>
@@ -155,6 +162,13 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
               <TextField required type='password' value={newUser.confirmPassword} sx={{width: '100%'}} label="Confirmation du mot de passe" variant="outlined" onChange={e => setNewUser(prev => ({...prev, confirmPassword: e.target.value}))}/>
             </Paper>
           </div>
+
+          <Paper elevation={2} sx={{marginBottom: '30px'}} className={styles.semi_width}>
+            <TextField required type='password' value={newUser.password} sx={{width: '100%'}} label="Mot de passe" variant="outlined" onChange={e => setNewUser(prev => ({...prev, password: e.target.value}))}/>
+          </Paper>
+          <Paper elevation={2} sx={{marginBottom: '30px'}} className={styles.semi_width}>
+            <TextField required type='password' value={newUser.confirmPassword} sx={{width: '100%'}} label="Confirmation du mot de passe" variant="outlined" onChange={e => setNewUser(prev => ({...prev, confirmPassword: e.target.value}))}/>
+          </Paper>
 
           {
             diffPassword ?
@@ -165,7 +179,7 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
               <></>
           }
 
-          {/* Dropdown Roles TODO rechercher le label dans rolesData et convertir en name*/}
+          {/* Dropdown Roles */}
           <Paper elevation={2} sx={{marginBottom: '40px'}}>
             <FormControl fullWidth>
               <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
@@ -190,7 +204,7 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
           </Paper>
 
           {/* Joining Date / Leaving Date */}
-          <div style={{marginBottom: '40px', display: "flex", justifyContent:"space-between"}}>
+          <div style={{marginBottom: '40px', justifyContent:"space-between"}} className={styles.full_width}>
             <Paper elevation={2} sx={{width: '48%'}}>
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr'>
                 <DatePicker
@@ -219,6 +233,34 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
               </LocalizationProvider>
             </Paper>
           </div>
+
+          <Paper elevation={2} sx={{marginBottom: '30px'}} className={styles.semi_width}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr'>
+              <DatePicker
+                value={newUser.joiningDate === "" ? null : dayjs(newUser.joiningDate)}
+                format="DD/MM/YYYY"
+                sx={{width: '100%'}}
+                label="Date de d'arrivée"
+                variant="outlined"
+                maxDate={dayjs(newUser.leavingDate)}
+                required
+                onChange={value => setNewUser(prev => ({...prev, joiningDate: value}))}
+              />
+            </LocalizationProvider>
+          </Paper>
+          <Paper elevation={2} sx={{marginBottom: '30px'}} className={styles.semi_width}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr'>
+              <DatePicker
+                value={newUser.leavingDate === "" ? null : dayjs(newUser.leavingDate)}
+                format="DD/MM/YYYY"
+                sx={{width: '100%'}}
+                label="Date de départ"
+                variant="outlined"
+                minDate={dayjs(newUser.joiningDate)}
+                onChange={value => setNewUser(prev => ({...prev, leavingDate: value}))}
+              />
+            </LocalizationProvider>
+          </Paper>
 
           {/* Valid */}
           <FormControlLabel

@@ -3,10 +3,7 @@
   //margin: 50px;
 
   .title {
-    font-size: 50px;
     text-align: left;
-    padding-top: 50px;
-    margin: 0 50px 20px 50px;
   }
 
   .stats {
@@ -16,18 +13,10 @@
     justify-content: space-around;
 
     .stat_item {
-      min-width: 300px;
       text-align: center;
-      margin: 30px;
 
       .item_number {
-        font-size: 70px;
         font-weight: bold;
-        margin-bottom: 20px;
-      }
-      .item_text {
-        margin-bottom: 20px;
-
       }
 
       .more {
@@ -40,4 +29,99 @@
     }
 
   }
+
+  @media (max-width: 400px){
+    .title {
+      font-size: 20px;
+      padding-top: 50px;
+      margin: 0 50px 20px 50px;
+    }
+    .stats {
+      .stat_item {
+        margin: 30px;
+
+        .item_number {
+          margin-bottom: 20px;
+          font-size: 30px;
+
+        }
+        .item_text {
+          margin-bottom: 20px;
+          font-size: 10px;
+        }
+      }
+    }
+  }
+
+  @media (min-width: 400px){
+    .title {
+      font-size: 30px;
+      padding-top: 50px;
+      margin: 0 50px 20px 50px;
+    }
+    .stats {
+      .stat_item {
+        margin: 30px;
+
+        .item_number {
+          margin-bottom: 20px;
+          font-size: 55px;
+
+        }
+        .item_text {
+          margin-bottom: 20px;
+          font-size: 15px;
+        }
+      }
+    }
+  }
+
+  @media (min-width: 600px){
+    .title {
+      font-size: 40px;
+      padding-top: 50px;
+      margin: 0 50px 20px 50px;
+    }
+    .stats {
+      .stat_item {
+        margin: 30px;
+
+        .item_number {
+          margin-bottom: 20px;
+          font-size: 60px;
+
+        }
+        .item_text {
+          margin-bottom: 20px;
+          font-size: 20px;
+        }
+      }
+    }
+  }
+
+
+  @media (min-width: 1000px){
+    .title {
+      font-size: 50px;
+      padding-top: 50px;
+      margin: 0 50px 20px 50px;
+    }
+    .stats {
+      .stat_item {
+        margin: 30px;
+
+        .item_number {
+          margin-bottom: 20px;
+          font-size: 70px;
+
+        }
+        .item_text {
+          margin-bottom: 20px;
+          font-size: 25px;
+        }
+      }
+    }
+  }
+
+
 }

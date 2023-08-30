@@ -89,27 +89,27 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
     <div className={styles.container}>
       <h2>Liste des évènements</h2>
       <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: "auto" }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell sx={{fontWeight: 'bold'}}>Titre</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell>{/* TODO Check */}
-              <TableCell sx={{fontWeight: 'bold'}}>Date de début</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Date de fin</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Type</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Créateur de l'évènement</TableCell>
+              <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Description</TableCell>{/* TODO Check */}
+              <TableCell className={styles.semi_width_second} sx={{fontWeight: 'bold'}}>Date de début</TableCell>
+              <TableCell className={styles.semi_width_second} sx={{fontWeight: 'bold'}}>Date de fin</TableCell>
+              <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Type</TableCell>
+              <TableCell className={styles.semi_width_second} sx={{fontWeight: 'bold'}}>Créateur de l'évènement</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {events?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
-                <TableCell>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
-                <TableCell>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
-                <TableCell>{item.startDate === null ? "-" : new Date(item.startDate).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell>{item.finishDate === null ? "-" : new Date(item.finishDate).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell>{eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title === undefined ? <span style={{fontStyle: "italic"}}>Non disponible</span> : eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title}</TableCell>
-                 <TableCell>
+                <TableCell >{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
+                <TableCell className={styles.semi_width_first}>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
+                <TableCell className={styles.semi_width_second}>{item.startDate === null ? "-" : `${new Date(item.startDate).toLocaleDateString('fr-FR')} ${new Date(item.startDate).toLocaleTimeString('fr-FR')}`}</TableCell>
+                <TableCell className={styles.semi_width_second}>{item.finishDate === null ? "-" : `${new Date(item.finishDate).toLocaleDateString('fr-FR')} ${new Date(item.finishDate).toLocaleTimeString('fr-FR')}`}</TableCell>
+                <TableCell className={styles.semi_width_first}>{eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title === undefined ? <span style={{fontStyle: "italic"}}>Non disponible</span> : eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title}</TableCell>
+                 <TableCell className={styles.semi_width_second}>
                   {item.owner === "" 
                     ? "-" 
                     : users?.filter((usr) => usr._id === item.owner)[0]?.firstname === undefined ? <span style={{fontStyle: "italic"}}>Utilisateur non disponible</span>
@@ -117,12 +117,12 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
                   }
                 </TableCell>
                 <TableCell>
-                  <Link to={`/calendar`} style={{marginRight: '10px'}}>
+                  <Link to={`/calendar`} style={{margin: '10px'}}>
                     <Button variant='contained' color="warning">
                       <ArrowForwardRoundedIcon/>
                     </Button>
                   </Link>
-                  <Button color='error' variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
+                  <Button color='error' sx={{margin: "10px"}} variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}

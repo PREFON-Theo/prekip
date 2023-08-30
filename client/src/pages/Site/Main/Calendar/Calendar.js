@@ -312,13 +312,13 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
           allDayContent={''}
           buttonText={{
             today: "Aujourd'hui",
-            month:    'Par mois',
-            week:     'Par semaine',
-            day:      'Par jour',
+            month:    'Mois',
+            week:     'Semaine',
+            day:      'Jour',
             list:     'Liste'
           }}
           titleFormat={
-            { year: 'numeric', month: 'long', day: 'numeric' }
+            { year: 'numeric', month: 'numeric', day: 'numeric' }
           }
           dateClick={(e) => e.dateStr.length === 10 ? showDialog(e,`${e.dateStr}T00:00:00.000Z`) : showDialog(e,`${e.dateStr.substring(0,10)}T00:00:00.000Z`)}
           eventClick={(e) => showDialog(e, e.event.extendedProps.eventId)}

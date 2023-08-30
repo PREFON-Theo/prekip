@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import style from "./EditHomeLinks.module.scss"
+import React, { useContext, useEffect, useState } from 'react'
+import styles from "./EditHomeLinks.module.scss"
 import axios from 'axios'
 import SortableList, { SortableItem } from "react-easy-sort";
 import { arrayMoveImmutable } from "array-move";
@@ -13,8 +13,11 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
+import { UserContext } from '../../../../../../utils/Context/UserContext/UserContext';
+import { Navigate } from 'react-router-dom';
 
 const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
+  const {user, ready} = useContext(UserContext);
   const [links, setLinks] = useState();
   const [linkToChange, setLinkToChange] = useState({
     _id: '',
@@ -23,6 +26,7 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
   });
   const [dialogOpenned, setDialogOpenned] = useState(false);
   const [mode, setMode] = useState('')
+  const [redirection, setRedirection] = useState(false)
 
   const fetchDataLink = async () => {
     const LinkRaw = await axios
@@ -31,8 +35,22 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
   }
 
   useEffect(() => {
-    fetchDataLink();
-  }, [])
+    if(ready === "no"){
+      setRedirection(true)
+      handleOpenAlert()
+      changeAlertValues("error", "Vous n'êtes pas connecté")
+    }
+    else if (ready === "yes"){
+      if(!user?.roles.includes("Administrateur") && !user?.roles.includes("Modérateur")){
+        setRedirection(true)
+        handleOpenAlert()
+        changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
+      }
+      else {
+        fetchDataLink();
+      }
+    }
+  }, [ready])
 
 
 
@@ -126,22 +144,27 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
 
   return (
     <>
+    {redirection ? <Navigate to={'/'}/> : <></>}
     <Dialog
       open={dialogOpenned}
       onClose={() => setDialogOpenned(false)}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">
+      {/* <DialogTitle id="alert-dialog-title">
         { mode === 'edit' ? 
-          `Edition du lien ${linkToChange.text}`
+          <h1>
+              Edition du lien {linkToChange?.text}
+          </h1>
         :
-          `Ajout du lien ${linkToChange.text}`
+          <h1>
+              Edition du lien {linkToChange?.text}
+          </h1>
         }
         </DialogTitle>
         <DialogContent sx={{paddingTop: '20px !important', display: 'flex', flexDirection: 'column'}}>
-          <TextField sx={{margin: '10px 0'}} value={linkToChange.text} label="Texte affiché" variant="outlined" onChange={e => setLinkToChange((prev) => ({...prev, text: e.target.value}))}/>
-          <TextField sx={{margin: '10px 0'}} value={linkToChange.link} label="Lien" variant="outlined" onChange={e => setLinkToChange((prev) => ({...prev, link: e.target.value}))}/>
+          <TextField sx={{margin: '10px 0'}} value={linkToChange?.text} label="Texte affiché" variant="outlined" onChange={e => setLinkToChange((prev) => ({...prev, text: e.target.value}))}/>
+          <TextField sx={{margin: '10px 0'}} value={linkToChange?.link} label="Lien" variant="outlined" onChange={e => setLinkToChange((prev) => ({...prev, link: e.target.value}))}/>
         </DialogContent>
         <DialogActions sx={{padding: "20px"}}>
           {mode === 'edit' ? 
@@ -149,11 +172,39 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
           :
             <Button variant='contained' color='success' onClick={addOneLink}>Ajouter</Button>
           }
-        </DialogActions>
+        </DialogActions> */}
+
+      <div className={styles.container_dialog}>
+        { 
+        mode === 'edit' ? 
+          <h1>
+              Edition du lien {linkToChange?.text}
+          </h1>
+        :
+          <h1>
+              Edition du lien {linkToChange?.text}
+          </h1>
+        }
+        <div className={styles.container_inputs}>
+          <div className={styles.input_mail}>
+            <TextField sx={{margin: '10px 0'}} value={linkToChange?.text} label="Texte affiché" variant="outlined" onChange={e => setLinkToChange((prev) => ({...prev, text: e.target.value}))}/>        
+          </div>
+          <div className={styles.input_password}>
+            <TextField sx={{margin: '10px 0'}} value={linkToChange?.link} label="Lien" variant="outlined" onChange={e => setLinkToChange((prev) => ({...prev, link: e.target.value}))}/>
+          </div>
+          <div className={styles.button}>
+            {mode === 'edit' ? 
+              <Button variant='contained' color='warning' onClick={editOneLink}>Modifier</Button>
+            :
+              <Button variant='contained' color='success' onClick={addOneLink}>Ajouter</Button>
+            }
+          </div>
+        </div>
+      </div>
     </Dialog>
 
-    <div className={style.container}>
-      <div className={style.title}>
+    <div className={styles.container}>
+      <div className={styles.title}>
         <h2>Organisez l'ordre d'affichage des liens</h2>
         <Button variant='contained' color='success' onClick={() => openDialog('new')}>Ajouter un lien</Button>
       </div>

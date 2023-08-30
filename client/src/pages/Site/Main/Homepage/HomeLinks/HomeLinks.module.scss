@@ -27,3 +27,16 @@
     }
   }
 }
+
+@media (max-width: 860px) {
+  .container {
+    padding: 30px;
+    border-top: 2px solid rgba(0, 0, 0, 0.271);
+  }
+}
+
+@media (min-width: 860px) {
+  .container {
+    padding: 0 30px 0 30px;
+  }
+}

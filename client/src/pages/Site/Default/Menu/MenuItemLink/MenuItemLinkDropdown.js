@@ -4,8 +4,9 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import ListRoundedIcon from '@mui/icons-material/ListRounded';
 
-const MenuItemLinkDropdown = ({title,list}) => {
+const MenuItemLinkDropdown = ({title,list, mobile}) => {
     
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -26,7 +27,8 @@ const MenuItemLinkDropdown = ({title,list}) => {
               onClick={handleClick}
               sx={{color: 'black', fontWeight: "600", margin: "auto 0", textTransform: "uppercase"}}
               >
-              {title}
+              {mobile ? <ListRoundedIcon/> : title}
+
               <KeyboardArrowDownRoundedIcon sx={{verticalAlign: 'bottom'}} fontSize="small"/>
             </Button>
             <Menu
@@ -37,17 +39,17 @@ const MenuItemLinkDropdown = ({title,list}) => {
               MenuListProps={{
                 'aria-labelledby': 'basic-button',
               }}
-              >
-                <span>
-                  {list.map((item, index) => (
-                    <Link to={`rubrique/${item.link}`} key={index} style={{textDecoration: "none"}}>
-                      <MenuItem onClick={handleClose} sx={{color: "#000"}}>
-                        {item.title}
-                      </MenuItem>
-                    </Link>
-                  ))}
-                </span>
-              </Menu>
+            >
+              <span>
+                {list.map((item, index) => (
+                  <Link to={`rubrique/${item.link}`} key={index} style={{textDecoration: "none"}}>
+                    <MenuItem onClick={handleClose} sx={{color: "#000"}}>
+                      {item.title}
+                    </MenuItem>
+                  </Link>
+                ))}
+              </span>
+            </Menu>
         </>
     );
 

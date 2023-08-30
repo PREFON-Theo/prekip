@@ -86,14 +86,14 @@ const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
     <div className={styles.container}>
       <h2>Liste des réponses aux forums</h2>
       <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: "auto" }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell sx={{fontWeight: 'bold'}}>Réponse</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Nombre de vote</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Auteur</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Date d'ajout</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Nom du forum</TableCell>
+              <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Nombre de vote</TableCell>
+              <TableCell className={styles.semi_width_second} sx={{fontWeight: 'bold'}}>Auteur</TableCell>
+              <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Date d'ajout</TableCell>
+              <TableCell className={styles.semi_width_second} sx={{fontWeight: 'bold'}}>Nom du forum</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -101,29 +101,29 @@ const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
             {answers?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.text?.length > 25 ? `${item.text.substring(0,25)}...` : item.text?.length === 0 ? "-" : item.text}</TableCell>
-                <TableCell>{item.vote}</TableCell>
-                <TableCell>
+                <TableCell className={styles.semi_width_first}>{item.vote}</TableCell>
+                <TableCell className={styles.semi_width_second}>
                   {item.user_id === "" 
                     ? "-" 
                     : `${users?.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${users?.filter((usr) => usr._id === item.user_id)[0]?.lastname.charAt(0)}.`
                   }
                 </TableCell>
-                <TableCell>{item.created_at === null ? "-" : new Date(item.created_at).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell>
+                <TableCell className={styles.semi_width_first} >{item.created_at === null ? "-" : new Date(item.created_at).toLocaleDateString('fr-FR')}</TableCell>
+                <TableCell className={styles.semi_width_second}>
                   {
                     forums?.filter((fr) => fr._id === item.forum_id)[0]?.title === undefined 
                     ? <span style={{fontStyle: 'italic'}}>Non disponible</span>
-                    : forums?.filter((fr) => fr._id === item.forum_id)[0]?.title
+                    : `${forums?.filter((fr) => fr._id === item.forum_id)[0]?.title.substring(0,25)}...`
 
                   }
                 </TableCell>
                 <TableCell>
-                  <Link to={`/forum`} style={{marginRight: '10px'}}>
+                  <Link to={`/forum`} style={{margin: '10px'}}>
                     <Button variant='contained' color="warning">
                       <ArrowForwardRoundedIcon/>
                     </Button>
                   </Link>
-                  <Button color='error' variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
+                  <Button color='error' sx={{margin: '10px'}} variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}

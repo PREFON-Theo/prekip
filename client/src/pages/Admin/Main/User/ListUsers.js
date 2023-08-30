@@ -80,15 +80,15 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
         </Button>
       </Link>
       <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ width: "auto" }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell sx={{fontWeight: 'bold'}}>Prénom Nom</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Email</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Date d'arrivée</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Date de départ</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Roles</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Compte valide ?</TableCell>
+              <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Email</TableCell>
+              <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Date d'arrivée</TableCell>
+              <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Date de départ</TableCell>
+              <TableCell className={styles.semi_width_second} sx={{fontWeight: 'bold'}}>Roles</TableCell>
+              <TableCell className={styles.semi_width_second} sx={{fontWeight: 'bold'}}>Compte valide ?</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -96,18 +96,18 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
             {users?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.firstname} {item.lastname}</TableCell>
-                <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.email}</TableCell>
-                <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.joiningDate === null ? "-" : new Date(item.joiningDate).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.leavingDate === null ? "-" : new Date(item.leavingDate).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.roles[0]} {item.roles[1]} {item.roles[2]}</TableCell>
-                <TableCell sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.valid === true ? <VerifiedRoundedIcon color='success'/> : <DoDisturbOnRoundedIcon color='error'/>}</TableCell>
+                <TableCell className={styles.semi_width_first} sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.email}</TableCell>
+                <TableCell className={styles.semi_width_first} sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.joiningDate === null ? "-" : new Date(item.joiningDate).toLocaleDateString('fr-FR')}</TableCell>
+                <TableCell className={styles.semi_width_first} sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.leavingDate === null ? "-" : new Date(item.leavingDate).toLocaleDateString('fr-FR')}</TableCell>
+                <TableCell className={styles.semi_width_second} sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.roles[0]} {item.roles[1]} {item.roles[2]}</TableCell>
+                <TableCell className={styles.semi_width_second} sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.valid === true ? <VerifiedRoundedIcon color='success'/> : <DoDisturbOnRoundedIcon color='error'/>}</TableCell>
                 <TableCell>
-                  <Link to={`/admin/user/page/${item._id}`} style={{marginRight: '10px'}}>
+                  <Link to={`/admin/user/page/${item._id}`} style={{margin: '10px'}}>
                     <Button variant="contained">
                         <ModeEditRoundedIcon/>
                     </Button>
                   </Link>
-                  <Button color='error' variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
+                  <Button color='error' variant="contained" sx={{margin: '10px'}} onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}

@@ -5,6 +5,7 @@ import axios from 'axios'
 import Pagination from '@mui/material/Pagination';
 import { FormControl, InputLabel, Select, MenuItem, Button } from '@mui/material'
 import DangerousRoundedIcon from '@mui/icons-material/DangerousRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 
 const rubriquesRaw = await axios.get("/rubrique-type");
 const rubriqueData = rubriquesRaw.data;
@@ -148,7 +149,7 @@ const Search = () => {
             </Select>
           </FormControl>
 
-          <Button color="error" variant='contained' onClick={resetFilters}><DangerousRoundedIcon fontSize='large'/></Button>
+          <Button color="error" size='small' variant='contained' onClick={resetFilters}><DeleteRoundedIcon/></Button>
           
         </div>
 
@@ -166,9 +167,6 @@ const Search = () => {
             <div 
               key={index}
               className={style.item_result}
-              //onMouseEnter={() => setItemFocused(item._id)}
-              //onMouseLeave={() => setItemFocused('')}
-              //style={{filter: itemFocused !== item._id && itemFocused !== '' ? 'blur(4px)' : 'blur(0)'}}
             >
               <Link style={{textDecoration: "none"}} to={`/${item.type}/${item._id}`}>
                 <div className={style.item_title}>{item.title}</div>

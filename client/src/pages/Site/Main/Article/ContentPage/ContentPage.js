@@ -15,9 +15,13 @@ import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 
 import { Dialog } from '@mui/material';
 import ButtonGroup from '@mui/material/ButtonGroup';
+
+import ModeEditRoundedIcon from '@mui/icons-material/ModeEditRounded';
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
 
 const usersList = await axios.get('/user')
@@ -167,6 +171,21 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
     }
   }
 
+  const deleteCom = async (id) => {
+    try {
+      await axios
+        .delete(`/comment/${id}`)
+        handleOpenAlert()
+        changeAlertValues('success', 'Commentaire supprimé')
+        fetchData()
+    }
+    catch (err) {
+      handleOpenAlert()
+      changeAlertValues('error', err)
+    }
+  }
+
+
   const deleteArticle = async () => {
     try {
       if((ready === "yes" && (!user?.roles.includes("Administrateur") || !user?.roles.includes("Modérateur"))) ||  ready === "no"){
@@ -211,12 +230,20 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
         {
           user ?
             article.author === user?._id || user?.roles.includes("Administrateur") || user?.roles.includes("Modérateur") ?
-            <div>
-              <Link to={`/edit-article/${id}`} style={{marginRight: '10px'}}>
-                <Button variant='contained' color='warning'>Modifier le contenu</Button>
-              </Link>
-              <Button variant='contained' color='error' onClick={() => setDialogOpened(true)}>Supprimer le contenu</Button>
-            </div>
+            <>
+              <div className={styles.full_width}>
+                <Link to={`/edit-article/${id}`} style={{marginRight: '10px'}}>
+                  <Button variant='contained' color='warning'>Modifier le contenu</Button>
+                </Link>
+                <Button variant='contained' color='error' onClick={() => setDialogOpened(true)}>Supprimer le contenu</Button>
+              </div>
+              <div className={styles.semi_width}>
+                <Link to={`/edit-article/${id}`} style={{margin: '10px'}}>
+                  <Button variant='contained' color='warning'><ModeEditRoundedIcon/></Button>
+                </Link>
+                <Button variant='contained' sx={{margin: '10px'}} color='error' onClick={() => setDialogOpened(true)}><DeleteForeverRoundedIcon/></Button>
+              </div>
+            </>
             :
               <></>
           :
@@ -299,32 +326,43 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
           }
 
           {comments?.map((item, index) => (
-            
-            <div className={styles.item_com} key={index}>
+            <>
               {
               item.user_id === user?._id ?
-
-                <>
-                  <div className={styles.second}></div>
+                <div className={styles.item_com_from_this_user} key={index}>
+                  {/* <div className={styles.second}></div> */}
                   <div className={styles.text}>
-                    <div className={styles.t}>{item.text}</div>
+                    <div className={styles.t}>
+                      <div>{item.text}</div>
+                      <div><IconButton aria-label='Supprimer' onClick={() => deleteCom(item._id)}><DeleteRoundedIcon color='error'/></IconButton></div>  
+                    </div>
                     <div className={styles.a}>
                       Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
-                </>
+                </div>
               :
-                <>
+
+                <div className={styles.item_com_not_from_this_user} key={index}>
+                  
                   <div className={styles.text}>
-                    <div className={styles.t}>{item.text}</div>
+                    <div className={styles.t}>
+                      <div>{item.text}</div>
+                      {
+                        user?.roles.includes('Administrateur') || user?.roles.includes('Modérateur') ?
+                          <div><IconButton aria-label='Supprimer' onClick={() => deleteCom(item._id)}><DeleteRoundedIcon color='error'/></IconButton></div>
+                        :
+                          <></>
+                      }
+                    </div>
                     <div className={styles.a}>
                       Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
-                  <div className={styles.second}></div>
-                </>
+                  {/* <div className={styles.second}></div> */}
+                </div>
               }
-            </div>
+            </>
           ))}
         </div>
 

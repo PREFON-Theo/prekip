@@ -63,7 +63,7 @@ const links1 = [
                 </ul>
               </div>
 
-              <div className={styles.item_footer}>
+              {/* <div className={styles.item_footer}>
                 <ul className={styles.fl_ul}>
                   {links2.map((item, index) => (
                     <li key={index}>
@@ -71,7 +71,7 @@ const links1 = [
                     </li>
                   ))}
                 </ul>
-              </div>
+              </div> */}
             </div>
 
             <div className={styles.c_right}>

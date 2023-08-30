@@ -3,8 +3,7 @@
   display: flex;
   padding: 50px 0;
 
-  .left {
-    flex: 1;
+  .left, .left_semi_width {
     background-color: rgb(241, 241, 241);
     height: 100vh;
     overflow-y: auto;
@@ -39,6 +38,35 @@
       justify-content: space-between;
     }
 
+  }
+
+  @media (max-width: 899px) {
+    .left {
+      display: none;
+    }
+    .menu_button {
+      display: block;
+    }
+  }
+
+
+        
+  @media (min-width: 900px) {
+    .left {
+      flex: 2;
+    }
+    .menu_button {
+      display: none;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .left {
+      flex: 1;
+    }
+    .menu_button {
+      display: none;
+    }
   }
 
   .main {
@@ -124,4 +152,41 @@
 
     }
   }
+}
+
+.left_semi_width {
+  background-color: rgb(241, 241, 241);
+  height: 100vh;
+  overflow-y: auto;
+
+  h4 {
+    padding: 0 25px;
+  }
+
+  > div.item_last_forum,  > div.item_last_forum_focused{
+    border-top: 1px solid rgba(0, 0, 0, 0.192);
+    border-right: 1px solid rgba(0, 0, 0, 0.192);
+  }
+
+  > div.item_last_forum:last-child, > div.item_last_forum_focused:last-child {
+    border-bottom:  1px solid rgba(0, 0, 0, 0.192);
+  }
+
+  .item_last_forum {
+    padding: 25px;
+    cursor: pointer;
+  }
+
+  .item_last_forum_focused{
+    padding: 25px;
+    cursor: pointer;
+    background-color: #fff;
+  }
+
+  .more_to_load {
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+  }
+
 }
