@@ -6,7 +6,8 @@ const RubriqueTypeSchema = Schema({
     title: String,
     description: String,
     link: {type: String, unique: true},
-    parent: String
+    parent: String,
+    imgLink: String
 })
 
 const RubriqueTypeModel = mongoose.model('RubriqueType', RubriqueTypeSchema);

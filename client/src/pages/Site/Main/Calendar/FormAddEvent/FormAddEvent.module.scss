@@ -18,7 +18,7 @@ div.container {
             margin-bottom: 2vh;
         }
 
-        .input_dates {
+        .input_dates_re {
             display: flex;
             justify-content: space-between;
             >div {
@@ -26,6 +26,25 @@ div.container {
             }
         }
 
+        .input_dates_tt {
+            .firstLine {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                >div {
+                }
+            }
+
+            .secondLine {
+                margin: 20px 0;
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                >div {
+                }
+            }
+        }
+        
         div.input_title, div.input_description, .input_event_type {
             >div {
                 width: 100%;

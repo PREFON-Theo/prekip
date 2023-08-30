@@ -2,18 +2,25 @@ import React, { useState } from 'react'
 import styles from "./Footer.module.scss"
 import { Link } from 'react-router-dom';
 
+import TwitterIcon from '@mui/icons-material/Twitter';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import InstagramIcon from '@mui/icons-material/Instagram';
+
 const Footer = () => {
 
 const links1 = [
     {
+      icon: `${<TwitterIcon/>}`,
       title: "Twitter",
       link: "https://www.twitter.com/Prefon_Asso",
     },
     {
+      icon: `${<FacebookIcon/>}`,
       title: "Facebook",
       link: "https://www.facebook.com/PrefonAsso/",
     },
     {
+      icon: `${<InstagramIcon/>}`,
       title: "Instagram",
       link: "https://www.instagram.com/prefonhandball",
     },
@@ -42,15 +49,21 @@ const links1 = [
             <div className={styles.c_left}>
               <div className={styles.item_footer}>
                 <ul className={styles.fl_ul}>
-                  {links1.map((item, index) => (
-                    <li key={index}>
-                      <Link to={item.link} target='_blank'>{item.title}</Link>
-                    </li>
-                  ))}
+                  <li>
+                    <Link to="https://www.twitter.com/Prefon_Asso" target='_blank'><TwitterIcon sx={{verticalAlign:"bottom"}} fontSize='small'/> Twitter</Link>
+                  </li>
+
+                  <li>
+                    <Link to="https://www.facebook.com/PrefonAsso/" target='_blank'><FacebookIcon sx={{verticalAlign:"bottom"}} fontSize='small'/> Facebook</Link>
+                  </li>
+
+                  <li>
+                    <Link to="https://www.instagram.com/prefonhandball" target='_blank'><InstagramIcon sx={{verticalAlign:"bottom"}} fontSize='small'/> Instagram</Link>
+                  </li>
                 </ul>
               </div>
 
-              <div className={styles.item_footer}>
+              {/* <div className={styles.item_footer}>
                 <ul className={styles.fl_ul}>
                   {links2.map((item, index) => (
                     <li key={index}>
@@ -58,7 +71,7 @@ const links1 = [
                     </li>
                   ))}
                 </ul>
-              </div>
+              </div> */}
             </div>
 
             <div className={styles.c_right}>
@@ -70,7 +83,7 @@ const links1 = [
             <div className={styles.f_bottom_container}>
 
             <div className={styles.fb_left}>PREKIP</div>
-            <div className={styles.fb_right}>© {new Date().getFullYear()} PREFON, Inc.</div>
+            <div className={styles.fb_right}>© {new Date().getFullYear()} PREFON</div>
 
           </div>
 

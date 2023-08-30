@@ -1,0 +1,38 @@
+.container {
+  margin: 0 auto;
+
+  .box {
+    padding: 50px;
+    background-color: rgb(226, 226, 226);
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    width: 90%;
+  }
+}
+
+@media (min-width: 600px) {
+  .container {
+    width: 80%;
+  }
+}
+
+@media (min-width: 800px) {
+  .container {
+    width: 70%;
+  }
+}
+
+@media (min-width: 1000px) {
+  .container {
+    width: 60%;
+  }
+}
+
+@media (min-width: 1175px) {
+  .container {
+    width: 50%;
+  }
+}

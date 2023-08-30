@@ -6,16 +6,24 @@ const ArticleSchema = Schema({
     title: String,
     preview: String,
     content: String,
-    created_at: Date,
-    updated_at: Date,
+    created_at: {
+        type: Date,
+        default: Date.now
+    },
+    updated_at: {
+        type: Date,
+        default: Date.now
+    },
     category: String,
     author: String,
-    image: String,
-    file: String,
-    /*imageUrl: String,
-    imageName: String,
-    fileUrl: String,
-    fileName: String,*/
+    updated_by: String,
+    image: Object,
+    file: Object,
+    important: {
+        type: Boolean,
+        default: false
+    },
+    type: String,
 })
 
 const ArticleModel = mongoose.model('Article', ArticleSchema);

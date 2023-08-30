@@ -1,21 +1,31 @@
 .container {
     width: 100%;
-    color: #fff;
-    margin-bottom: 75px;
+    color: #000000;
+    // margin-bottom: 75px;
 
 
     h2 {
         color: #000;
+        font-weight: bolder;
     }
     a {
-        color: #fff;
+        color: #000;
         text-decoration: none;
         .wrapper {
-            background-color: #0B2F83;
-            padding: 20px;
             .title {
-                font-size: 80px;
-                margin-bottom: 50px;
+                font-size: 60px;
+                margin-bottom: 20px;
+            }
+
+            .left {
+                flex: 1;
+                img {
+                    width: 100%;
+                }
+            }
+
+            .right {
+                flex: 1;
             }
             .preview {
                 font-weight: 100;
@@ -23,9 +33,10 @@
 
             }
             .more {
+                text-decoration: underline;
+                text-align: right;
                 display: flex;
-                flex-direction: row-reverse;
-
+                justify-content: right;
             }
         }
     }

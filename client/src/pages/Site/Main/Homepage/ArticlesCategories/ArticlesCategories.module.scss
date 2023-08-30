@@ -1,10 +1,9 @@
 .container {
   width: 100%;
-  padding: 30px 0;
+  padding: 20px 0 70px;
 
 
-  .title {
-    font-size: xx-large;
+  .h2 {
     font-weight: bold;
     margin-bottom: 50px;
   }
@@ -31,7 +30,6 @@
     margin-left: 20px;
 
     .item {
-      margin: 20px 0;
       
       a {
         color: #000;
@@ -50,7 +48,8 @@
     div.fill {
       height: 2px;
       width: 100%;
-      background-color: #00000018;   
+      background-color: #00000018;
+      margin: 20px 0;
     }
   }
 

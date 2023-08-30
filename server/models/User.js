@@ -7,10 +7,16 @@ const UserSchema = Schema({
     lastname: String,
     email: {type: String, unique: true},
     password: String,
-    role: String,
+    roles: {
+        type: Array,
+        default: ["Utilisateur"]
+    },
     joiningDate: Date,
     leavingDate: Date,
-    valid: Boolean
+    valid: {
+        type: Boolean,
+        default: true
+    }
 })
 
 const UserModel = mongoose.model('User', UserSchema);

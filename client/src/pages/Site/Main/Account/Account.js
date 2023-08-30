@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styles from "./Account.module.scss"
 import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
-import { Navigate, Link, Routes, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { TextField } from '@mui/material';
 import { Button } from '@mui/material';
@@ -29,12 +29,12 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
   }, [user])
 
   
-  if(!ready) {
+  if(ready === "waiting") {
     return 'Chargement...';
   }
 
 
-  if(!user) {
+  if(ready === "no") {
     return <Navigate replace to={"/"}/>
   }
 
@@ -49,12 +49,12 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
               ...userInfor,
               password: password
             })
-            .then(() => handleOpenAlert())
-            .then(() => changeAlertValues("success", "Informations modifiées"))
-            .then(() => setUser({
+            handleOpenAlert()
+            changeAlertValues("success", "Informations modifiées")
+            setUser({
               firstname: userInfor.firstname,
               lastname: userInfor.lastname
-            }))
+            })
           }
         }
         else {
@@ -62,15 +62,14 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
         }
       }
       else {
-        console.log(userInfor)
         if(user._id){
           axios.patch(`/user/${user?._id}`, userInfor)
-          .then(() => handleOpenAlert())
-          .then(() => changeAlertValues("success", "Informations modifiées"))
-          .then(() => setUser({
+          handleOpenAlert()
+          changeAlertValues("success", "Informations modifiées")
+          setUser({
             firstname: userInfor.firstname,
             lastname: userInfor.lastname
-          }))
+          })
         }
       }
       
@@ -106,7 +105,7 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
 
         <div className={styles.two}></div>
         <div className={styles.button}>
-            <Button variant="contained" color='warning' onClick={handleSumbitChanges}>Modfiier</Button>
+            <Button variant="contained" color='warning' onClick={handleSumbitChanges}>Modifiier</Button>
         </div>
       </div>
     </>

@@ -15,15 +15,21 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import axios from 'axios';
-
-import ListSubheader from '@mui/material/ListSubheader';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
-import OutlinedInput from '@mui/material/OutlinedInput';
+import "dayjs/locale/fr"
 
 
+const eventTypesList = [
+  {
+    title: "Télétravail",
+    internalName: "teletravail",
+  },
+  {
+    title: "Réunion d'entreprise",
+    internalName: "reunion_entreprise",
+  }
+]
 
-const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseForm, handleOpenAlert, changeAlertValues, actualisateData}) => {
+const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOpenAlert, changeAlertValues, actualisateData}) => {
   const [eventInfo, setEventInfo] = useState({
     title: '',
     description: '',
@@ -31,65 +37,57 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
     finishDate: '',
     type: '',
     owner: '',
-    usersTagged: []
   })
-  const [parentType, setParentType] = useState('')
-  const [typeOfAbs, setTypeOfAbs] = useState('')
-  const usersTaggedNamed = []
 
-  const fetchData = () => {
-    axios.get('/event/' + idEventToEdit).then((res) => 
-      setEventInfo({
-        title: res.data.title,
-        description: res.data.description,
-        startDate: dayjs(res.data.startDate),
-        finishDate: dayjs(res.data.finishDate),
-        type: res.data.type,
-        owner: res.data.owner,
-        usersTagged: res.data.usersTagged
-      })
-    )
+  const [authorizedToEdit, setAuthorizedToEdit] = useState(false)
+
+  const [eventTypeSelected, setEventTypeSelected] = useState('')
+
+
+  const fetchData = async () => {
+    const eventData = await axios.get('/event/' + idEventToEdit)
+    setEventInfo({
+      title: eventData.data.title,
+      description: eventData.data.description,
+      startDate: dayjs(eventData.data.startDate),
+      finishDate: dayjs(eventData.data.finishDate),
+      type: eventData.data.type,
+      owner: eventData.data.owner
+    })
+    setEventTypeSelected(eventData.data.type)
+
+    if(user){
+      if(eventData.data.owner === user._id || user.roles.includes('Modérateur') || user.roles.includes('Administrateur')){
+        setAuthorizedToEdit(true)
+      }
+      else {
+        setAuthorizedToEdit(false)
+      }
+    }
+
+
   };
 
   useEffect(() => {
     fetchData();
   }, [])
 
-
-  useEffect(() => {
-    eventInfo.usersTagged.map((item, index) => (
-      usersTaggedNamed.push(`${userList.filter((us) => us._id === item)[0]?.firstname} ${userList.filter((us) => us._id === item)[0]?.lastname}`)
-    ))
-    eventInfo.startDate !== '' ? 
-      setTypeOfAbs(
-        eventInfo.startDate?.hour() <= 9 && eventInfo.finishDate?.hour() >= 18 ?
-      1
-      :
-      eventInfo.startDate?.hour() <= 9 && eventInfo.finishDate?.hour() === 12 ?
-      2
-      :
-      eventInfo.startDate?.hour() === 12 && eventInfo.finishDate?.hour() >= 18 ?
-      3
-      :
-      ''
-      )
-      : <></>
-  }, [eventInfo])
-
-
-
-
   const handleUpdateEvent = async () => {
     try {
-      if(user._id === eventInfo.owner){
+      if(authorizedToEdit){
         await axios
-          .patch('/event/' + idEventToEdit, eventInfo)
-          .then(() => console.log("Updated"))
-          .then(() => handleOpenAlert())
-          .then(() => handleCloseForm())
-          .then(() => changeAlertValues('success', 'Evenement modifié'))
-          .then(() => actualisateData())
-          .catch((e) => changeAlertValues('error', e))
+          .patch(`/event/${idEventToEdit}` , {
+            ...eventInfo,
+            type: eventTypeSelected,
+            title: eventTypeSelected === "teletravail" ? "" : eventInfo.title,
+            description: eventTypeSelected === "teletravail" ? "" : eventInfo.description,
+            startDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(9) : eventInfo.startDate,
+            finishDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(18) : eventInfo.finishDate
+          })
+          handleOpenAlert()
+          handleCloseForm()
+          changeAlertValues('success', 'Évènement modifié')
+          actualisateData()
       }
       else {
         changeAlertValues('error', "Unauthorized")
@@ -102,15 +100,13 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
 
   const handleDeleteEvent = async () => {
     try {
-      if(user._id === eventInfo.owner){
-        axios
+      if(authorizedToEdit){
+        await axios
           .delete('/event/' + idEventToEdit)
-          .then(() => console.log(`Event ${idEventToEdit} deleted`))
-          .then(() => handleOpenAlert())
-          .then(() => handleCloseForm())
-          .then(() => changeAlertValues('success', 'Evenement supprimé'))
-          .then(() => actualisateData())
-          .catch((e) => changeAlertValues('error', e))
+          handleOpenAlert()
+          handleCloseForm()
+          changeAlertValues('success', 'Évènement supprimé')
+          actualisateData()
       }
     }
     catch (err) {
@@ -118,312 +114,90 @@ const FormEditEvent = ({idEventToEdit, eventTypes, user, userList, handleCloseFo
     }
   }
 
-  const handleChangeTypeOfAbs = (t) => {
-    setTypeOfAbs(t)
-    console.log(eventInfo.startDate.hour())
-    if(t === 1){
-      setEventInfo(prevValues => ({...prevValues, startDate: eventInfo.startDate.hour(9), finishDate: eventInfo.startDate.hour(18)}))
-    }
-    else if (t === 2) {
-      setEventInfo(prevValues => ({...prevValues, startDate: eventInfo.startDate.hour(9), finishDate: eventInfo.startDate.hour(12)}))
-    }
-    else if (t === 3) {
-      setEventInfo(prevValues => ({...prevValues, startDate: eventInfo.startDate.hour(12), finishDate: eventInfo.startDate.hour(18)}))
-    }
-  }
-
-  const handleChangeTypeOfEvent = (eve) => {
-    setEventInfo(prevValues => ({...prevValues, type: eve}) )
-    parentType === "Absences" 
-    ?
-      setEventInfo(prevValues => ({...prevValues, title: '', description: '', usersTagged: []}))
-    :
-    parentType === "Global"
-    ?
-      setEventInfo(prevValues => ({...prevValues, usersTagged: []}))
-    :
-      console.log("rien")
-  }
-  useEffect(() =>{
-    setParentType(eventTypes.filter((e) => e._id === eventTypes.filter((et) => et._id === eventInfo.type)[0]?.parent)[0]?.title)
-  }, [eventInfo.type])
-
-
-
 
   return (
     <>
       <div className={styles.container}>
         <h1>
-          Informations de cet évènement de {userList.filter((use) => use._id === eventInfo.owner)[0]?.firstname} {userList.filter((use) => use._id === eventInfo.owner)[0]?.lastname}:
+          Informations de l'évènement :&nbsp;
+          {eventTypesList?.filter((et) => et.internalName === eventInfo.type)[0]?.title === undefined ?
+            <span style={{fontStyle: "italic"}}>type inconnu</span> 
+          : eventTypesList?.filter((et) => et.internalName === eventInfo.type)[0]?.title}
+            &nbsp;de&nbsp;
+          {userList?.filter((et) => et._id === eventInfo.owner)[0]?.firstname === undefined ? 
+              <span style={{fontStyle: "italic"}}>Utilisateur inconnu</span>
+            : 
+              `${userList?.filter((et) => et._id === eventInfo.owner)[0]?.firstname} ${userList?.filter((et) => et._id === eventInfo.owner)[0]?.lastname}`
+          }
         </h1>
         <div className={styles.container_inputs}>
+          <div className={styles.input_event_type}>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth>
+                <InputLabel id="select-label">Type d'évènement</InputLabel>
+                <Select
+                  labelId="select-label"
+                  value={eventTypeSelected}
+                  label="Type d'évènement"
+                  onChange={e =>  setEventTypeSelected(e.target.value)}
+                  disabled={!authorizedToEdit}
+                >
+                  <MenuItem value={"teletravail"} sx={{textAlign: 'left'}}>Télétravail</MenuItem>
+                  {
+                  user?.roles.includes("Administrateur") ?                 
+                    <MenuItem value={"reunion_entreprise"} sx={{textAlign: 'left'}}>Réunion d'entreprise</MenuItem>
+                  : 
+                    <></>
+                  }
+                </Select>
+              </FormControl>
+            </Box>
+          </div>
 
           {
-
-            user && user._id === eventInfo.owner ?
-
-              parentType === undefined ?
-                <div style={{marginBottom: '2vh'}}>Sélectionnez un type d'évènement</div>
-              :
-                parentType === "Absences" ?
-                  <>
-                    <div className={styles.input_event_type}>
-                      <Box sx={{ minWidth: 120 }}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">Type d'évènement</InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={eventInfo.type}
-                            label="Type d'évènement"
-                            onChange={e => handleChangeTypeOfEvent(e.target.value)}
-                          >
-                            {eventTypes.map((item, index) => (
-                              item.parent === "" 
-                              ? 
-                                <ListSubheader key={index} >{item.title}</ListSubheader>
-                              :
-                                <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
-
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </Box>
-                    </div>
-                    <div className={styles.input_dates}>
-                      <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}}>
-                          <DatePicker label="Date de l'absence" format="DD/MM/YYYY" value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )}/>
-                      </LocalizationProvider>
-                      <FormControl>
-                        <InputLabel id="demo-simple-select-label">Période</InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={typeOfAbs}
-                          label="Période"
-                          onChange={e => handleChangeTypeOfAbs(e.target.value)}
-                        >
-                          <MenuItem key={1} value={1} sx={{textAlign: 'left'}}>Toute la journée</MenuItem>
-                          <MenuItem key={2} value={2} sx={{textAlign: 'left'}}>La matinée</MenuItem>
-                          <MenuItem key={3} value={3} sx={{textAlign: 'left'}}>L'après-midi</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                    <div className={styles.button}>
-                      <Button variant="contained" color='warning' onClick={handleUpdateEvent}>Modifier l'évènement</Button>
-                      <Button variant="contained" color='error' onClick={handleDeleteEvent}>Supprimer l'évènement</Button>
-                    </div>
-                  </>
-                :
-                  parentType === "Global" ?
-                      <>
-                        <div className={styles.input_event_type}>
-                          <Box sx={{ minWidth: 120 }}>
-                            <FormControl fullWidth>
-                              <InputLabel id="demo-simple-select-label">Type d'évènement</InputLabel>
-                              <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={eventInfo.type}
-                                label="Type d'évènement"
-                                onChange={e => setEventInfo(prevValues => ({...prevValues, type: e.target.value}) )}
-                              >
-                                {eventTypes.map((item, index) => (
-                                  item.parent === "" 
-                                  ? 
-                                    <ListSubheader key={index} >{item.title}</ListSubheader>
-                                  :
-                                    <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
-
-                                ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                        </div>
-                        <div className={styles.input_title}>
-                          <TextField value={eventInfo.title} label="Titre" variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, title: e.target.value}) )}/>
-                        </div>
-                        <div className={styles.input_description}>
-                          <TextField value={eventInfo.description} multiline maxRows={3} label="Description" variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, description: e.target.value}) )}/>
-                        </div>
-                        <div className={styles.input_dates}>
-                          <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}}>
-                              <DateTimePicker format="DD/MM/YYYY HH:mm:ss" ampm={false} label="Date de début" maxDate={dayjs(eventInfo.finishDate)} value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )} />
-                          </LocalizationProvider>
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                              <DateTimePicker format="DD/MM/YYYY HH:mm:ss" ampm={false} label="Date de fin" minDate={dayjs(eventInfo.startDate)} value={dayjs(eventInfo.finishDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, finishDate: e}) )} />
-                          </LocalizationProvider>
-                        </div>                
-                        <div className={styles.button}>
-                          <Button variant="contained" color='warning' onClick={handleUpdateEvent}>Modifier l'évènement</Button>
-                          <Button variant="contained" color='error' onClick={handleDeleteEvent}>Supprimer l'évènement</Button>
-                        </div>
-                      </>
-                  :
-                  parentType === "Equipe" ?
-                    <>
-                      <div className={styles.input_event_type}>
-                        <Box sx={{ minWidth: 120 }}>
-                          <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Type d'évènement</InputLabel>
-                            <Select
-                              labelId="demo-simple-select-label"
-                              id="demo-simple-select"
-                              value={eventInfo.type}
-                              label="Type d'évènement"
-                              onChange={e => handleChangeTypeOfEvent(e.target.value)}
-                            >
-                              {eventTypes.map((item, index) => (
-                                item.parent === "" 
-                                ? 
-                                  <ListSubheader key={index} >{item.title}</ListSubheader>
-                                :
-                                  <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
-
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                      </div>
-
-                      <div className={styles.input_title}>
-                        <TextField value={eventInfo.title} label="Titre" variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, title: e.target.value}) )}/>
-                      </div>
-                      <div className={styles.input_description}>
-                        <TextField value={eventInfo.description} multiline maxRows={3} label="Description" variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, description: e.target.value}) )}/>
-                      </div>
-                      <div className={styles.input_dates}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}}>
-                            <DateTimePicker format="DD/MM/YYYY HH:mm:ss" ampm={false} label="Date de début" maxDate={dayjs(eventInfo.finishDate)} value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )} />
-                        </LocalizationProvider>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DateTimePicker format="DD/MM/YYYY HH:mm:ss" ampm={false} label="Date de fin" minDate={dayjs(eventInfo.startDate)} value={dayjs(eventInfo.finishDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, finishDate: e}) )} />
-                        </LocalizationProvider>
-                      </div>
-
-                      <div className={styles.tag_users}>
-                        <Box sx={{ minWidth: 120 }}>
-                          <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Utilisateurs dans l'évènement</InputLabel>
-                            <Select
-                              labelId="demo-multiple-checkbox-label"
-                              id="demo-multiple-checkbox"
-                              multiple
-                              value={eventInfo.usersTagged}
-                              onChange={e => setEventInfo(prevValues => ({...prevValues, usersTagged: e.target.value}))}
-                              input={<OutlinedInput sx={{width: '100%'}} label="Utilisateurs dans l'évènement" />}
-                              renderValue={(selected) => selected.map((item, index) => (
-                                index === 0 ? `${userList.filter((u) => u._id === item)[0]?.firstname} ${userList.filter((u) => u._id === item)[0]?.lastname}`  : `, ${userList.filter((u) => u._id === item)[0]?.firstname} ${userList.filter((u) => u._id === item)[0]?.lastname}`
-                              ))}
-                            >
-                              {userList.map((item, index) => (
-                                <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>
-                                  <Checkbox checked={eventInfo.usersTagged.filter((u) => u === item._id).length > 0 ? true : false} />
-                                  <ListItemText primary={`${item?.firstname} ${item?.lastname}`} />
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                      </div>
-
-                        
-                      <div className={styles.button}>
-                        <Button variant="contained" color='warning' onClick={handleUpdateEvent}>Modifier l'évènement</Button>
-                        <Button variant="contained" color='error' onClick={handleDeleteEvent}>Supprimer l'évènement</Button>
-                      </div>
-                    </>
-                  :
-
-                    <></>
-
-                :
-              //TODO
-              parentType === undefined ?
-                <div style={{marginBottom: '2vh'}}>Sélectionnez un type d'évènement</div>
-              :
-              parentType === "Absences" ?
-                <>
-                  {/* Change type event */}
-                  <div className={styles.input_event_type}>
-                  <TextField disabled value={eventTypes.filter((et) => et._id === eventInfo.type)[0]?.title} label="Type d'évènement" variant="outlined"/>
-                  </div>
-                  {/* Dates absences */}
-                  <div className={styles.input_dates}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}}>
-                        <DatePicker label="Date de l'absence" disabled format="DD/MM/YYYY" value={dayjs(eventInfo.startDate)}/>
-                    </LocalizationProvider>
-                    <TextField disabled value={typeOfAbs === 1 ? 'Toute la journée' : typeOfAbs === 2 ? 'La matinée' : "L'après-midi"} label="Période" variant="outlined"/>
-                  </div>
-                </>
-              :
-              parentType === "Global" ?
-                <>
-                  <div className={styles.input_event_type}>
-                    <TextField disabled value={eventTypes.filter((et) => et._id === eventInfo.type)[0]?.title} label="Type d'évènement" variant="outlined"/>
-                  </div>
-
-                  <div className={styles.input_title}>
-                    <TextField value={eventInfo.title} disabled label="Titre" variant="outlined"/>
-                  </div>
-                  <div className={styles.input_description}>
-                    <TextField value={eventInfo.description} disabled multiline maxRows={3} label="Description" variant="outlined"/>
-                  </div>
-                  <div className={styles.input_dates}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}}>
-                        <DateTimePicker format="DD/MM/YYYY HH:mm:ss" disabled ampm={false} label="Date de début" value={dayjs(eventInfo.startDate)}/>
-                    </LocalizationProvider>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DateTimePicker format="DD/MM/YYYY HH:mm:ss" disabled ampm={false} label="Date de fin" value={dayjs(eventInfo.finishDate)}/>
-                    </LocalizationProvider>
-                  </div>                
-                </>
-              :
-              parentType === "Equipe" ?
-                <>
-                  <div className={styles.input_event_type}>
-                    <TextField disabled value={eventTypes.filter((et) => et._id === eventInfo.type)[0]?.title} label="Type d'évènement" variant="outlined"/>
-                  </div>
-
-                  <div className={styles.input_title}>
-                    <TextField value={eventInfo.title} disabled label="Titre" variant="outlined"/>
-                  </div>
-                  <div className={styles.input_description}>
-                    <TextField value={eventInfo.description} disabled multiline maxRows={3} label="Description" variant="outlined"/>
-                  </div>
-                  <div className={styles.input_dates}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}}>
-                        <DateTimePicker format="DD/MM/YYYY HH:mm:ss" disabled ampm={false} label="Date de début" value={dayjs(eventInfo.startDate)}/>
-                    </LocalizationProvider>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DateTimePicker format="DD/MM/YYYY HH:mm:ss" disabled ampm={false} label="Date de fin" value={dayjs(eventInfo.finishDate)}/>
-                    </LocalizationProvider>
-                  </div>
-
-                  <div className={styles.tag_users}>
-                    <Box sx={{ minWidth: 120 }}>
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Utilisateurs dans l'évènement</InputLabel>
-                        <Select
-                          labelId="demo-multiple-checkbox-label"
-                          id="demo-multiple-checkbox"
-                          multiple
-                          value={eventInfo.usersTagged}
-                          disabled
-                          input={<OutlinedInput sx={{width: '100%', color: "#00000061"}} label="Utilisateurs dans l'évènement" />}
-                          renderValue={(selected) => selected.map((item, index) => (
-                            index === 0 ? `${userList.filter((u) => u._id === item)[0]?.firstname} ${userList.filter((u) => u._id === item)[0]?.lastname}`  : `, ${userList.filter((u) => u._id === item)[0]?.firstname} ${userList.filter((u) => u._id === item)[0]?.lastname}`
-                          ))}
-                        >
-                        </Select>
-                      </FormControl>
-                    </Box>
-                  </div>
-                </>
-              :
-                <></>
+            eventTypeSelected === '' ?
+              <div style={{marginBottom: '2vh'}}>Sélectionnez un type d'évènement</div>
+            :
+            eventTypeSelected === "teletravail" ?
+            <>
+              <div className={styles.input_dates}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}} adapterLocale='fr'>
+                    <DatePicker label="Date de l'absence" disabled={!authorizedToEdit} format="DD/MM/YYYY" value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )}/>
+                </LocalizationProvider>
+              </div>
+            </>
+            :
+            eventTypeSelected === "reunion_entreprise" ?
+              <>
+                <div className={styles.input_title}>
+                  <TextField value={eventInfo.title} label="Titre" disabled={!authorizedToEdit} variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, title: e.target.value}) )}/>
+                </div>
+                <div className={styles.input_description}>
+                  <TextField value={eventInfo.description} disabled={!authorizedToEdit} multiline maxRows={3} label="Description" variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, description: e.target.value}) )}/>
+                </div>
+                <div className={styles.input_dates}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}} adapterLocale='fr'>
+                      <DateTimePicker format="DD/MM/YYYY HH:mm:ss" disabled={!authorizedToEdit} ampm={false} label="Date de début" maxDate={dayjs(eventInfo.finishDate)} value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )} />
+                  </LocalizationProvider>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr'>
+                      <DateTimePicker format="DD/MM/YYYY HH:mm:ss" disabled={!authorizedToEdit} ampm={false} label="Date de fin" minDate={dayjs(eventInfo.startDate)} value={dayjs(eventInfo.finishDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, finishDate: e}) )} />
+                  </LocalizationProvider>
+                </div>
+              </>
+            :
+              <></>
           }
+
+          { 
+            authorizedToEdit ?
+              <div className={styles.button}>
+                <Button variant="contained" color='warning' onClick={handleUpdateEvent}>Modifier l'évènement</Button>
+                <Button variant="contained" color='error' onClick={handleDeleteEvent}>Supprimer l'évènement</Button>
+              </div>
+            :
+              <></>  
+          }
+
         </div>
 
       </div>

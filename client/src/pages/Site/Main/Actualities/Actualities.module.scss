@@ -1,0 +1,37 @@
+.container {
+  padding: 3vh 3vw;
+
+  .rubrique {
+    width: 50%;
+    margin: 0 auto 50px 0;
+    
+    .article {
+      display: flex;
+      padding: 20px;
+      color: #000;
+      text-decoration: none;
+      justify-content: space-between;
+
+
+      .infos {
+        font-size: smaller;
+        color: #00000051;
+      }
+    }
+
+    /*.article:nth-child(even) {
+      background-color: rgb(245, 245, 245);
+    }*/
+    .article:nth-child(even) {
+      background-color: rgb(255, 255, 255);
+    }
+    .article:hover {
+      box-shadow: 2px 0 0 rgba(0, 0, 0, 0.372), -2px 0 0 rgba(0, 0, 0, 0.372);
+    }
+  }
+
+  .pagination {
+    margin: 45px auto;
+    width: 50%;
+  }
+}

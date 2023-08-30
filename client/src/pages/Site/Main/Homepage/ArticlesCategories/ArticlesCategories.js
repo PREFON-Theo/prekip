@@ -1,66 +1,78 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from "./ArticlesCategories.module.scss"
 import { Link } from 'react-router-dom'
 
-const content = [
-  {
-    title:"lkj",
-    link:""
-  },
-]
 
+const ArticlesCategories = ({item}) => {
 
-const ArticlesCategories = ({title, itemImg, itemArticle}) => {
+  const [firstSemiLength, setFirstSemiLength] = useState(0)
+  const [secondSemiLength, setFSecondSemiLength] = useState(0)
+  
+  useEffect(() => {
+    if(item.reference !== undefined){
+      if(item.reference?.length > 0){
+        setFirstSemiLength(item.reference.length % 2 > 0 ? (item.reference.length/2) +0.5 : item.reference.length/2)
+        setFSecondSemiLength(item.reference.length % 2 > 0 ? (item.reference.length/2) -0.5 : item.reference.length/2)
+      }
+    }
+  }, [item.reference])
+
+  useEffect(() => {
+  }, [firstSemiLength, secondSemiLength])
+
   return (
     <>
         <div className={styles.container}>
-          <div className={styles.title}>{title}</div>
+          <h2>{item.title}</h2>
 
           <div className={styles.wrapper}>
             <div className={styles.left}>
-              <Link to='/'>
-                <img src={itemImg.img} alt={itemImg.alt} />
-                <div>Qualifications EHF Euro 2022 France-Ukraine - Le Havre</div>
-              </Link>
+              <img src={item.imgLink || "https://placehold.co/400"} style={{width: "100%"}} alt={`img ${item.link}`} />
             </div>
-            <div className={styles.middle}>
 
-              <div className={styles.item}>
-                <Link>{itemArticle[0].title}</Link>
-              </div>
 
-              <div className={styles.fill}></div>
+            {item.reference !== undefined ?
+              item.reference.length > 0 ?
+                <>
+                  <div className={styles.middle}>
+                    {item.reference?.slice(0, firstSemiLength).map((item, index) => (
+                      <div key={index} className={styles.item}>
+                        <Link to={`/reference/${item._id}`}>
+                          {item.title}
+                          </Link>
+                        {index+1 === firstSemiLength ?
+                          <></>
+                        :
+                          <div className={styles.fill}></div>
+                        }
+                      </div>
+                    ))}
+                  </div>
+                  <div className={styles.right}>
+                    {item.reference?.slice(firstSemiLength, item.reference.length).map((item, index) => (
+                      <div key={index} className={styles.item}>
+                        <Link>{item.title}</Link>
+                        {index+1 === firstSemiLength ?
+                          <></>
+                        :
+                          <div className={styles.fill}></div>
+                        }
+                      </div>
+                    ))}
+                  </div>
+                </>
+              :
+              <>
+                <div className={styles.middle}>Rien à afficher</div>
+                <div className={styles.right}></div>
+              </>
+            :
+              <>
+                <div className={styles.middle}>Chargement</div>
+                <div className={styles.right}></div>
+              </>
+            }
 
-              <div className={styles.item}>
-                <Link>{itemArticle[1].title}</Link>
-              </div>
-
-              <div className={styles.fill}></div>
-
-              <div className={styles.item}>
-                <Link>{itemArticle[2].title}</Link>
-              </div>
-
-            </div>
-            <div className={styles.right}>
-
-              <div className={styles.item}>
-                <Link>{itemArticle[3].title}</Link>
-              </div>
-
-              <div className={styles.fill}></div>
-
-              <div className={styles.item}>
-                <Link>{itemArticle[4].title}</Link>
-              </div>
-
-              <div className={styles.fill}></div>
-
-              <div className={styles.item}>
-                <Link>{itemArticle[5].title}</Link>
-              </div>
-
-            </div>
           </div>
         </div>
     </>

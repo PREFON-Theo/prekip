@@ -1,0 +1,90 @@
+.container {
+
+  .title {
+    display: flex;
+    justify-content: space-between;
+
+    h2 {
+      margin: auto 0;
+    }
+
+    button {
+      height: auto;
+    }
+  }
+
+  margin: 5vh auto;
+    background-color: rgb(241, 241, 241);
+    padding: 5vh 3vw;
+}
+
+div.container_dialog {
+  width: auto;
+  height: auto;
+  margin: auto;
+  padding: 5vh 5vw;
+  background-color: rgba(210, 210, 210, 0.13);
+
+  div.container_inputs {
+      margin-bottom: 5vh;
+
+      div.input_mail, .input_password {
+          margin-bottom: 2vh;
+
+          >div {
+              margin: 0;
+              width: 100%;
+          }
+
+          input {
+              width: 100%;
+          }
+      }
+
+      div.button {
+          button {
+              width: 100%;
+          }
+      }
+
+  }
+
+}
+
+
+
+@media (max-width: 900px) {
+  .container {
+    width: 89vw;
+  }
+}
+
+@media (min-width: 900px) {
+  .container {
+    width: 84vw;
+  }
+}
+
+@media (min-width: 1100px) {
+  .container {
+    width: 74vw;
+  }
+}
+
+@media (min-width: 1300px) {
+  .container {
+    width: 64vw;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    width: 54vw;
+  }
+}
+
+@media (min-width: 1500px) {
+  .container {
+    max-width: 44vw;
+  }
+}

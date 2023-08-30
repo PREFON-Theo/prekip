@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styles from "./FormAddEvent.module.scss"
 
 import TextField from '@mui/material/TextField';
@@ -13,16 +13,45 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
+import ListItemText from '@mui/material/ListItemText';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Checkbox from '@mui/material/Checkbox';
+
+
 import dayjs from 'dayjs';
 import axios from 'axios';
+import 'dayjs/locale/fr'
 
-import ListSubheader from '@mui/material/ListSubheader';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
-import OutlinedInput from '@mui/material/OutlinedInput';
+const workingDays = [
+  {
+    label: "Lundi",
+    internalName: 'lun',
+    value: 1
+  },
+  {
+    label: "Mardi",
+    internalName: 'mar',
+    value: 2
+  }, 
+  {
+    label: "Mercredi",
+    internalName: 'mer',
+    value: 3
+  },
+  {
+    label: "Jeudi",
+    internalName: 'jeu',
+    value: 4
+  },
+  {
+    label: "Vendredi",
+    internalName: 'ven',
+    value: 5
+  }
+];
 
-
-const FormAddEvent = ({dayInformations, eventTypes, user, userList, handleCloseForm, handleOpenAlert, changeAlertValues, actualisateData}) => {
+const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, changeAlertValues, actualisateData}) => {
   const [eventInfo, setEventInfo] = useState({
     title: '',
     description: '',
@@ -30,58 +59,135 @@ const FormAddEvent = ({dayInformations, eventTypes, user, userList, handleCloseF
     finishDate: '',
     type: '',
     owner: user._id,
-    usersTagged: []
   })
-  const [parentType, setParentType] = useState('')
-  const [typeOfAbs, setTypeOfAbs] = useState('')
+  const [eventTypeSelected, setEventTypeSelected] = useState('')
+  const [typeOfTT, setTypeOfTT] = useState('')
+
+  const [customizedChoiceOfDays, setCustomizedChoiceOfDays] = useState([])
+
+  const [missingElement, setMissingElement] = useState(false)
+
+  const [dateStartRecurrence, setDateStartRecurrence] = useState(dayjs(dayInformations.dateStr))
+  const [dateEndRecurrence, setDateEndRecurrence] = useState(dayjs(dayInformations.dateStr))
+
+  const choiceTypeOfEvent = async () => {
+    setMissingElement(false)
+    if(eventTypeSelected === "reunion_entreprise"){
+      handleAddEvent();
+    }
+    else if (eventTypeSelected === "teletravail"){
+      if(typeOfTT === "once"){
+        handleAddEvent();
+      }
+      else if (typeOfTT === "allDays"){
+        try {
+          let listOfEvents = []
+          let startDate = dateStartRecurrence
+          let endDate = dateEndRecurrence
+          // du lundi au vendredi
+          // à partir de starDate jusqu'à finishDate
+          // sauf date.getDay() === 6 (samedi) et 0 (dimanche)
+
+          while(new Date(startDate) <= new Date(endDate)){
+            if(new Date(startDate).getDay() !== 6 && new Date(startDate).getDay() !== 0){
+              listOfEvents.push({
+                ...eventInfo,
+                type: 'teletravail',
+                startDate: startDate.hour(9),
+                finishDate: startDate.hour(18)
+              })
+            }
+            startDate = startDate.date(startDate.date()+1)
+          }
+
+          await axios
+            .post('/event/many', listOfEvents)
+            handleOpenAlert()
+            handleCloseForm()
+            changeAlertValues('success', 'Évènement(s) ajouté(s)')
+            actualisateData()
+        }
+        catch (err) {
+          handleOpenAlert()
+          changeAlertValues('error', err)
+        }
+        
+      } 
+      else if (typeOfTT === "customized"){
+        if(customizedChoiceOfDays.length > 0){
+          try {
+  
+            let listOfEvents = []
+            let startDate = dateStartRecurrence
+            let endDate = dateEndRecurrence
+            // du selon les jours sélectionnés
+            // à partir de starDate jusqu'à finishDate
+            // sauf date.getDay() === 6 (samedi) et 0 (dimanche)
+  
+            while(new Date(startDate) <= new Date(endDate)){
+              if(customizedChoiceOfDays.includes(workingDays.filter((wd) => wd.value === new Date(startDate).getDay())[0]?.label)){
+                listOfEvents.push({
+                  ...eventInfo,
+                  type: 'teletravail',
+                  startDate: startDate.hour(9),
+                  finishDate: startDate.hour(18)
+                })
+              }
+              startDate = startDate.date(startDate.date()+1)
+            }
+  
+            await axios
+              .post('/event/many', listOfEvents)
+              handleOpenAlert()
+              handleCloseForm()
+              changeAlertValues('success', 'Évènement(s) ajouté(s)')
+              actualisateData()
+          }
+          catch (err) {
+            handleOpenAlert()
+            changeAlertValues('error', err)
+          }
+        }
+        else {
+          setMissingElement(true)
+        }
+  
+      }
+      else {
+        setMissingElement(true)
+      }
+    }
+    else {
+      setMissingElement(true)
+    }
+  }
   
   const handleAddEvent = async () => {
     try {
         await axios
-          .post('/event', eventInfo)
-          .then(() => console.log("Added"))
-          .then(() => handleOpenAlert())
-          .then(() => handleCloseForm())
-          .then(() => changeAlertValues('success', 'Evenement ajouté'))
-          .then(() => actualisateData())
-          .catch((e) => changeAlertValues('error', e))
+          .post('/event', {
+            ...eventInfo,
+            type: eventTypeSelected,
+            startDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(9) : eventInfo.startDate,
+            finishDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(18) : eventInfo.finishDate
+          })
+          handleOpenAlert()
+          handleCloseForm()
+          changeAlertValues('success', 'Évènement ajouté')
+          actualisateData()
     }
     catch (err) {
+      handleOpenAlert()
       changeAlertValues('error', err)
     }
   }
 
-  const handleChangeTypeOfAbs = (t) => {
-    console.log(eventInfo.startDate.hour)
-    setTypeOfAbs(t)
-    if(t === 1){
-      setEventInfo(prevValues => ({...prevValues, startDate: eventInfo.startDate.hour(9), finishDate: eventInfo.startDate.hour(18)}))
-    }
-    else if (t === 2) {
-      setEventInfo(prevValues => ({...prevValues, startDate: eventInfo.startDate.hour(9), finishDate: eventInfo.startDate.hour(12)}))
-    }
-    else if (t === 3) {
-      setEventInfo(prevValues => ({...prevValues, startDate: eventInfo.startDate.hour(12), finishDate: eventInfo.startDate.hour(18)}))
-    }
-  }
-
-  const handleChangeTypeOfEvent = (eve) => {
-    setEventInfo(prevValues => ({...prevValues, type: eve}) )
-    parentType === "Absences" 
-    ?
-      setEventInfo(prevValues => ({...prevValues, title: '', description: '', usersTagged: []}))
-    :
-    parentType === "Global"
-    ?
-      setEventInfo(prevValues => ({...prevValues, usersTagged: []}))
-    :
-      console.log("rien")
-  }
-
-  useEffect(() =>{
-    setParentType(eventTypes.filter((e) => e._id === eventTypes.filter((et) => et._id === eventInfo.type)[0]?.parent)[0]?.title)
-  }, [eventInfo.type])
-
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setCustomizedChoiceOfDays(typeof value === 'string' ? value.split(',') : value);
+  };
 
   return (
     <>
@@ -93,124 +199,127 @@ const FormAddEvent = ({dayInformations, eventTypes, user, userList, handleCloseF
           <div className={styles.input_event_type}>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Type d'évènement</InputLabel>
+                <InputLabel id="select-label">Type d'évènement</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={eventInfo.type}
+                  labelId="select-label"
+                  value={eventTypeSelected}
                   label="Type d'évènement"
-                  onChange={e => handleChangeTypeOfEvent(e.target.value)}
+                  onChange={e =>  setEventTypeSelected(e.target.value)}
                 >
-                  {eventTypes.map((item, index) => (
-                    item.parent === "" 
-                    ? 
-                      <ListSubheader key={index} >{item.title}</ListSubheader>
-                    :
-                      <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
-
-                  ))}
+                  <MenuItem value={"teletravail"} sx={{textAlign: 'left'}}>Télétravail</MenuItem>
+                  {
+                  user?.roles.includes("Administrateur") ?                 
+                    <MenuItem value={"reunion_entreprise"} sx={{textAlign: 'left'}}>Réunion d'entreprise</MenuItem>
+                  : 
+                    ""
+                  }
                 </Select>
               </FormControl>
             </Box>
           </div>
-          {/* {console.log(eventTypes.filter((e) => e._id === eventTypes.filter((et) => et._id === eventInfo.type)[0]?.parent)[0]?.title)} */}
           
           {
-            parentType === undefined ?
-            <div style={{marginBottom: '2vh'}}>Sélectionnez un type d'évènement</div>
-            :
-            parentType === "Absences" ?
+            eventTypeSelected === "teletravail" ?
             <>
-              <div className={styles.input_dates}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}}>
-                    <DatePicker label="Date de l'absence" format="DD/MM/YYYY" value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )}/>
+              <div className={styles.input_dates_tt}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}} adapterLocale='fr'>
+                  <div className={styles.firstLine}>
+                    <FormControl sx={{width:"48%"}}>
+                      <InputLabel id="select-label">Type de récurence</InputLabel>
+                      <Select
+                        labelId="select-label"
+                        value={typeOfTT}
+                        label="Type de récurence"
+                        onChange={e =>  setTypeOfTT(e.target.value)}
+                      >
+                        <MenuItem value={"once"} sx={{textAlign: 'left'}}>Une fois</MenuItem>
+                        <MenuItem value={"allDays"} sx={{textAlign: 'left'}}>Du lundi au vendredi</MenuItem>
+                        <MenuItem value={"customized"} sx={{textAlign: 'left'}}>Personnalié</MenuItem>
+                        {/* <MenuItem value={"onceAMonth"} sx={{textAlign: 'left'}}>Tous les mois</MenuItem> */}
+                        {/* <MenuItem value={"onceAYear"} sx={{textAlign: 'left'}}>Tous les ans</MenuItem> */}
+                      </Select>
+                    </FormControl>
+                    {
+                    typeOfTT === "once" ?
+                      <DatePicker sx={{width: "48%"}} label="Date de l'absence" format="DD/MM/YYYY" value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )}/>
+                    :
+                    typeOfTT === "customized" ?
+                      <FormControl sx={{width: "48%"}}>
+                        <InputLabel id="demo-multiple-checkbox-label">Sélectionnez les jours</InputLabel>
+                        <Select
+                          labelId="demo-multiple-checkbox-label"
+                          id="demo-multiple-checkbox"
+                          multiple
+                          value={customizedChoiceOfDays}
+                          onChange={handleChange}
+                          input={<OutlinedInput label="Sélectionnez les jours" />}
+                          renderValue={(selected) => selected.join(', ')}
+                          required
+                        >
+                          {workingDays.map((item, index) => (
+                            <MenuItem key={index} value={item.label} label={item.label}>
+                              <Checkbox checked={customizedChoiceOfDays.indexOf(item.label) > -1} />
+                              <ListItemText primary={item.label} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    :
+                      <></>
+                    }
+                  </div>
+
+                  <div className={styles.secondLine}>
+                  {
+                  typeOfTT === '' || typeOfTT === 'once' ?
+                    <></>
+                  :
+                      <>
+                        <DatePicker sx={{width: "48%"}} label="Date de début" format="DD/MM/YYYY" maxDate={dayjs(dateEndRecurrence)} value={dayjs(dateStartRecurrence)} onChange={e => setDateStartRecurrence(e)}/>
+                        <DatePicker sx={{width: "48%"}} label="Date de fin" format="DD/MM/YYYY" minDate={dayjs(dateStartRecurrence)} value={dayjs(dateEndRecurrence)} onChange={e => setDateEndRecurrence(e)}/>
+                      </>
+                    }
+                  </div>
                 </LocalizationProvider>
-                <FormControl>
-                  <InputLabel id="demo-simple-select-label">Période</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={typeOfAbs}
-                    label="Période"
-                    onChange={e => handleChangeTypeOfAbs(e.target.value)}
-                  >
-                    <MenuItem key={1} value={1} sx={{textAlign: 'left'}}>Toute la journée</MenuItem>
-                    <MenuItem key={2} value={2} sx={{textAlign: 'left'}}>La matinée</MenuItem>
-                    <MenuItem key={3} value={3} sx={{textAlign: 'left'}}>L'après-midi</MenuItem>
-                  </Select>
-                </FormControl>
               </div>
             </>
             :
-            parentType === "Global" ?
-              <>
-                <div className={styles.input_title}>
-                  <TextField value={eventInfo.title} label="Titre" variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, title: e.target.value}) )}/>
-                </div>
-                <div className={styles.input_description}>
-                  <TextField value={eventInfo.description} multiline maxRows={3} label="Description" variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, description: e.target.value}) )}/>
-                </div>
-                <div className={styles.input_dates}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}}>
-                      <DateTimePicker format="DD/MM/YYYY HH:mm:ss" ampm={false} label="Date de début" maxDate={dayjs(eventInfo.finishDate)} value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )} />
-                  </LocalizationProvider>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DateTimePicker format="DD/MM/YYYY HH:mm:ss" ampm={false} label="Date de fin" minDate={dayjs(dayInformations.dateStr)} value={dayjs(eventInfo.finishDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, finishDate: e}) )} />
-                  </LocalizationProvider>
-                </div>
-              </>
+            eventTypeSelected === "reunion_entreprise" ?
+                <>
+                  <div className={styles.input_title}>
+                    <TextField value={eventInfo.title} label="Titre" variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, title: e.target.value}) )}/>
+                  </div>
+                  <div className={styles.input_description}>
+                    <TextField value={eventInfo.description} multiline maxRows={3} label="Description" variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, description: e.target.value}) )}/>
+                  </div>
+                  <div className={styles.input_dates_re}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}} adapterLocale='fr'>
+                        <DateTimePicker format="DD/MM/YYYY HH:mm:ss" ampm={false} label="Date de début" maxDate={dayjs(eventInfo.finishDate)} value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )} />
+                    </LocalizationProvider>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr'>
+                        <DateTimePicker format="DD/MM/YYYY HH:mm:ss" ampm={false} label="Date de fin" minDate={dayjs(dayInformations.dateStr)} value={dayjs(eventInfo.finishDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, finishDate: e}) )} />
+                    </LocalizationProvider>
+                  </div>
+                </>
             :
-            parentType === "Equipe" ?
-              <>
-                <div className={styles.input_title}>
-                  <TextField value={eventInfo.title} label="Titre" variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, title: e.target.value}) )}/>
-                </div>
-                <div className={styles.input_description}>
-                  <TextField value={eventInfo.description} multiline maxRows={3} label="Description" variant="outlined" onChange={e => setEventInfo(prevValues => ({...prevValues, description: e.target.value}) )}/>
-                </div>
-                <div className={styles.input_dates}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs} sx={{marginRight: "2vh"}}>
-                      <DateTimePicker format="DD/MM/YYYY HH:mm:ss" ampm={false} label="Date de début" maxDate={dayjs(eventInfo.finishDate)} value={dayjs(eventInfo.startDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, startDate: e}) )} />
-                  </LocalizationProvider>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DateTimePicker format="DD/MM/YYYY HH:mm:ss" ampm={false} label="Date de fin" minDate={dayjs(dayInformations.dateStr)} value={dayjs(eventInfo.finishDate)} onChange={e => setEventInfo(prevValues => ({...prevValues, finishDate: e}) )} />
-                  </LocalizationProvider>
-                </div>
-
-                <div className={styles.tag_users}>
-                  <Box sx={{ minWidth: 120 }}>
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">Utilisateurs dans l'évènement</InputLabel>
-                      <Select
-                        labelId="demo-multiple-checkbox-label"
-                        id="demo-multiple-checkbox"
-                        multiple
-                        value={eventInfo.usersTagged}
-                        onChange={e => setEventInfo(prevValues => ({...prevValues, usersTagged: e.target.value}))}
-                        input={<OutlinedInput sx={{width: '100%'}} label="Utilisateurs dans l'évènement" />}
-                        renderValue={(selected) => selected.map((item, index) => (
-                          index === 0 ? `${userList.filter((u) => u._id === item)[0].firstname} ${userList.filter((u) => u._id === item)[0].lastname}`  : `, ${userList.filter((u) => u._id === item)[0].firstname} ${userList.filter((u) => u._id === item)[0].lastname}`
-                        ))}
-                      >
-                        {userList.map((item, index) => (
-                          <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>
-                            <Checkbox checked={eventInfo.usersTagged.filter((u) => u === item._id).length > 0 ? true : false} />
-                            <ListItemText primary={`${item.firstname} ${item.lastname}`} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </div>
-              </>
-            :
-              <></>
+              <div style={{marginBottom: '2vh'}}>Sélectionnez un type d'évènement</div>
           }
 
+          {
+          missingElement ?
+            <div style={{margin: "0 0 20px 0", color: "red"}}>Veuillez renseigner tous les éléments</div>
+          :
+            <></>
+          }
 
-          <div className={styles.button}>
-            <Button variant="contained" color='primary' onClick={handleAddEvent}>Créer l'évènement</Button>
-          </div>
+          {
+          (eventTypeSelected === "teletravail" && typeOfTT !== "") || eventTypeSelected === "reunion_entreprise" ?
+            <div className={styles.button}>
+              <Button variant="contained" color='primary' onClick={choiceTypeOfEvent}>Créer l'évènement</Button>
+            </div>
+          :
+            <></>
+          }
 
         </div>
       </div>

@@ -4,7 +4,7 @@ const Comments = require('../models/Comments')
 
 //Get All - TODO
 router.get('/', async (req, res) => {
-  const getComments = await Comments.find()
+  const getComments = await Comments.find().sort({date: -1})
   res.json(getComments);
 })
 
@@ -55,7 +55,7 @@ router.patch('/:id', (req, res) => {
   try {
       Comments.updateOne({_id: req.params.id}, req.body).then(() => {
           res.status(200).json({
-              message: "Updated"
+              message: `Comment ${req.params.id} updated`
           })
       })
   }
@@ -68,21 +68,41 @@ router.patch('/:id', (req, res) => {
 
 //Delete one comment - TODO
 router.delete('/:id', (req, res) => {
-  try {
-      Comments.deleteOne({_id: req.params.id}).then(() => {
-          res.status(200).json({
-              message: "Deleted"
-          })
-      }).catch((error) => {
-          res.status(400).json({
-              error: error
-          });
+  try {    
+    Comments.deleteOne({_id: req.params.id}).then(() => {
+      res.status(200).json({
+        message: `Comment ${req.params.id} deleted`
+      })
+    }).catch((error) => {
+      res.status(400).json({
+        error: error
       });
+    });
   }
   catch (error) {
+    res.status(400).json({
+      error: error
+    });
+  }
+});
+
+//Delete all comment from an article - TODO
+router.delete('/article/:article_id', (req, res) => {
+  try {    
+    Comments.deleteMany({article_id: req.params.article_id}).then(() => {
+      res.status(200).json({
+        message: `Comments from article ${req.params.article_id} deleted`
+      })
+    }).catch((error) => {
       res.status(400).json({
-          error: error
+        error: error
       });
+    });
+  }
+  catch (error) {
+    res.status(400).json({
+      error: error
+    });
   }
 });
 
