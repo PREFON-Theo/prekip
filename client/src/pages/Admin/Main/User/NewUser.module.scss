@@ -1,9 +1,52 @@
 .container {
   margin: 0 auto;
-  width: 50%;
 
   .box {
     padding: 50px;
     background-color: rgb(226, 226, 226);
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    width: 90%;
+
+    .semi_width {
+      display: block;
+    }
+    .full_width {
+      display: none;
+    }
+  }
+}
+
+@media (min-width: 600px) {
+  .container {
+    width: 80%;
+
+    .semi_width {
+      display: none;
+    }
+    .full_width {
+      display: flex;
+    }
+  }
+}
+
+@media (min-width: 800px) {
+  .container {
+    width: 70%;
+  }
+}
+
+@media (min-width: 1000px) {
+  .container {
+    width: 60%;
+  }
+}
+
+@media (min-width: 1175px) {
+  .container {
+    width: 50%;
   }
 }

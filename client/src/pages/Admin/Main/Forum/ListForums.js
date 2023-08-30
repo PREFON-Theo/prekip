@@ -80,16 +80,16 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
     <div className={styles.container}>
       <h2>Liste des forums</h2>
       <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 'auto' }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell sx={{fontWeight: 'bold'}}>Titre</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Date d'ajout</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Créateur</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Contient un fichier joint ?</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Contenu important ?</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Etat</TableCell>
+              <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Description</TableCell>
+              <TableCell className={styles.semi_width_second} sx={{fontWeight: 'bold'}}>Date d'ajout</TableCell>
+              <TableCell className={styles.semi_width_second} sx={{fontWeight: 'bold'}}>Créateur</TableCell>
+              <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Contient un fichier joint ?</TableCell>
+              <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Contenu important ?</TableCell>
+              <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Etat</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -97,24 +97,24 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
             {forums?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
-                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
-                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.created_at === null ? "-" : new Date(item.created_at).toLocaleDateString('fr-FR')}</TableCell>
-                 <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>
+                <TableCell className={styles.semi_width_first} sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
+                <TableCell className={styles.semi_width_second} sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.created_at === null ? "-" : new Date(item.created_at).toLocaleDateString('fr-FR')}</TableCell>
+                 <TableCell className={styles.semi_width_second} sx={{filter: item.closed ? "opacity(50%)" : ""}}>
                   {item.author === "" 
                     ? "-" 
                     : `${users?.filter((usr) => usr._id === item.author)[0]?.firstname} ${users?.filter((usr) => usr._id === item.author)[0]?.lastname.charAt(0)}.`
                   }
                 </TableCell>
-                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.file !== undefined ? "Oui" : "Non"}</TableCell> {/* TODO Check*/}
-                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.important === true ? "Oui ": "Non" }</TableCell>
-                <TableCell sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.closed === true ? "Fermé ": "Ouvert" }</TableCell>
+                <TableCell className={styles.semi_width_first} sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.file !== undefined ? "Oui" : "Non"}</TableCell> {/* TODO Check*/}
+                <TableCell className={styles.semi_width_first} sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.important === true ? "Oui ": "Non" }</TableCell>
+                <TableCell className={styles.semi_width_first} sx={{filter: item.closed ? "opacity(50%)" : ""}}>{item.closed === true ? "Fermé ": "Ouvert" }</TableCell>
                 <TableCell>
-                  <Link to={`/forum`} style={{marginRight: '10px'}}>
+                  <Link to={`/forum`} style={{margin: '10px'}}>
                     <Button variant='contained' color="warning">
                       <ArrowForwardRoundedIcon/>
                     </Button>
                   </Link>
-                  <Button color='error' variant='contained' onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
+                  <Button color='error' sx={{margin: '10px'}} variant='contained' onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}

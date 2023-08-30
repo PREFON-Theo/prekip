@@ -164,7 +164,7 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
         <div className={styles.box}>
           <h2>Utilisateur {id} : </h2>
           {/* Prénom / Nom */}
-          <div style={{marginBottom: '40px', display: "flex", justifyContent:"space-between"}}>
+          <div style={{marginBottom: '40px', justifyContent:"space-between"}} className={styles.full_width}>
             <Paper elevation={2} sx={{width: '48%'}}>
               <TextField required value={userInfo.firstname} sx={{width: '100%', borderColor: "red"}} label="Prénom" variant="outlined" onChange={e => setUserInfo(prev => ({...prev, firstname: e.target.value}))}/>
             </Paper>
@@ -172,6 +172,13 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
               <TextField required value={userInfo.lastname} sx={{width: '100%'}} label="Nom" variant="outlined" onChange={e => setUserInfo(prev => ({...prev, lastname: e.target.value}))}/>
             </Paper>
           </div>
+
+          <Paper elevation={2} sx={{marginBottom: '30px'}} className={styles.semi_width}>
+            <TextField required value={userInfo.firstname} sx={{width: '100%', borderColor: "red"}} label="Prénom" variant="outlined" onChange={e => setUserInfo(prev => ({...prev, firstname: e.target.value}))}/>
+          </Paper>
+          <Paper elevation={2} sx={{marginBottom: '30px'}} className={styles.semi_width}>
+            <TextField required value={userInfo.lastname} sx={{width: '100%'}} label="Nom" variant="outlined" onChange={e => setUserInfo(prev => ({...prev, lastname: e.target.value}))}/>
+          </Paper>
 
           {/* Email */}
           <Paper elevation={2} sx={{marginBottom: '30px'}}>
@@ -193,7 +200,7 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
 
 
           {/* Password / Confirm Password TODO vérification de si les deux sont égaux*/}
-          <div style={{marginBottom: '30px', display: "flex", justifyContent:"space-between"}}>
+          <div style={{marginBottom: '30px', justifyContent:"space-between"}} className={styles.full_width}>
             <Paper elevation={2} sx={{width: '48%'}}>
               <TextField required type='password' value={userInfo.password} sx={{width: '100%'}} label="Mot de passe" variant="outlined" onChange={e => setUserInfo(prev => ({...prev, password: e.target.value}))}/>
             </Paper>
@@ -201,6 +208,13 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
               <TextField required type='password' value={userInfo.confirmPassword} sx={{width: '100%'}} label="Confirmation du mot de passe" variant="outlined" onChange={e => setUserInfo(prev => ({...prev, confirmPassword: e.target.value}))}/>
             </Paper>
           </div>
+
+          <Paper elevation={2} sx={{marginBottom: '30px'}} className={styles.semi_width}>
+            <TextField required type='password' value={userInfo.password} sx={{width: '100%'}} label="Mot de passe" variant="outlined" onChange={e => setUserInfo(prev => ({...prev, password: e.target.value}))}/>
+          </Paper>
+          <Paper elevation={2} sx={{marginBottom: '30px'}} className={styles.semi_width}>
+            <TextField required type='password' value={userInfo.confirmPassword} sx={{width: '100%'}} label="Confirmation du mot de passe" variant="outlined" onChange={e => setUserInfo(prev => ({...prev, confirmPassword: e.target.value}))}/>
+          </Paper>
 
           {
             diffPassword ?
@@ -236,7 +250,7 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
           </Paper>
 
           {/* Joining Date / Leaving Date */}
-          <div style={{marginBottom: '40px', display: "flex", justifyContent:"space-between"}}>
+          <div style={{marginBottom: '40px', justifyContent:"space-between"}} className={styles.full_width}>
             <Paper elevation={2} sx={{width: '48%'}}>
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr'>
                 <DatePicker
@@ -265,6 +279,34 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
               </LocalizationProvider>
             </Paper>
           </div>
+
+          <Paper elevation={2} sx={{marginBottom: '30px'}} className={styles.semi_width}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr'>
+              <DatePicker
+                value={userInfo.joiningDate === null ? null : userInfo.joiningDate === "" ? null : dayjs(userInfo.joiningDate)}
+                format="DD/MM/YYYY"
+                sx={{width: '100%'}}
+                label="Date de d'arrivée"
+                variant="outlined"
+                maxDate={dayjs(userInfo.leavingDate)}
+                required
+                onChange={value => setUserInfo(prev => ({...prev, joiningDate: value}))}
+              />
+            </LocalizationProvider>
+          </Paper>
+          <Paper elevation={2} sx={{marginBottom: '30px'}} className={styles.semi_width}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr'>
+              <DatePicker
+                value={userInfo.leavingDate === null ? null : userInfo.leavingDate === "" ? null : dayjs(userInfo.leavingDate)}
+                format="DD/MM/YYYY"
+                sx={{width: '100%'}}
+                label="Date de départ"
+                variant="outlined"
+                minDate={dayjs(userInfo.joiningDate)}
+                onChange={value => setUserInfo(prev => ({...prev, leavingDate: value}))}
+              />
+            </LocalizationProvider>
+          </Paper>
 
           {/* Valid */}
           <FormControlLabel

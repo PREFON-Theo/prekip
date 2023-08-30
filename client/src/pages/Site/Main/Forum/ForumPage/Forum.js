@@ -2,12 +2,19 @@ import React, { useContext, useEffect, useState } from 'react'
 import styles from "./Forum.module.scss"
 import axios from 'axios'
 import { Link, Navigate } from "react-router-dom"
+
 import { Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+
 import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import IconButton from '@mui/material/IconButton';
 
 const usersList = await axios.get('/user')
 const listOfUsers = usersList.data
@@ -22,6 +29,8 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
   const [answers, setAnswers] = useState([]);
   const [lenghtToLoad, setLengthToLoad] = useState(5);
   const [lengthOfForums, setLengthOfForums] = useState(0);
+
+  const [openDr, setOpenDr] = useState(false);
 
   const fetchAllForums = async () => {
     await axios
@@ -157,11 +166,63 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
           }
         </div>
 
+        <Drawer
+          open={openDr}
+          onClose={() => setOpenDr(false)}
+        >
+          <Box
+            sx={{ width: 'auto'}}
+            role="presentation"
+            onClick={() => setOpenDr(false)}
+          >
+            <div className={styles.left_semi_width}>
+              <h4>Listes des sujets :</h4>
+              {
+                lastForum.length === 0 ?
+                  <div>Il n'y a aucun sujet</div>
+                :
+                <>
+                  {lastForum?.map((item, index) => (
+                    <div key={index} className={forumOnFocus === item._id ? styles.item_last_forum_focused : styles.item_last_forum} onClick={() => changeTopic(item._id)}>
+                        <span style={{color: item.closed ? "grey": "black"}}>{item.closed ? "[Fermé]" : ""}{item.title}</span>
+                    </div>
+                  ))}
+                  <div className={styles.more_to_load}>
+                    {lengthOfForums <= 5 ?
+                    <></>
+                    : lenghtToLoad >= lengthOfForums ?
+                    <>
+                      <div className={styles.less} style={{cursor: "pointer"}} onClick={() => changeLengthToLoad(false)}>Voir moins</div>
+                    </>
+                    : lenghtToLoad === 5 ?
+                    <>
+                      <div className={styles.more} style={{cursor: "pointer", margin: '0 0 0 auto'}} onClick={() => changeLengthToLoad(true)}>Voir plus</div>              
+                    </>
+                    :
+                    <>
+                      <div className={styles.less} style={{cursor: "pointer", textAlign: "start"}} onClick={() => changeLengthToLoad(false)}>Voir moins</div>
+                      <div className={styles.more} style={{cursor: "pointer", textAlign: "end"}} onClick={() => changeLengthToLoad(true)}>Voir plus</div>
+                    </>
+                    }
+                  </div>
+                </>
+              }
+            </div>
+
+          </Box>
+        </Drawer>
+
         <div className={styles.main}>
+        
           {
             forumInfo === undefined ?
               <>
                 <div className={styles.forum_hp}>
+                  <div className={styles.menu_button}>
+                    <IconButton aria-label="Menu" onClick={() => setOpenDr(true)}>
+                      <MenuRoundedIcon fontSize='large' />
+                    </IconButton>
+                  </div>
                   <h1>Bienvenue sur la page Forum</h1>
                   <div className={styles.description}>Vous pouvez ajouter un sujet de discussion, interagir et échanger.</div>
                   <Link to={'/new-forum'}>
@@ -188,6 +249,11 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
                   <></>
                 }
                 <div className={styles.wrapper_topic}>
+                  <div className={styles.menu_button}>
+                    <IconButton aria-label="Menu" onClick={() => setOpenDr(true)}>
+                      <MenuRoundedIcon fontSize='large' />
+                    </IconButton>
+                  </div>
                   <h1>{forumInfo?.closed ? "[Fermé]":''}{forumInfo?.title}</h1>
                   <div className={styles.description}>{forumInfo?.description}</div>
                   <div className={styles.author}>Posté le {new Date(forumInfo?.created_at).toLocaleDateString('fr-FR')}, par {`${listOfUsers.filter((usr) => usr._id === forumInfo?.author)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === forumInfo?.author)[0]?.lastname}`}</div>

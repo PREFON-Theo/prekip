@@ -87,16 +87,16 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
     <div className={styles.container}>
       <h2>Liste des contenus</h2>
       <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 'auto' }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell sx={{fontWeight: 'bold'}}>Titre</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Date d'ajout</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Catégorie</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Créateur</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Contient un fichier joint ?</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Contenu important ?</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}} className={styles.semi_width_first}>Description</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}} className={styles.semi_width_second}>Date d'ajout</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}} className={styles.semi_width_first}>Catégorie</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}} className={styles.semi_width_second}>Créateur</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}} className={styles.semi_width_first}>Contient un fichier joint ?</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}} className={styles.semi_width_first}>Contenu important ?</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Type de contenu</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Actions</TableCell>
             </TableRow>
@@ -105,25 +105,25 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
             {articles?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
-                <TableCell>{item.preview?.length > 25 ? `${item.preview.substring(0,25)}...` : item.preview?.length === 0 ? "-" : item.preview}</TableCell>
-                <TableCell>{item.created_at === null ? "-" : new Date(item.created_at).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell>{item.category === "" ? "-" : categories?.filter((cat) => cat._id === item.category)[0]?.title}</TableCell>
-                <TableCell>
+                <TableCell className={styles.semi_width_first}>{item.preview?.length > 25 ? `${item.preview.substring(0,25)}...` : item.preview?.length === 0 ? "-" : item.preview}</TableCell>
+                <TableCell className={styles.semi_width_second}>{item.created_at === null ? "-" : new Date(item.created_at).toLocaleDateString('fr-FR')}</TableCell>
+                <TableCell className={styles.semi_width_first}>{item.category === "" ? "-" : categories?.filter((cat) => cat._id === item.category)[0]?.title}</TableCell>
+                <TableCell className={styles.semi_width_second}>
                   {item.author === "" 
                     ? "-" 
                     : `${users?.filter((usr) => usr._id === item.author)[0]?.firstname} ${users?.filter((usr) => usr._id === item.author)[0]?.lastname.charAt(0)}.`}
                     {/* : `${users?.filter((usr) => usr._id === item.author)[0]?.firstname} ${users?.filter((usr) => usr._id === item.author)[0]?.lastname}`} */}
                   </TableCell>
-                <TableCell>{item.file !== "" ? "Oui" : "Non"}</TableCell>
-                <TableCell>{item.important === true ? "Oui ": "Non" }</TableCell>
+                <TableCell className={styles.semi_width_first}>{item.file !== "" ? "Oui" : "Non"}</TableCell>
+                <TableCell className={styles.semi_width_first}>{item.important === true ? "Oui ": "Non" }</TableCell>
                 <TableCell>{item.type === "actuality" ? "Actualité" : item.type === "reference" ? "Contenu de référence" : "Article"}</TableCell>
                 <TableCell>
-                  <Link to={`/${item.type}/${item._id}`} style={{marginRight: '10px'}}>
+                  <Link to={`/${item.type}/${item._id}`} style={{margin: '10px'}}>
                     <Button variant='contained' color="warning">
                       <ArrowForwardRoundedIcon/>
                     </Button>
                   </Link>
-                  <Button color='error' variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
+                  <Button color='error' sx={{margin: '10px'}} variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}

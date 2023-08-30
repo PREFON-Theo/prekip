@@ -79,14 +79,14 @@ const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
         </Button>
       </Link>
       <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 'auto' }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell sx={{fontWeight: 'bold'}}>Titre</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Lien</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Rubrique parente</TableCell>
-              <TableCell sx={{fontWeight: 'bold'}}>Lien du l'image</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}} className={styles.semi_width_first}>Description</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}} className={styles.semi_width_second}>Lien</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}} className={styles.semi_width_second}>Rubrique parente</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}} className={styles.semi_width_first}>Lien du l'image</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -94,22 +94,22 @@ const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
             {rubriqueTypes?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
-                <TableCell>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
-                <TableCell>{item.link}</TableCell>
-                <TableCell>{item.parent === "" ? "-" : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title === undefined ? <span style={{fontStyle: 'italic'}}>Non disponible</span> : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title}</TableCell>
-                <TableCell>{item.imgLink === undefined || item.imgLink === "" ? "-" : <a href={item.imgLink} target='_blank'>{item.imgLink.length > 20 ? `${item.imgLink.substring(0,20)}...`  : item.imgLink}</a>}</TableCell>
+                <TableCell className={styles.semi_width_first}>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
+                <TableCell className={styles.semi_width_second}>{item.link}</TableCell>
+                <TableCell className={styles.semi_width_second}>{item.parent === "" ? "-" : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title === undefined ? <span style={{fontStyle: 'italic'}}>Non disponible</span> : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title}</TableCell>
+                <TableCell className={styles.semi_width_first}>{item.imgLink === undefined || item.imgLink === "" ? "-" : <a href={item.imgLink} target='_blank'>{item.imgLink.length > 20 ? `${item.imgLink.substring(0,20)}...`  : item.imgLink}</a>}</TableCell>
                 <TableCell>
-                  <Link to={`/rubrique/${item.link}`} style={{marginRight: '10px'}}>
-                    <Button variant='contained' color="warning">
+                  <Link to={`/rubrique/${item.link}`}>
+                    <Button variant='contained' color="warning" sx={{margin: '10px'}}>
                       <ArrowForwardRoundedIcon/>
                     </Button>
                   </Link>
-                  <Link to={`/admin/rubrique/edit/${item._id}`} style={{marginRight: '10px'}}>
-                    <Button variant='contained' color="primary">
+                  <Link to={`/admin/rubrique/edit/${item._id}`}>
+                    <Button variant='contained' color="primary" sx={{margin: '10px'}}>
                       <ModeEditRoundedIcon/>
                     </Button>
                   </Link>
-                  <Button color='error' variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
+                  <Button color='error' sx={{margin: '10px'}} variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
                 </TableCell>
               </TableRow>
             ))}

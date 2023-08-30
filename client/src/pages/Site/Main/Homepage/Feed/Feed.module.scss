@@ -5,12 +5,11 @@
     background-color: #0B2F83;
 
     .actualities_menu {
-        width: 1154px;
         margin: 0 auto;
         padding: 1% 0;
         height: auto;
-        .actualities_items{
-            display: flex;
+        .four_actualities_items, .three_actualities_items, .two_actualities_items, .one_actualities_items{
+            //display: flex;
             height: 100%;
             text-align: center;
 
@@ -22,10 +21,6 @@
                 flex-direction: column;
                 justify-content: space-between;
                 
-                .actualities {
-                    //margin: auto 0;
-                }
-
                 .info_actu {
                     text-align: right;
                     color: #ffffff60;
@@ -74,6 +69,59 @@
             
         }
     }
+
+    @media (max-width: 500px) {
+        .actualities_menu {
+            width: 90vw;
+
+            .three_actualities_items, .four_actualities_items, .two_actualities_items {
+                display: none;
+            }
+            .one_actualities_items {
+                display: flex;
+            }
+        }
+    }
+
+    @media (min-width: 500px) {
+        .actualities_menu {
+            width: 90vw;
+
+            .three_actualities_items, .four_actualities_items, .one_actualities_items {
+                display: none;
+            }
+            .two_actualities_items {
+                display: flex;
+            }
+        }
+    }
+
+    @media (min-width: 970px) {
+        .actualities_menu {
+            width: 90vw;
+
+            .two_actualities_items, .four_actualities_items, .one_actualities_items {
+                display: none;
+            }
+            .three_actualities_items {
+                display: flex;
+            }
+        }
+    }
+            
+    @media (min-width: 1180px) {
+        .actualities_menu {
+            width: 1154px;
+
+            .two_actualities_items, .three_actualities_items, .one_actualities_items {
+                display: none;
+            }
+            .four_actualities_items {
+                display: flex;
+            }
+        }
+    }
+
 
 
     /*.list_item_feed {

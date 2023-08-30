@@ -1,5 +1,4 @@
 .container {
-  width: 450px;
   margin: 50px 20px;
   
   a {
@@ -32,4 +31,16 @@
     }
   }
 
+}
+
+@media (max-width: 550px) {
+  .container {
+    max-width: 450px;
+  }
+}
+
+@media (min-width: 550px) {
+  .container {
+    width: 450px;
+  }
 }
