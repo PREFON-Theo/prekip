@@ -191,7 +191,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
       if((ready === "yes" && (!user?.roles.includes("Administrateur") || !user?.roles.includes("Modérateur"))) ||  ready === "no"){
         setRedirectGoto(true)
         handleOpenAlert()
-        changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
+        changeAlertValues("warning", "Vous n'êtes pas autorisé à accédez à cette page")
       }
       await axios.delete(`/article/${id}`)
       await axios.delete(`/like/article/${id}`)

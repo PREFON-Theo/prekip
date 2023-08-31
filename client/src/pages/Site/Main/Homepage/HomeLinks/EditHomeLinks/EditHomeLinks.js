@@ -44,7 +44,7 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
       if(!user?.roles.includes("Administrateur") && !user?.roles.includes("Modérateur")){
         setRedirection(true)
         handleOpenAlert()
-        changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
+        changeAlertValues("warning", "Vous n'êtes pas autorisé à accédez à cette page")
       }
       else {
         fetchDataLink();
