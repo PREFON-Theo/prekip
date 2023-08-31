@@ -88,7 +88,7 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
     if((ready === "yes" && !user?.roles.includes("Administrateur")) || ready === "no"){
       setRedirection(true)
       handleOpenAlert()
-      changeAlertValues("warning", "Vous n'êtes pas authorisé à accédez à cette page")
+      changeAlertValues("warning", "Vous n'êtes pas autorisé à accédez à cette page")
     }
   }, [user, ready])
 
