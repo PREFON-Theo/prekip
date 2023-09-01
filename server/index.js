@@ -41,7 +41,6 @@ const UserRoutes = require('./routes/user');
 const EventRoutes = require('./routes/event');
 const ArticleRoutes = require('./routes/article');
 const StatRoutes = require('./routes/stat');
-const StatTypeRoutes = require('./routes/stattype');
 const RubriqueTypeRoutes = require('./routes/rubriquetype');
 const LikeRoutes = require('./routes/like');
 const CommentsRoutes = require('./routes/comment');
@@ -91,7 +90,6 @@ app.post('/article/with-file', upload.any('image'), async (req, res) => {
 })
 
 app.use('/stat', StatRoutes);
-app.use('/stat-type', StatTypeRoutes);
 app.use('/rubrique-type', RubriqueTypeRoutes);
 app.use('/like', LikeRoutes);
 app.use('/comment', CommentsRoutes);

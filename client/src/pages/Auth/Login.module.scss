@@ -1,32 +1,79 @@
 div.container {
-    width: auto;
-    height: auto;
-    margin: auto;
-    padding: 5vh 5vw;
-    background-color: rgba(210, 210, 210, 0.13);
+    //width: auto;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
 
-    div.container_inputs {
-        margin-bottom: 5vh;
-
-        div.input_mail, .input_password {
-            margin-bottom: 2vh;
-
-            >div {
-                margin: 0;
-                width: 100%;
+    .wrapper {
+        padding: 5vh 5vw;
+        background-color: rgba(210, 210, 210, 0.13);
+    
+        div.container_inputs {
+            margin-bottom: 5vh;
+    
+            div.input_mail, .input_password {
+                margin-bottom: 2vh;
+    
+                >div {
+                    margin: 0;
+                    width: 100%;
+                }
+    
+                input {
+                    width: 100%;
+                }
             }
-
-            input {
-                width: 100%;
+    
+            div.button {
+                button {
+                    width: 100%;
+                }
             }
-        }
-
-        div.button {
-            button {
-                width: 100%;
-            }
+    
         }
 
     }
+    @media (max-height: 540px) {
+        .wrapper {
+            height: 100vh;
+            margin: auto;
+        }
+    }
 
+    @media (min-height: 540px) {
+        .wrapper {
+            height: 50vh;
+            margin: 15vh auto;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .wrapper {
+          width: 90%;
+        }
+      }
+      
+      @media (min-width: 600px) {
+        .wrapper {
+          width: 80%;
+        }
+      }
+      
+      @media (min-width: 800px) {
+        .wrapper {
+          width: 70%;
+        }
+      }
+      
+      @media (min-width: 1000px) {
+        .wrapper {
+          width: 60%;
+        }
+      }
+      
+      @media (min-width: 1175px) {
+        .wrapper {
+          width: 50%;
+        }
+      }
 }

@@ -144,7 +144,7 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
               </div>
             :
               <>
-                <Button className={styles.loginFullWidth} size="small"variant='contained' onClick={() => handleOpenLoginForm(true)} color='success' sx={{height: 'auto', margin: "auto 0"}}><LoginRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Se connecter</Button>
+                {/* <Button className={styles.loginFullWidth} size="small"variant='contained' onClick={() => handleOpenLoginForm(true)} color='success' sx={{height: 'auto', margin: "auto 0"}}><LoginRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Se connecter</Button> */}
                 <Button className={styles.loginSemiWidth} size="small" variant='contained' onClick={() => handleOpenLoginForm(true)} color='success' sx={{height: 'auto', margin: "auto 0"}}><LoginRoundedIcon sx={{verticalAlign:"bottom"}} fontSize='small'/></Button>
               </>
             }
