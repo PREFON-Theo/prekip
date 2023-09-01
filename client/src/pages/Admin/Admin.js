@@ -81,16 +81,6 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
   const [windowSize, setWindowSize] = useState(0);
 
   const {user, ready} = useContext(UserContext)
-  const [redirection, setRedirection] = useState(false);
-
-  useEffect(() => {
-    setRedirection(false)
-    if((ready === "yes" && !user?.roles.includes("Administrateur")) || ready === "no"){
-      setRedirection(true)
-      handleOpenAlert()
-      changeAlertValues("warning", "Vous n'êtes pas autorisé à accédez à cette page")
-    }
-  }, [user, ready])
 
 
   useEffect(() => {
@@ -109,86 +99,94 @@ const Admin = ({handleOpenAlert, changeAlertValues}) => {
 
   return (
     <>
-      {redirection ? <Navigate replace to={'/'}/> : <></>}
-      
-        <Box sx={{ display: 'flex' }}>
-          <CssBaseline />
-          <AppBar position="fixed" open={open} sx={{backgroundColor: "#757575"}}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={() => handleDrawerStatus(true)}
-                edge="start"
-                sx={{ mr: 2, ...(open && { display: 'none' }) }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" noWrap component="div">
-                <Link to="/admin" style={{textDecoration: "none", color:"#fff"}}>
-                  Zone Administrateur
-                </Link>
-              </Typography>
-            </Toolbar>
-          </AppBar>
+      {
+        ready === "waiting" ?
+        <>Chargement...</>
+        : 
+          !user?.roles.includes("Administrateur")
+          ?
+            <Navigate replace to={'/'}/> 
+          : 
+     
+          <Box sx={{ display: 'flex' }}>
+            <CssBaseline />
+            <AppBar position="fixed" open={open} sx={{backgroundColor: "#757575"}}>
+              <Toolbar>
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={() => handleDrawerStatus(true)}
+                  edge="start"
+                  sx={{ mr: 2, ...(open && { display: 'none' }) }}
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Typography variant="h6" noWrap component="div">
+                  <Link to="/admin" style={{textDecoration: "none", color:"#fff"}}>
+                    Zone Administrateur
+                  </Link>
+                </Typography>
+              </Toolbar>
+            </AppBar>
 
 
 
-          <Drawer
-            sx={{width: drawerWidth, flexShrink: 0, '& .MuiDrawer-paper': {width: drawerWidth, boxSizing: 'border-box'}, }}
-            variant="persistent"
-            anchor='left'
-            open={open}
-          >
-            <DrawerHeader>
-              <IconButton onClick={() => handleDrawerStatus(false)}>
-                {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-              </IconButton>
-            </DrawerHeader>
-            <>
-              <ListLeftboard/>
-            </>
-          </Drawer>
-
-
-          <Drawer
-            open={openDr}
-            onClose={() => setOpenDr(false)}
-          >
-            <Box
-              sx={{ width: 'auto'}}
-              role="presentation"
-              onClick={() => setOpenDr(false)}
+            <Drawer
+              sx={{width: drawerWidth, flexShrink: 0, '& .MuiDrawer-paper': {width: drawerWidth, boxSizing: 'border-box'}, }}
+              variant="persistent"
+              anchor='left'
+              open={open}
             >
-              <ListLeftboard/>
+              <DrawerHeader>
+                <IconButton onClick={() => handleDrawerStatus(false)}>
+                  {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                </IconButton>
+              </DrawerHeader>
+              <>
+                <ListLeftboard/>
+              </>
+            </Drawer>
 
-            </Box>
-          </Drawer>
+
+            <Drawer
+              open={openDr}
+              onClose={() => setOpenDr(false)}
+            >
+              <Box
+                sx={{ width: 'auto'}}
+                role="presentation"
+                onClick={() => setOpenDr(false)}
+              >
+                <ListLeftboard/>
+
+              </Box>
+            </Drawer>
 
 
 
-          <Main open={open}>
-            <DrawerHeader />
-            <Routes>
-              <Route index element={<IndexAdmin handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-              <Route path="user/list" element={<ListUsers handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-              <Route path="user/page/:id" element={<UserPage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-              <Route path="user/new" element={<NewUser handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+            <Main open={open}>
+              <DrawerHeader />
+              <Routes>
+                <Route index element={<IndexAdmin handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="user/list" element={<ListUsers handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="user/page/:id" element={<UserPage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="user/new" element={<NewUser handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
 
-              <Route path="content/list" element={<ListContents handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="content/list" element={<ListContents handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
 
-              <Route path="forum/list" element={<ListForums handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-              <Route path="event/list" element={<ListEvents handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-              <Route path="rubrique-type/list" element={<ListRubriqueType handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-              <Route path="rubrique-type/new" element={<NewRubrique handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-              <Route path="rubrique/edit/:id" element={<RubriquePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-              <Route path="comment/list" element={<ListComments handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
-              <Route path="answer/list" element={<ListAnswers handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="forum/list" element={<ListForums handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="event/list" element={<ListEvents handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="rubrique-type/list" element={<ListRubriqueType handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="rubrique-type/new" element={<NewRubrique handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="rubrique/edit/:id" element={<RubriquePage handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="comment/list" element={<ListComments handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
+                <Route path="answer/list" element={<ListAnswers handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
 
-              <Route path='*' element={<NotFoundAdmin/>}/>
-            </Routes>
-          </Main>
-        </Box>
+                <Route path='*' element={<NotFoundAdmin/>}/>
+              </Routes>
+            </Main>
+          </Box>
+      }
     </>
   );
 }

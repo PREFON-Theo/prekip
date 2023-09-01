@@ -9,9 +9,6 @@ import Dialog from '@mui/material/Dialog';
 import TextField from '@mui/material/TextField';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { UserContext } from '../../../../../../utils/Context/UserContext/UserContext';
 import { Navigate } from 'react-router-dom';
@@ -26,7 +23,6 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
   });
   const [dialogOpenned, setDialogOpenned] = useState(false);
   const [mode, setMode] = useState('')
-  const [redirection, setRedirection] = useState(false)
 
   const fetchDataLink = async () => {
     const LinkRaw = await axios
@@ -35,22 +31,8 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
   }
 
   useEffect(() => {
-    if(ready === "no"){
-      setRedirection(true)
-      handleOpenAlert()
-      changeAlertValues("error", "Vous n'êtes pas connecté")
-    }
-    else if (ready === "yes"){
-      if(!user?.roles.includes("Administrateur") && !user?.roles.includes("Modérateur")){
-        setRedirection(true)
-        handleOpenAlert()
-        changeAlertValues("warning", "Vous n'êtes pas autorisé à accédez à cette page")
-      }
-      else {
-        fetchDataLink();
-      }
-    }
-  }, [ready])
+    fetchDataLink();
+  }, [])
 
 
 
@@ -144,95 +126,83 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
 
   return (
     <>
-    {redirection ? <Navigate to={'/'}/> : <></>}
-    <Dialog
-      open={dialogOpenned}
-      onClose={() => setDialogOpenned(false)}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      {/* <DialogTitle id="alert-dialog-title">
-        { mode === 'edit' ? 
-          <h1>
-              Edition du lien {linkToChange?.text}
-          </h1>
+    {
+      ready === "waiting" 
+      ?
+        <>Chargement...</>
+      :
+        !user?.roles.includes("Administrateur") && !user?.roles.includes("Modérateur")
+        ?
+          <Navigate to={'/'}/>
         :
-          <h1>
-              Edition du lien {linkToChange?.text}
-          </h1>
-        }
-        </DialogTitle>
-        <DialogContent sx={{paddingTop: '20px !important', display: 'flex', flexDirection: 'column'}}>
-          <TextField sx={{margin: '10px 0'}} value={linkToChange?.text} label="Texte affiché" variant="outlined" onChange={e => setLinkToChange((prev) => ({...prev, text: e.target.value}))}/>
-          <TextField sx={{margin: '10px 0'}} value={linkToChange?.link} label="Lien" variant="outlined" onChange={e => setLinkToChange((prev) => ({...prev, link: e.target.value}))}/>
-        </DialogContent>
-        <DialogActions sx={{padding: "20px"}}>
-          {mode === 'edit' ? 
-            <Button variant='contained' color='warning' onClick={editOneLink}>Modifier</Button>
-          :
-            <Button variant='contained' color='success' onClick={addOneLink}>Ajouter</Button>
-          }
-        </DialogActions> */}
-
-      <div className={styles.container_dialog}>
-        { 
-        mode === 'edit' ? 
-          <h1>
-              Edition du lien {linkToChange?.text}
-          </h1>
-        :
-          <h1>
-              Edition du lien {linkToChange?.text}
-          </h1>
-        }
-        <div className={styles.container_inputs}>
-          <div className={styles.input_mail}>
-            <TextField sx={{margin: '10px 0'}} value={linkToChange?.text} label="Texte affiché" variant="outlined" onChange={e => setLinkToChange((prev) => ({...prev, text: e.target.value}))}/>        
-          </div>
-          <div className={styles.input_password}>
-            <TextField sx={{margin: '10px 0'}} value={linkToChange?.link} label="Lien" variant="outlined" onChange={e => setLinkToChange((prev) => ({...prev, link: e.target.value}))}/>
-          </div>
-          <div className={styles.button}>
-            {mode === 'edit' ? 
-              <Button variant='contained' color='warning' onClick={editOneLink}>Modifier</Button>
-            :
-              <Button variant='contained' color='success' onClick={addOneLink}>Ajouter</Button>
-            }
-          </div>
-        </div>
-      </div>
-    </Dialog>
-
-    <div className={styles.container}>
-      <div className={styles.title}>
-        <h2>Organisez l'ordre d'affichage des liens</h2>
-        <Button variant='contained' color='success' onClick={() => openDialog('new')}>Ajouter un lien</Button>
-      </div>
-
-      <SortableList
-        onSortEnd={onSortEnd}
-        className="list_dragg"
-        draggedItemClassName="dragged"
-      >
-        {links?.length === 0 ?
-          "Il n'y a pas de lien, ajoutez-en"
-        :
-          links?.map((item, index) => (
-            <SortableItem key={index}>
-              <div className="item_dragg">
-                <div></div>
-                <div>{item.text}</div>
-                <div>
-                  <div onClick={() => openDialog('edit')}><EditRoundedIcon/></div>
-                  <div onClick={() => deleteLink(item._id)}><DeleteForeverRoundedIcon color='error'/></div>
+          <>
+            <Dialog
+              open={dialogOpenned}
+              onClose={() => setDialogOpenned(false)}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <div className={styles.container_dialog}>
+                { 
+                mode === 'edit' ? 
+                  <h1>
+                      Edition du lien {linkToChange?.text}
+                  </h1>
+                :
+                  <h1>
+                      Edition du lien {linkToChange?.text}
+                  </h1>
+                }
+                <div className={styles.container_inputs}>
+                  <div className={styles.input_mail}>
+                    <TextField sx={{margin: '10px 0'}} value={linkToChange?.text} label="Texte affiché" variant="outlined" onChange={e => setLinkToChange((prev) => ({...prev, text: e.target.value}))}/>        
+                  </div>
+                  <div className={styles.input_password}>
+                    <TextField sx={{margin: '10px 0'}} value={linkToChange?.link} label="Lien" variant="outlined" onChange={e => setLinkToChange((prev) => ({...prev, link: e.target.value}))}/>
+                  </div>
+                  <div className={styles.button}>
+                    {mode === 'edit' ? 
+                      <Button variant='contained' color='warning' onClick={editOneLink}>Modifier</Button>
+                    :
+                      <Button variant='contained' color='success' onClick={addOneLink}>Ajouter</Button>
+                    }
+                  </div>
                 </div>
               </div>
-            </SortableItem>
-          ))
-        }
-      </SortableList>
-      <Button variant='contained' color='warning' onClick={() => handleEditOrder()}>Enregister</Button>
-    </div>
+            </Dialog>
+
+            <div className={styles.container}>
+              <div className={styles.title}>
+                <h2>Organisez l'ordre d'affichage des liens</h2>
+                <Button variant='contained' color='success' onClick={() => openDialog('new')}>Ajouter un lien</Button>
+              </div>
+
+              <SortableList
+                onSortEnd={onSortEnd}
+                className="list_dragg"
+                draggedItemClassName="dragged"
+              >
+                {links?.length === 0 ?
+                  "Il n'y a pas de lien, ajoutez-en"
+                :
+                  links?.map((item, index) => (
+                    <SortableItem key={index}>
+                      <div className="item_dragg">
+                        <div></div>
+                        <div>{item.text}</div>
+                        <div>
+                          <div onClick={() => openDialog('edit')}><EditRoundedIcon/></div>
+                          <div onClick={() => deleteLink(item._id)}><DeleteForeverRoundedIcon color='error'/></div>
+                        </div>
+                      </div>
+                    </SortableItem>
+                  ))
+                }
+              </SortableList>
+              <Button variant='contained' color='warning' onClick={() => handleEditOrder()}>Enregister</Button>
+            </div>
+          </>
+    }
     </>
   )
 }

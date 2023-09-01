@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 
-const Login = ({setOpenLoginForm, handleOpenAlert, changeAlertValues}) => {
+const Login = ({handleOpenAlert, changeAlertValues}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
@@ -26,12 +26,12 @@ const Login = ({setOpenLoginForm, handleOpenAlert, changeAlertValues}) => {
                 setUser(data);
                 handleOpenAlert();
                 changeAlertValues('success', "Vous êtes connecté");
-                setOpenLoginForm(false);
                 setRedirect(true)
                 setReady("yes")
             }
         }
         catch (err) {
+            console.log(err)
             handleOpenAlert();
             changeAlertValues('error', "Erreur de connection");
         }
@@ -45,18 +45,20 @@ const Login = ({setOpenLoginForm, handleOpenAlert, changeAlertValues}) => {
     return (
         <>
             <div className={styles.container}>
-                <h1>
-                    Connectez-vous :
-                </h1>
-                <div className={styles.container_inputs}>
-                    <div className={styles.input_mail}>
-                        <TextField value={email} sx={{marginRight: '1vw'}} label="Adresse mail" variant="outlined" onChange={e => setEmail(e.target.value)}/>
-                    </div>
-                    <div className={styles.input_password}>
-                        <TextField value={password} sx={{marginRight: '1vw'}} type="password" label="Mot de passe" variant="outlined" onChange={e => setPassword(e.target.value)}/>
-                    </div>
-                    <div className={styles.button}>
-                        <Button variant="contained" color='success' onClick={handleLoginSubmit}>Connexion</Button>
+                <div className={styles.wrapper}>
+                    <h1>
+                        Connectez-vous :
+                    </h1>
+                    <div className={styles.container_inputs}>
+                        <div className={styles.input_mail}>
+                            <TextField value={email} sx={{marginRight: '1vw'}} label="Adresse mail" variant="outlined" onChange={e => setEmail(e.target.value)}/>
+                        </div>
+                        <div className={styles.input_password}>
+                            <TextField value={password} sx={{marginRight: '1vw'}} type="password" label="Mot de passe" variant="outlined" onChange={e => setPassword(e.target.value)}/>
+                        </div>
+                        <div className={styles.button}>
+                            <Button variant="contained" color='success' onClick={handleLoginSubmit}>Connexion</Button>
+                        </div>
                     </div>
                 </div>
             </div>

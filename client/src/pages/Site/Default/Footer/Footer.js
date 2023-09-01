@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styles from "./Footer.module.scss"
 import { Link } from 'react-router-dom';
 
@@ -7,39 +7,6 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 
 const Footer = () => {
-
-const links1 = [
-    {
-      icon: `${<TwitterIcon/>}`,
-      title: "Twitter",
-      link: "https://www.twitter.com/Prefon_Asso",
-    },
-    {
-      icon: `${<FacebookIcon/>}`,
-      title: "Facebook",
-      link: "https://www.facebook.com/PrefonAsso/",
-    },
-    {
-      icon: `${<InstagramIcon/>}`,
-      title: "Instagram",
-      link: "https://www.instagram.com/prefonhandball",
-    },
-  ];
-  
-  const links2 = [
-    {
-      title: "Mon compte",
-      link: "/compte",
-    },
-    {
-      title: "Autre",
-      link: "/",
-    },
-    {
-      title: "Autre",
-      link: "/",
-    },
-  ];
 
     return (
       <>
@@ -63,15 +30,6 @@ const links1 = [
                 </ul>
               </div>
 
-              {/* <div className={styles.item_footer}>
-                <ul className={styles.fl_ul}>
-                  {links2.map((item, index) => (
-                    <li key={index}>
-                      <Link to={item.link}>{item.title}</Link>
-                    </li>
-                  ))}
-                </ul>
-              </div> */}
             </div>
 
             <div className={styles.c_right}>
