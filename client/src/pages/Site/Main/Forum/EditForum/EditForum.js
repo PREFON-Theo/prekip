@@ -21,10 +21,7 @@ const EditForum = ({ handleOpenAlert, changeAlertValues }) => {
   
   const fetchForum = async () => { 
     forumRaw = await axios.get(`/forum/${id}`)
-    setForum({
-      title: forumRaw.data?.title,
-      description: forumRaw.data?.description,
-    })
+    setForum(forumRaw.data)
   }
   
   useEffect(() => {
@@ -44,15 +41,6 @@ const EditForum = ({ handleOpenAlert, changeAlertValues }) => {
   
 
 
-  if(ready === "yes") {
-    if(!user){
-      handleOpenAlert()
-      changeAlertValues("error", "Vous n'êtes pas connecté")
-      return <Navigate replace to="/"/>
-    }
-  }
-
-
 
   const handleEditForum = () => {
     try {
@@ -61,7 +49,7 @@ const EditForum = ({ handleOpenAlert, changeAlertValues }) => {
         changeAlertValues('warning', "Il manque des informations pour modifier le forum")
       }
       else {
-        //if(user?._id !== forumRaw.data?.author){
+        //if(!!forum && user?._id === forum.author){
         axios
           .patch(`/forum/${id}`, {
             title: forum.title,
@@ -84,32 +72,46 @@ const EditForum = ({ handleOpenAlert, changeAlertValues }) => {
   return (
     <>
       {forumPosted ? <Navigate to={`/forum`} /> : <></>}
-      <div className={styles.container}>
-        <h2>Modifier le forum</h2>
-        <div className={styles.preview}>
-          <TextField
-            required
-            label="Titre du forum"
-            sx={{width: '100%'}}
-            value={forum.title}
-            onChange={e => setForum(prevValues => ({...prevValues, title: e.target.value}) )}
-          />
-        </div>
+      {        
+        ready === "waiting"
+        ?
+          <>Chargement...</>
+        :
+        ready === "no"
+          ?
+            <Navigate to ="/"/>
+          :
+          user?.roles.includes('Administrateur') || user?.roles.includes('Modérateur') || (!!forum && user?._id === forum.author)
+            ?
+              <div className={styles.container}>
+                <h2>Modifier le forum</h2>
+                <div className={styles.preview}>
+                  <TextField
+                    required
+                    label="Titre du forum"
+                    sx={{width: '100%'}}
+                    value={forum.title}
+                    onChange={e => setForum(prevValues => ({...prevValues, title: e.target.value}) )}
+                  />
+                </div>
 
-        <div className={styles.preview}>
-          <TextField
-            required
-            label="Description du forum"
-            sx={{width: '100%'}}
-            value={forum.preview}
-            onChange={e => setForum(prevValues => ({...prevValues, description: e.target.value}) )}
-          />
-        </div>
+                <div className={styles.preview}>
+                  <TextField
+                    required
+                    label="Description du forum"
+                    sx={{width: '100%'}}
+                    value={forum.preview}
+                    onChange={e => setForum(prevValues => ({...prevValues, description: e.target.value}) )}
+                  />
+                </div>
 
-          <div className={styles.button_submit}>
-            <Button variant="contained" color='warning' onClick={handleEditForum}>Modifier le forum</Button>
-          </div>
-      </div>
+                  <div className={styles.button_submit}>
+                    <Button variant="contained" color='warning' onClick={handleEditForum}>Modifier le forum</Button>
+                  </div>
+              </div>
+            :
+              <Navigate to="/" />
+      }
     </>
   )
 }

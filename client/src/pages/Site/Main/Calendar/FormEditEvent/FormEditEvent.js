@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./FormEditEvent.module.scss"
 
 import TextField from '@mui/material/TextField';
@@ -16,6 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import "dayjs/locale/fr"
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 
 const eventTypesList = [
@@ -30,6 +31,7 @@ const eventTypesList = [
 ]
 
 const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOpenAlert, changeAlertValues, actualisateData}) => {
+  const {ready} = useContext(UserContext);
   const [eventInfo, setEventInfo] = useState({
     title: '',
     description: '',
@@ -117,6 +119,13 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
 
   return (
     <>
+      {
+        ready === "waiting"
+        ?
+          <>Chargement...</>
+        :
+          ready === "no"
+      }
       <div className={styles.container}>
         <h1>
           Informations de l'évènement :&nbsp;
