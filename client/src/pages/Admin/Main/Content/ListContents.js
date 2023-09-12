@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import styles from "./ListContents.module.scss"
 import axios from 'axios'
 
@@ -15,11 +15,14 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
+
 import Pagination from '@mui/material/Pagination';
 
 const nbItemPerPage = 10;
 
 const ListContents = ({handleOpenAlert, changeAlertValues}) => {
+  const {cookies} = useContext(UserContext)
   const [articles, setArticles] = useState()
   const [categories, setCategories] = useState()
   const [users, setUsers] = useState()
@@ -42,7 +45,7 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
   }
 
   const fetchUsers = async () => {
-    const usersRaw = await axios.get('/user')
+    const usersRaw = await axios.get('/user', {headers: {jwt: cookies.token}})
     setUsers(usersRaw.data)
   }
 

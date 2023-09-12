@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import styles from "./IndexAdmin.module.scss"
 import ItemIndex from './ItemIndex/ItemIndex'
 import axios from 'axios'
+import { UserContext } from '../../../../utils/Context/UserContext/UserContext'
 
 const IndexAdmin = () => {
+  const {cookies} = useContext(UserContext)
   const [userStats, setUserStats] = useState();
   const [typeOfContentGlobal, setTypeOfContentGlobal] = useState();
   const [typeOfContentMonthly, setTypeOfContentGlobalMonthly] = useState();
@@ -11,12 +13,12 @@ const IndexAdmin = () => {
 
   const fetchUsers = async () => {
 
-    const usersStats = await axios.get('/user/stats')
+    const usersStats = await axios.get('/user/stats', {headers: {jwt: cookies.token}})
     setUserStats({
-      user: usersStats.data.user,
-      modo: usersStats.data.modo,
-      admin: usersStats.data.admin,
-      total: usersStats.data.total
+      user: usersStats.data?.user,
+      modo: usersStats.data?.modo,
+      admin: usersStats.data?.admin,
+      total: usersStats.data?.total
     })
   }
 

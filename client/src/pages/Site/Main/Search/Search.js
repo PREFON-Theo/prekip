@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import style from "./Search.module.scss"
 import { Link, useSearchParams } from 'react-router-dom'
 import axios from 'axios'
@@ -6,12 +6,10 @@ import Pagination from '@mui/material/Pagination';
 import { FormControl, InputLabel, Select, MenuItem, Button } from '@mui/material'
 import DangerousRoundedIcon from '@mui/icons-material/DangerousRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 
 const rubriquesRaw = await axios.get("/rubrique-type");
 const rubriqueData = rubriquesRaw.data;
-
-const authorRaw = await axios.get('/user');
-const authorData = authorRaw.data;
 
 const typeData = [
   {
@@ -32,6 +30,7 @@ const typeData = [
 ]
 
 const Search = () => {
+  const {cookies} = useContext(UserContext)
   const [ params, setParams ] = useSearchParams()
   const [articles, setArticles] = useState()
   //const [itemFocused, setItemFocused] = useState('')
@@ -40,6 +39,8 @@ const Search = () => {
   const [categorySelected, setCategorySelected] = useState('')
   const [authorSelected, setAuthorSelected] = useState('')
   const [typeSelected, setTypeSelected] = useState('')
+  const [authorData, setAuthorData] = useState();
+  
 
   const fetchArticles = async () => {
     try {
@@ -53,7 +54,8 @@ const Search = () => {
       query = authorParam === '' ? query : query === '' ? `?${authorParam}` : `${query}&${authorParam}`
       query = typeParam === '' ? query : query === '' ? `?${typeParam}` : `${query}&${typeParam}`
 
-
+      const authorRaw = await axios.get('/user', {headers: {jwt: cookies.token}});
+      setAuthorData(authorRaw.data)
       const articlesRaw = await axios.get(`/article/search/${params.get('q')}${query}`)
       setArticles(articlesRaw.data)
       setPage(articlesRaw.data.length > 0 ? 1 : 0)
@@ -129,7 +131,7 @@ const Search = () => {
               label="Filtre des auteurs"
               onChange={e => changeFilter("Author", e.target.value)}
             >
-              {authorData.map((item, index) => (
+              {authorData?.map((item, index) => (
                 <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.firstname} {item.lastname}</MenuItem>
               ))}
             </Select>
@@ -172,9 +174,9 @@ const Search = () => {
                 <div className={style.item_title}>{item.title}</div>
                 <div className={style.item_preview}>{item.preview?.length > 100 ? `${item.preview.substring(0, 100)}...` : item.preview}</div>
                 <div className={style.item_type}>
-                  {typeData.filter((t) => t.value === item.type)[0].title} par {authorData.filter((auth) => auth._id === item.author)[0]?.firstname === undefined
+                  {typeData.filter((t) => t.value === item.type)[0].title} par {authorData?.filter((auth) => auth._id === item.author)[0]?.firstname === undefined
                     ? <span style={{fontStyle:"italic"}}>utilisateur inconnu</span> 
-                    : `${authorData.filter((auth) => auth._id === item.author)[0].firstname} ${authorData.filter((auth) => auth._id === item.author)[0].lastname}`
+                    : `${authorData?.filter((auth) => auth._id === item.author)[0].firstname} ${authorData?.filter((auth) => auth._id === item.author)[0].lastname}`
                   }
                 </div>
               </Link>

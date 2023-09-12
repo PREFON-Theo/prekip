@@ -20,7 +20,7 @@ const usersList = await axios.get('/user')
 const listOfUsers = usersList.data
 
 const Forum = ({handleOpenAlert, changeAlertValues}) => {
-  const { user } = useContext(UserContext);
+  const { user, cookies } = useContext(UserContext);
   const [redirection, setRedirection] = useState(false);
   const [lastForum, setLastForum] = useState([]);
   const [forumInfo, setForumInfo] = useState();
@@ -29,15 +29,18 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
   const [answers, setAnswers] = useState([]);
   const [lenghtToLoad, setLengthToLoad] = useState(5);
   const [lengthOfForums, setLengthOfForums] = useState(0);
+  const [listOfUsers, setListOfUsers] = useState()
 
   const [openDr, setOpenDr] = useState(false);
 
   const fetchAllForums = async () => {
-    await axios
+    const frms = await axios
       .get(`/forum`)
-      .then((res) => {
-        setLengthOfForums(res.data.length)
-      })
+    setLengthOfForums(frms.data.length)
+
+    const usrs = await axios
+      .get('/user', {headers: {jwt: cookies.token}})
+    setListOfUsers(usrs.data)
   }
 
   const fetchLastForums = async () => {
@@ -256,7 +259,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
                   </div>
                   <h1>{forumInfo?.closed ? "[Fermé]":''}{forumInfo?.title}</h1>
                   <div className={styles.description}>{forumInfo?.description}</div>
-                  <div className={styles.author}>Posté le {new Date(forumInfo?.created_at).toLocaleDateString('fr-FR')}, par {`${listOfUsers.filter((usr) => usr._id === forumInfo?.author)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === forumInfo?.author)[0]?.lastname}`}</div>
+                  <div className={styles.author}>Posté le {new Date(forumInfo?.created_at).toLocaleDateString('fr-FR')}, par {`${listOfUsers?.filter((usr) => usr._id === forumInfo?.author)[0]?.firstname} ${listOfUsers?.filter((usr) => usr._id === forumInfo?.author)[0]?.lastname}`}</div>
                 </div>
 
                 <div className={styles.wrapper_answers}>
@@ -299,7 +302,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
                                   <div className={styles.txt}>{item.text}</div>
                                   </div>
                                 <div className={styles.a}>
-                                  Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.created_at).toLocaleDateString('fr-FR')}
+                                  Par {`${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.created_at).toLocaleDateString('fr-FR')}
                                 </div>
                               </div>
 
@@ -323,7 +326,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
                                     <div className={styles.txt}>{item.text}</div>
                                     </div>
                                   <div className={styles.a}>
-                                    Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.created_at).toLocaleDateString('fr-FR')}
+                                    Par {`${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.created_at).toLocaleDateString('fr-FR')}
                                   </div>
                                 </div>
                               </div>

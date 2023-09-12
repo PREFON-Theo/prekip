@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styles from "./Actualities.module.scss"
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import Pagination from '@mui/material/Pagination';
+import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 
 
 
 const nbItemPerPage = 10;
 
 const Actualities = () => {
-
+  const {cookies} = useContext(UserContext)
   const [actualities, setActulities] = useState([])
   const [users, setUsers] = useState()
 
@@ -26,7 +27,7 @@ const Actualities = () => {
     setMaxPage(Math.ceil(actualitesRaw.data.length / nbItemPerPage))
 
 
-    const usersRaw = await axios.get('/user')
+    const usersRaw = await axios.get('/user', {headers: {jwt: cookies.token}})
     setUsers(usersRaw.data)
 
   }

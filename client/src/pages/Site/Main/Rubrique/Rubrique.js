@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styles from "./Rubrique.module.scss"
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import Pagination from '@mui/material/Pagination';
+import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 
 
 // const allArticlesRaw = await axios.get('/articles')
@@ -15,6 +16,7 @@ const nbItemPerPage = 5;
 
 const Rubrique = () => {
   const { element } = useParams();
+  const {cookies} = useContext(UserContext)
 
   let articles = [];
   const [article, setArticle] = useState([])
@@ -43,7 +45,7 @@ const Rubrique = () => {
     setMaxPage(Math.ceil(articles.length / nbItemPerPage))
 
 
-    const usersRaw = await axios.get('/user')
+    const usersRaw = await axios.get('/user', {headers: {jwt: cookies.token}})
     setUsers(usersRaw.data)
 
   }

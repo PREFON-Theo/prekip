@@ -24,16 +24,15 @@ import ModeEditRoundedIcon from '@mui/icons-material/ModeEditRounded';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
 
-const usersList = await axios.get('/user')
 const rubriquesRaw = await axios.get('/rubrique-type')
 const rubriquesList = rubriquesRaw.data
-const listOfUsers = usersList.data
 
 const parse = require('html-react-parser');
 
 const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
+  const { user, ready, cookies } = useContext(UserContext);
+  
   const { id } = useParams();
-  const { user, ready } = useContext(UserContext);
   const [redirectionGoto, setRedirectGoto] = useState(false)
   const [contentLiked, setContentLiked] = useState(false)
   const [nbLike, setNbLike] = useState(0)
@@ -64,6 +63,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
   )
 
   const [comments, setComments] = useState()
+  const [listOfUsers, setListOfUsers] = useState()
 
   useEffect( () => {
     window.scrollTo(0, 0);
@@ -73,6 +73,8 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
 
   const fetchData = async () => {
     try {
+      const usersList = await axios.get('/user', {headers: {jwt: cookies.token}})
+      setListOfLikes(usersList.data)
       const articleData = await axios
         .get(`/article/${id}`)
         setContentType(articleData.data.type)
@@ -88,10 +90,10 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
           image: articleData.data.image,
           file: articleData.data.file,
           important: articleData.data.important,
-          authorName: `${listOfUsers.filter((usr) => usr._id === articleData.data.author)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === articleData.data.author)[0]?.lastname}`,
+          authorName: `${usersList.data.filter((usr) => usr._id === articleData.data.author)[0]?.firstname} ${usersList.data.filter((usr) => usr._id === articleData.data.author)[0]?.lastname}`,
           created_at: new Date(articleData.data.created_at).toLocaleDateString('fr-FR'),
           updated_at: new Date(articleData.data.updated_at).toLocaleDateString('fr-FR'),
-          updatorName: `${listOfUsers.filter((usr) => usr._id === articleData.data.updated_by)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === articleData.data.updated_by)[0]?.lastname}`,
+          updatorName: `${usersList.data.filter((usr) => usr._id === articleData.data.updated_by)[0]?.firstname} ${usersList.data.filter((usr) => usr._id === articleData.data.updated_by)[0]?.lastname}`,
         });
         const commentData = await axios.get(`/comment/article/${id}`)
         setComments(commentData.data);
@@ -337,7 +339,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
                       <div><IconButton aria-label='Supprimer' onClick={() => deleteCom(item._id)}><DeleteRoundedIcon color='error'/></IconButton></div>  
                     </div>
                     <div className={styles.a}>
-                      Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
+                      Par {`${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
                 </div>
@@ -356,7 +358,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
                       }
                     </div>
                     <div className={styles.a}>
-                      Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
+                      Par {`${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
                   {/* <div className={styles.second}></div> */}

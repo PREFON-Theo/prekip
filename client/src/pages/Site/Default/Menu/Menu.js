@@ -36,6 +36,8 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
   const [textToSearch, setTextToSearch] = useState('')
   const [openSearch, setOpenSearch] = useState(false)
 
+  console.log(user)
+
   const [anchorElLeft, setAnchorElLeft] = React.useState(null);
   const openLeft = Boolean(anchorElLeft);
   const handleClickLeft = (event) => {

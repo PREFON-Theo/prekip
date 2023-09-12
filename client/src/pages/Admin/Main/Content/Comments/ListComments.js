@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./ListComments.module.scss"
 import axios from 'axios'
 
@@ -16,10 +16,12 @@ import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import Pagination from '@mui/material/Pagination';
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 const nbItemPerPage = 10;
 
 const ListComments = ({handleOpenAlert, changeAlertValues}) => {
+  const {cookies} = useContext(UserContext)
   const [comments, setComments] = useState()
   const [users, setUsers] = useState()
   const [contents, setContents] = useState()
@@ -37,7 +39,7 @@ const ListComments = ({handleOpenAlert, changeAlertValues}) => {
   }
 
   const fetchUsers = async () => {
-    const usersRaw = await axios.get('/user')
+    const usersRaw = await axios.get('/user', {headers: {jwt: cookies.token}})
     setUsers(usersRaw.data)
   }
 
