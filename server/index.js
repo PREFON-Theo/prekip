@@ -5,6 +5,9 @@ const cookieParser = require("cookie-parser")
 require('dotenv').config();
 const path = require('path')
 
+const jwt = require('jsonwebtoken');
+const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
+
 const multer  = require('multer')
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -53,20 +56,26 @@ app.use('/event', EventRoutes);
 app.use('/article', ArticleRoutes);
 
 app.post('/article/with-file', upload.any('image'), async (req, res) => {
-    try {
-        let image = '';
-        let file = '';
-        for (let fi = 0; fi < req.files.length; fi++) {
+  try {
+    const token = req.headers.jwt;
+    if(token) {
+      jwt.verify(token, jwtSecret, {}, async (err, user) => {
+        if(err || user.id === undefined) {
+          return res.status(403).json("Unauthorized")
+        }
+        else {
+          let image = '';
+          let file = '';
+          for (let fi = 0; fi < req.files.length; fi++) {
             if(req.files[fi].mimetype === "application/pdf"){
-                file = req.files[fi];
+              file = req.files[fi];
             }
             else {
-                image = req.files[fi];
-            }
-            
-        }
-        const {title, preview, content, category, author, type, important, created_at, updated_at} = req.body
-        const articleCreation = await Article.create({
+              image = req.files[fi];
+            } 
+          }
+          const {title, preview, content, category, author, type, important, created_at, updated_at} = req.body
+          const articleCreation = await Article.create({
             title,
             preview,
             content,
@@ -78,14 +87,18 @@ app.post('/article/with-file', upload.any('image'), async (req, res) => {
             important,
             created_at,
             updated_at,
-        })
-        res.status(200).json(articleCreation)
+          })
+          res.status(200).json(articleCreation)
+        }
+      })
     }
-    catch (error) {
-        res.status(400).json({
-            error: error
-        });
+    else {
+      res.json(null)
     }
+  }
+  catch (error) {
+    res.status(400).json(error)
+  }
     
 })
 

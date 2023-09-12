@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import styles from "./Main.module.scss"
 import Menu from '../Default/Menu/Menu';
 import Footer from '../Default/Footer/Footer';
@@ -37,7 +37,6 @@ const handleCloseLoginForm = () => {
 const handleOpenLoginForm = () => {
     setOpenLoginForm(true);
 };
-
 
 
     return (

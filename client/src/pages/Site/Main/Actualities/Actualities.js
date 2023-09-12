@@ -22,7 +22,7 @@ const Actualities = () => {
   const fetchData = async () => {
 
 
-    const actualitesRaw = await axios.get('/article/type/actuality')
+    const actualitesRaw = await axios.get('/article/type/actuality', {headers: {jwt: cookies.token}})
     setActulities(actualitesRaw.data)
     setMaxPage(Math.ceil(actualitesRaw.data.length / nbItemPerPage))
 

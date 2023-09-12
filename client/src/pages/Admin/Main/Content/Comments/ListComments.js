@@ -44,7 +44,7 @@ const ListComments = ({handleOpenAlert, changeAlertValues}) => {
   }
 
   const fetchContents = async () => {
-    const contentsRaw = await axios.get('/article')
+    const contentsRaw = await axios.get('/article', {headers: {jwt: cookies.token}})
     setContents(contentsRaw.data)
   }
 

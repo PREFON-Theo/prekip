@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from './Feed.module.scss'
 
 import { Link } from "react-router-dom"
 import axios from 'axios'
 
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 
 
 const Feed = () => {
+  const {cookies} = useContext(UserContext)
   const [lastArticles,setLastArticles] = useState()
 
   const fetchData = async ()=> {
-    const articlesRaw = await axios.get(('/article/actuality/last/4'))
+    const articlesRaw = await axios.get(('/article/actuality/last/4'), {headers: {jwt: cookies.token}})
     setLastArticles(articlesRaw.data)
   }
 

@@ -76,7 +76,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
       const usersList = await axios.get('/user', {headers: {jwt: cookies.token}})
       setListOfLikes(usersList.data)
       const articleData = await axios
-        .get(`/article/${id}`)
+        .get(`/article/${id}`, {headers: {jwt: cookies.token}})
         setContentType(articleData.data.type)
         articleData.data.type === pathnameOfThisPage.split('/')[1] ? <></> : setRedirectionError(true)
         setArticle({
@@ -195,7 +195,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
         handleOpenAlert()
         changeAlertValues("warning", "Vous n'êtes pas autorisé à accédez à cette page")
       }
-      await axios.delete(`/article/${id}`)
+      await axios.delete(`/article/${id}`, {headers: {jwt: cookies.token}})
       await axios.delete(`/like/article/${id}`)
       await axios.delete(`/comment/article/${id}`)
       setRedirectGoto(true)

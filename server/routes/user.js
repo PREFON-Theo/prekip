@@ -90,7 +90,7 @@ router.get('/one/:id', async (req, res) => {
 router.get('/profil', (req, res) => {
   try {
     const token = req.headers.jwt;
-    if(token) {
+    if(token && token !== '') {
       jwt.verify(token, jwtSecret, {}, async (err, user) => {
         if(err || user.id === undefined) {
           return res.status(403).json("Unauthorized")

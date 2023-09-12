@@ -11,8 +11,8 @@ const ArticlesCategories = ({item}) => {
   useEffect(() => {
     if(item.reference !== undefined){
       if(item.reference?.length > 0){
-        setFirstSemiLength(item.reference.length % 2 > 0 ? (item.reference.length/2) +0.5 : item.reference.length/2)
-        setFSecondSemiLength(item.reference.length % 2 > 0 ? (item.reference.length/2) -0.5 : item.reference.length/2)
+        setFirstSemiLength(item.reference?.length % 2 > 0 ? (item.reference?.length/2) +0.5 : item.reference?.length/2)
+        setFSecondSemiLength(item.reference?.length % 2 > 0 ? (item.reference?.length/2) -0.5 : item.reference?.length/2)
       }
     }
   }, [item.reference])
@@ -32,7 +32,7 @@ const ArticlesCategories = ({item}) => {
 
 
             {item.reference !== undefined ?
-              item.reference.length > 0 ?
+              item.reference?.length > 0 ?
                 <>
                   <div className={styles.middle}>
                     {item.reference?.slice(0, firstSemiLength).map((item, index) => (
@@ -49,7 +49,7 @@ const ArticlesCategories = ({item}) => {
                     ))}
                   </div>
                   <div className={styles.right}>
-                    {item.reference?.slice(firstSemiLength, item.reference.length).map((item, index) => (
+                    {item.reference?.slice(firstSemiLength, item.reference?.length).map((item, index) => (
                       <div key={index} className={styles.item}>
                         <Link>{item.title}</Link>
                         {index+1 === firstSemiLength ?
@@ -63,12 +63,12 @@ const ArticlesCategories = ({item}) => {
                 </>
               :
               <>
-                <div className={styles.middle}>Rien à afficher</div>
+                <div className={styles.middle}>Rien à afficher.</div>
                 <div className={styles.right}></div>
               </>
             :
               <>
-                <div className={styles.middle}>Chargement</div>
+                <div className={styles.middle}>Chargement...</div>
                 <div className={styles.right}></div>
               </>
             }

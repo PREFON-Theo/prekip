@@ -24,7 +24,7 @@ const IndexAdmin = () => {
 
   const fetchContentsGlobal = async () => {
     
-    const contentsStats = await axios.get('/article/stats/global')
+    const contentsStats = await axios.get('/article/stats/global', {headers: {jwt: cookies.token}})
     setTypeOfContentGlobal(
       {
         article: contentsStats.data.article,
@@ -37,7 +37,7 @@ const IndexAdmin = () => {
 
   const fetchContentsMonthly = async () => {
     
-    const contentsStats = await axios.get('/article/stats/this-month')
+    const contentsStats = await axios.get('/article/stats/this-month', {headers: {jwt: cookies.token}})
     setTypeOfContentGlobalMonthly(
       {
         article: contentsStats.data.article,

@@ -32,7 +32,7 @@ Object.values(rubriquesRaw)[0].filter((rub) => rub.parent === '').map((item) => 
 
 
 const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
-  const {user, ready} = useContext(UserContext);
+  const {user, ready, cookies} = useContext(UserContext);
   const [contentType, setContentType] = useState('');
 
   const [article, setArticle] = useState({
@@ -97,7 +97,8 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
           formData, 
           {
             headers: {
-              'content-type': 'multipart/form-data'
+              'content-type': 'multipart/form-data',
+              jwt: cookies.token
             }
           })
           setIdArticle(newArticle.data._id)
@@ -135,7 +136,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
             updated_at: new Date(),
             type: contentType,
             important: user?.roles.includes('Administrateur') ? article.important : false,
-          })
+          }, {headers: {jwt: cookies.token}})
           setIdArticle(newActuality.data._id)
           handleOpenAlert()
           changeAlertValues('success', 'Actualité ajoutée')
@@ -177,7 +178,8 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
           formData, 
           {
             headers: {
-              'content-type': 'multipart/form-data'
+              'content-type': 'multipart/form-data',
+              jwt: cookies.token
             }
           })
           setIdArticle(newArticle.data._id)

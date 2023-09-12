@@ -34,9 +34,9 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
   const [maxPage, setMaxPage] = useState(0)
 
   const fetchArticles = async () => {
-    const articlesRaw = await axios.get('/article')
+    const articlesRaw = await axios.get('/article', {headers: {jwt: cookies.token}})
     setArticles(articlesRaw.data)
-    setMaxPage(Math.ceil(articlesRaw.data.length / 10))
+    setMaxPage(Math.ceil(articlesRaw.data?.length / 10))
   }
 
   const fetchCategories = async () => {
@@ -71,7 +71,7 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/article/${articleToDelete}`)
+      await axios.delete(`/article/${articleToDelete}`, {headers: {jwt: cookies.token}})
       await axios.delete(`/like/article/${articleToDelete}`)
       await axios.delete(`/comment/article/${articleToDelete}`)
       handleOpenAlert()

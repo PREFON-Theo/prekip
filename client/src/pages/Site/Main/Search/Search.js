@@ -56,9 +56,9 @@ const Search = () => {
 
       const authorRaw = await axios.get('/user', {headers: {jwt: cookies.token}});
       setAuthorData(authorRaw.data)
-      const articlesRaw = await axios.get(`/article/search/${params.get('q')}${query}`)
+      const articlesRaw = await axios.get(`/article/search/${params.get('q')}${query}`, {headers: {jwt: cookies.token}})
       setArticles(articlesRaw.data)
-      setPage(articlesRaw.data.length > 0 ? 1 : 0)
+      setPage(articlesRaw.data?.length > 0 ? 1 : 0)
     }
     catch (err) {
       console.log(err)
@@ -158,14 +158,14 @@ const Search = () => {
         <div className={style.list_results}>
           {articles === undefined ?
             <>Chargement</>
-          : articles.length === 0 ?
+          : articles?.length === 0 ?
           <div 
             className={style.no_result}
           >
             <>Aucun résultat...</>
           </div>
           :
-          articles.slice(((page-1)*5) , (page*5)).map((item, index) => (
+          articles?.slice(((page-1)*5) , (page*5)).map((item, index) => (
             <div 
               key={index}
               className={style.item_result}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import styles from "./EditArticle.module.scss"
-import { Navigate, useParams, redirect } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 
 
 import { Editor } from "react-draft-wysiwyg";
@@ -25,22 +25,22 @@ const rubriquesRaw = await axios.get("/rubrique-type")
 const rubriqueList = rubriquesRaw.data
 
 const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
-  const {user, ready} = useContext(UserContext);
+  const {user, ready, cookies} = useContext(UserContext);
   const { id } = useParams();
-  let articleRaw = {}
 
   const [redirection, setRedirection] = useState(false)
 
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
   const fetchArticle = async () => { 
-    articleRaw = await axios.get(`/article/${id}`)
+    const articleRaw = await axios.get(`/article/${id}`, {headers: {jwt: cookies.token}})
     setArticle({
       title: articleRaw.data?.title,
       category: articleRaw.data?.category,
       preview: articleRaw.data?.preview,
       content : articleRaw.data?.content,
       important : articleRaw.data?.important,
+      author : articleRaw.data?.author,
     })
     
     setEditorState(
@@ -51,24 +51,24 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
       )
     )
 
-  }
-  
-  useEffect(() => {
     if(ready === "no"){
       setRedirection(true)
       handleOpenAlert()
       changeAlertValues("error", "Vous n'êtes pas connecté")
     }
     else if (ready === "yes"){
-      if(!user?.roles.includes("Administrateur") && !user?.roles.includes("Modérateur")){
+      if(!user?.roles.includes("Administrateur") && !user?.roles.includes("Modérateur") && user?._id !== articleRaw.data.author){
+        console.log("non")
         setRedirection(true)
         handleOpenAlert()
         changeAlertValues("warning", "Vous n'êtes pas autorisé à accédez à cette page")
       }
-      else {
-        fetchArticle();
-      }
     }
+
+  }
+  
+  useEffect(() => {
+    fetchArticle()
   }, [ready])
 
   
@@ -113,7 +113,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
             updated_at: new Date(),
             important: user?.roles.includes('Administrateur') || user?.roles.includes('Modérateur') ? article.important : false,
             updated_by: user._id
-          })
+          }, {headers: {jwt: cookies.token}})
           handleOpenAlert()
           changeAlertValues('success', 'Article modifié')
           setArticlePosted(true)

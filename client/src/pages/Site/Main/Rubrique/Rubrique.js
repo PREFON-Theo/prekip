@@ -23,8 +23,8 @@ const Rubrique = () => {
   const [rubriqueTypeOfList, setRubriqueTypeOfList] = useState([])
   const [users, setUsers] = useState()
 
-  const [maxPage, setMaxPage] = useState(0)
-  const [page, setPage] = useState(1)
+  //const [maxPage, setMaxPage] = useState(0)
+  //const [page, setPage] = useState(1)
 
 
   const fetchData = async () => {
@@ -36,13 +36,13 @@ const Rubrique = () => {
     setRubriqueTypeOfList(rubriqueTypesRaw)
 
     for (let r = 0; r < rubriqueTypesRaw.length; r++) {
-      const articleById = await axios.get(`/article/type/article/category/${rubriqueTypesRaw[r]._id}`)
-      for (let a = 0; a < articleById.data.length; a++) {
+      const articleById = await axios.get(`/article/type/article/category/${rubriqueTypesRaw[r]._id}`, {headers: {jwt: cookies.token}})
+      for (let a = 0; a < articleById.data?.length; a++) {
         articles.push(articleById.data[a])   
       }
     }
     setArticle(articles)
-    setMaxPage(Math.ceil(articles.length / nbItemPerPage))
+    // setMaxPage(Math.ceil(articles.length / nbItemPerPage))
 
 
     const usersRaw = await axios.get('/user', {headers: {jwt: cookies.token}})
@@ -54,9 +54,9 @@ const Rubrique = () => {
     fetchData();
   }, [element])
 
-  const handleChangePage = (event, value) => {
+  /*const handleChangePage = (event, value) => {
     setPage(value)
-  }
+  }*/
 
   return (
     <>
@@ -72,15 +72,17 @@ const Rubrique = () => {
                 <div>Il n'y a aucun article dans cette rubrique pour le moment</div>
               :
                 <>
-                  {article.filter((art) => art.category === item._id).slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((itemC, indexC) => (
+                  {article.filter((art) => art.category === item._id)
+                  /*.slice((page-1)*nbItemPerPage, page*nbItemPerPage)*/
+                  .map((itemC, indexC) => (
                     <Link className={styles.article} key={indexC} to={`/${itemC.type}/${itemC._id}`}>
                       <div className={styles.title}>{itemC.title}</div>
                       <div className={styles.infos}>par {users?.filter((us) => us._id === itemC.author)[0]?.firstname} {users?.filter((us) => us._id === itemC.author)[0]?.lastname}, le {new Date(itemC.created_at).toLocaleDateString('fr-FR')}</div>
                     </Link>
                   ))}
-                  <div className={styles.pagination}>
+                  {/* <div className={styles.pagination}>
                     <Pagination count={maxPage} color="primary" value={page} onChange={handleChangePage}/> 
-                  </div> 
+                  </div>  */}
                 </>
             }
           </div>

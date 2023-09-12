@@ -8,7 +8,7 @@ export const UserContextProvider = ({children}) => {
     const [ready, setReady] = useState("waiting");
     
     const cookies = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
-      acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+      acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
       return acc;
     }, {})
 
@@ -23,6 +23,9 @@ export const UserContextProvider = ({children}) => {
             setUser(data);
             setReady("yes")
           }
+        })
+        .catch((err) => {
+          console.log(err)
         })
       }
     })
