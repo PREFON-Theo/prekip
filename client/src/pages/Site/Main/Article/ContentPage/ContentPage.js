@@ -74,7 +74,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
   const fetchData = async () => {
     try {
       const usersList = await axios.get('/user', {headers: {jwt: cookies.token}})
-      setListOfLikes(usersList.data)
+      setListOfUsers(usersList.data)
       const articleData = await axios
         .get(`/article/${id}`, {headers: {jwt: cookies.token}})
         setContentType(articleData.data.type)
@@ -95,7 +95,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
           updated_at: new Date(articleData.data.updated_at).toLocaleDateString('fr-FR'),
           updatorName: `${usersList.data.filter((usr) => usr._id === articleData.data.updated_by)[0]?.firstname} ${usersList.data.filter((usr) => usr._id === articleData.data.updated_by)[0]?.lastname}`,
         });
-        const commentData = await axios.get(`/comment/article/${id}`)
+        const commentData = await axios.get(`/comment/article/${id}`, {headers: {jwt: cookies.token}})
         setComments(commentData.data);
     }
 
@@ -161,7 +161,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
           user_id: user,
           article_id: id,
           date: new Date()
-        })
+        }, {headers: {jwt: cookies.token}})
         handleOpenAlert()
         changeAlertValues('success', 'Commentaire ajouté')
         fetchData()
@@ -176,7 +176,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
   const deleteCom = async (id) => {
     try {
       await axios
-        .delete(`/comment/${id}`)
+        .delete(`/comment/${id}`, {headers: {jwt: cookies.token}})
         handleOpenAlert()
         changeAlertValues('success', 'Commentaire supprimé')
         fetchData()
@@ -197,7 +197,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
       }
       await axios.delete(`/article/${id}`, {headers: {jwt: cookies.token}})
       await axios.delete(`/like/article/${id}`)
-      await axios.delete(`/comment/article/${id}`)
+      await axios.delete(`/comment/article/${id}`, {headers: {jwt: cookies.token}})
       setRedirectGoto(true)
       handleOpenAlert()
       changeAlertValues('success', "Contenu supprimé")
@@ -351,7 +351,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
                     <div className={styles.t}>
                       <div>{item.text}</div>
                       {
-                        user?.roles.includes('Administrateur') || user?.roles.includes('Modérateur') ?
+                        user?.roles.includes('Administrateur') || user?.roles.includes('Modérateur') || user?._id === item.user_id ?
                           <div><IconButton aria-label='Supprimer' onClick={() => deleteCom(item._id)}><DeleteRoundedIcon color='error'/></IconButton></div>
                         :
                           <></>
@@ -380,7 +380,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
             </div>
             <div style={{margin: "20px 0 0 auto"}}>
               <ButtonGroup sx={{width: '100%'}}>
-                <Button variant='outlined' sx={{width: '50%'}} color="primary" onClick={() => setDialogOpened(false)()}>Annuler</Button>
+                <Button variant='outlined' sx={{width: '50%'}} color="primary" onClick={() => setDialogOpened(false)}>Annuler</Button>
                 <Button variant='contained' sx={{width: '50%'}} color="error" onClick={() => deleteArticle()}>Supprimer</Button>
               </ButtonGroup>
             </div>

@@ -33,7 +33,7 @@ const ListComments = ({handleOpenAlert, changeAlertValues}) => {
   const [maxPage, setMaxPage] = useState(0)
 
   const fetchComments = async () => {
-    const commentsRaw = await axios.get('/comment')
+    const commentsRaw = await axios.get('/comment', {headers: {jwt: cookies.token}})
     setComments(commentsRaw.data)
     setMaxPage(Math.ceil(commentsRaw.data.length / 10))
   }
@@ -67,7 +67,7 @@ const ListComments = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/comment/${commentToDelete}`)
+      await axios.delete(`/comment/${commentToDelete}`, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', 'Comment supprimé')
       fetchComments();
