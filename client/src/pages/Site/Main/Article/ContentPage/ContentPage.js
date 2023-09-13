@@ -106,9 +106,9 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
   }
 
   const getLikes = async () => {
-    let list = await axios.get(`/like/article/${id}`)
-    setListOfLikes(list.data)
-    setNbLike(list.data.length)
+    let list = await axios.get(`/like/article/${id}`, {headers: {jwt: cookies.token}})
+    setListOfLikes(list?.data)
+    setNbLike(list?.data?.length || 0)
   }
 
   useEffect(() => {
@@ -130,7 +130,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
         if(contentLiked) {
           setNbLike(nbLike-1)
           setContentLiked(false)
-          await axios.delete(`/like/user/${user._id}/${id}`)
+          await axios.delete(`/like/user/${user._id}/${id}`, {headers: {jwt: cookies.token}})
         }
         else {
           setNbLike(nbLike+1)
@@ -138,7 +138,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
           await axios.post('/like', {
             user_id: user._id,
             article_id: id
-          })
+          }, {headers: {jwt: cookies.token}})
         }
       }
       else {
@@ -195,8 +195,9 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
         handleOpenAlert()
         changeAlertValues("warning", "Vous n'êtes pas autorisé à accédez à cette page")
       }
+      console.log("first")
       await axios.delete(`/article/${id}`, {headers: {jwt: cookies.token}})
-      await axios.delete(`/like/article/${id}`)
+      await axios.delete(`/like/article/${id}`, {headers: {jwt: cookies.token}})
       await axios.delete(`/comment/article/${id}`, {headers: {jwt: cookies.token}})
       setRedirectGoto(true)
       handleOpenAlert()

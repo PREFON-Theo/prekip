@@ -380,20 +380,18 @@ router.delete('/:id', (req, res) => {
           return res.status(403).json("Unauthorized")
         }
         else if(user.roles.includes('Administrateur') || user.id === author){
-          Article.findOne({_id: req.params.id}).then((r) => {
-            if(Object.values(r.file).length > 0){
-              const path = "/api/" + r.file.path
-              if(fs.existsSync(path)){
-                fs.unlinkSync(path);
-              }
+          if(art.file != null){
+            const path = "/api/" + art.file.path
+            if(fs.existsSync(path)){
+              fs.unlinkSync(path);
             }
-            if(Object.values(r.image).length > 0){
-              const path = "/api/" + r.image.path
-              if(fs.existsSync(path)){
-                fs.unlinkSync(path);
-              }
+          }
+          if(art.image != null){
+            const path = "/api/" + art.image.path
+            if(fs.existsSync(path)){
+              fs.unlinkSync(path);
             }
-          })
+          }
           Article.deleteOne({_id: req.params.id}).then(() => {
               res.status(200).json({
                 message: `Article ${req.params.id} deleted`
