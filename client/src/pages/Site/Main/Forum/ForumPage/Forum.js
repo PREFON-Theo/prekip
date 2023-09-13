@@ -35,8 +35,8 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
 
   const fetchAllForums = async () => {
     const frms = await axios
-      .get(`/forum`)
-    setLengthOfForums(frms.data.length)
+      .get(`/forum`, {headers: {jwt: cookies.token}})
+    setLengthOfForums(frms?.data?.length)
 
     const usrs = await axios
       .get('/user', {headers: {jwt: cookies.token}})
@@ -46,7 +46,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
   const fetchLastForums = async () => {
     fetchAllForums();
     await axios
-      .get(`/forum/last/${lenghtToLoad}`)
+      .get(`/forum/last/${lenghtToLoad}`, {headers: {jwt: cookies.token}})
       .then((res) => {
         setLastForum(res.data)
       })
@@ -62,7 +62,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
 
   const fetchDataForum = async (id) => {
     await axios
-      .get(`/forum/${id}`)
+      .get(`/forum/${id}`, {headers: {jwt: cookies.token}})
       .then((res) => setForumInfo(res.data))
   }
 
@@ -85,11 +85,11 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
       .post(`/answer/`, {
         text: answerText,
         user_id: user,
-        forum_id: forumInfo._id,
+        forum_id: forumInfo?._id,
       })
       .then(() => handleOpenAlert())
       .then(() => changeAlertValues('success', 'Commentaire ajouté'))
-      .then(() => fetchDataAnswers(forumInfo._id))
+      .then(() => fetchDataAnswers(forumInfo?._id))
       .then(() => setAnswerText(''))
   }
   
@@ -104,14 +104,14 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
     await axios
       .patch(`/forum/${id}`, {
         closed: !forumClosed
-      })
+      }, {headers: {jwt: cookies.token}})
       .then(() => fetchDataForum(id))
       .then(() => fetchLastForums())
   }
 
   const deleteForum = async (id) => {
-    await axios.delete(`/forum/${forumInfo._id}`)
-    await axios.delete(`/answer/forum/${forumInfo._id}`)
+    await axios.delete(`/forum/${forumInfo?._id}`, {headers: {jwt: cookies.token}})
+    await axios.delete(`/answer/forum/${forumInfo?._id}`)
     .then(() => {
       setRedirection(true)
       fetchLastForums()
@@ -138,7 +138,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
         <div className={styles.left}>
           <h4>Listes des sujets :</h4>
           {
-            lastForum.length === 0 ?
+            lastForum?.length === 0 ?
               <div>Il n'y a aucun sujet</div>
             :
             <>
@@ -181,7 +181,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
             <div className={styles.left_semi_width}>
               <h4>Listes des sujets :</h4>
               {
-                lastForum.length === 0 ?
+                lastForum?.length === 0 ?
                   <div>Il n'y a aucun sujet</div>
                 :
                 <>
@@ -238,13 +238,13 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
               <div className={styles.wrapper}>
                 {
                   user ?
-                    forumInfo.author === user?._id ?
+                    (forumInfo?.author === user?._id) || user.roles.includes('Administrateur') || user.roles.includes('Modérateur') ?
                     <div className={styles.button_manage}>
-                      <Button variant='contained' color='info' sx={{marginLeft: '10px'}} onClick={() => handleCloseForum(forumInfo._id, forumInfo.closed)}>{forumInfo.closed ? 'Réouvrir le forum' : 'Clôturer le forum'}</Button>
-                      <Link to={`/edit-forum/${forumInfo._id}`} style={{marginLeft: '10px'}}>
+                      <Button variant='contained' color='info' sx={{marginLeft: '10px'}} onClick={() => handleCloseForum(forumInfo?._id, forumInfo?.closed)}>{forumInfo?.closed ? 'Réouvrir le forum' : 'Clôturer le forum'}</Button>
+                      <Link to={`/edit-forum/${forumInfo?._id}`} style={{marginLeft: '10px'}}>
                         <Button variant='contained' color='warning'>Modifier le forum</Button>
                       </Link>
-                      <Button variant='contained' color='error' onClick={() => deleteForum(forumInfo._id)}>Supprimer le forum</Button>
+                      <Button variant='contained' color='error' onClick={() => deleteForum(forumInfo?._id)}>Supprimer le forum</Button>
                     </div>
                     :
                       <></>

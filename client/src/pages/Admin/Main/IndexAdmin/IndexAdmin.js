@@ -50,12 +50,12 @@ const IndexAdmin = () => {
 
   const fetchForums = async () => {
     
-    const forumsStats = await axios.get('/forum/stats/global')
+    const forumsStats = await axios.get('/forum/stats/global', {headers: {jwt: cookies.token}})
     setForumsStats(
       {
-        opened: forumsStats?.data.opened,
-        closed: forumsStats?.data.closed,
-        total: forumsStats?.data.total
+        opened: forumsStats?.data?.opened,
+        closed: forumsStats?.data?.closed,
+        total: forumsStats?.data?.total
       }
     )
   }

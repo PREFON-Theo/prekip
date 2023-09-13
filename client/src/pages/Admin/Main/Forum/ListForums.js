@@ -32,9 +32,9 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
   const [maxPage, setMaxPage] = useState(0)
 
   const fetchForums = async () => {
-    const forumsRaw = await axios.get('/forum')
+    const forumsRaw = await axios.get('/forum', {headers: {jwt: cookies.token}})
     setForums(forumsRaw.data)
-    setMaxPage(Math.ceil(forumsRaw.data.length / nbItemPerPage))
+    setMaxPage(Math.ceil(forumsRaw.data?.length / nbItemPerPage))
   }
 
   const fetchUsers = async () => {
@@ -60,7 +60,7 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/forum/${forumToDelete}`)
+      await axios.delete(`/forum/${forumToDelete}`, {headers: {jwt: cookies.token}})
       await axios.delete(`/answer/forum/${forumToDelete}`)
       handleOpenAlert()
       changeAlertValues('success', 'Forum supprimé')

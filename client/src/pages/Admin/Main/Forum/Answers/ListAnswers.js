@@ -44,7 +44,7 @@ const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
   }
 
   const fetchForums = async () => {
-    const forumRaw = await axios.get('/forum')
+    const forumRaw = await axios.get('/forum', {headers: {jwt: cookies.token}})
     setForums(forumRaw.data)
   }
 
