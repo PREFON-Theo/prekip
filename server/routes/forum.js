@@ -3,7 +3,7 @@ const router = express.Router();
 const Forum = require('../models/Forum')
 
 const jwt = require('jsonwebtoken');
-const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
+const jwtSecret = process.env.JWT_SECRET
 
 //Get all - OK
 router.get('/', async (req, res) => {

@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const bcryptSecret = bcrypt.genSaltSync(10);
 
 const jwt = require('jsonwebtoken');
-const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
+const jwtSecret = process.env.JWT_SECRET
 
 
 //Get All Users - OK

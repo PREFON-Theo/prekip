@@ -4,7 +4,7 @@ const Article = require('../models/Article')
 const fs = require('fs')
 
 const jwt = require('jsonwebtoken');
-const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
+const jwtSecret = process.env.JWT_SECRET
 
 
 router.get('/', async (req, res) => {

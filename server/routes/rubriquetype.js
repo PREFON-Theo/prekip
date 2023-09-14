@@ -3,7 +3,7 @@ const router = express.Router();
 const RubriqueType = require('../models/RubriqueType')
 
 const jwt = require('jsonwebtoken');
-const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
+const jwtSecret = process.env.JWT_SECRET
 
 //Get All - OK
 router.get('/', async (req, res) => {

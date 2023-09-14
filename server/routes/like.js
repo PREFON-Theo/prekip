@@ -4,7 +4,7 @@ const Like = require('../models/Like')
 const Article = require('../models/Article')
 
 const jwt = require('jsonwebtoken');
-const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
+const jwtSecret = process.env.JWT_SECRET
 
 //Get All - OK
 /*router.get('/', async (req, res) => {

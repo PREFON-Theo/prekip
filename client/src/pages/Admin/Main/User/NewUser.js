@@ -84,7 +84,6 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
         }
         else {
           try {
-            console.log(newUser.roles)
             const userCreation = await axios.post('/user/register', {
               firstname: newUser.firstname,
               lastname: newUser.lastname,

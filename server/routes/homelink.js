@@ -3,7 +3,7 @@ const router = express.Router();
 const Homelink = require('../models/Homelink');
 
 const jwt = require('jsonwebtoken');
-const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
+const jwtSecret = process.env.JWT_SECRET
 
 //Get All - OK
 router.get('/', async (req, res) => {  

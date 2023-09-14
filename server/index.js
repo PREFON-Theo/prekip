@@ -6,7 +6,7 @@ require('dotenv').config();
 const path = require('path')
 
 const jwt = require('jsonwebtoken');
-const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
+const jwtSecret = process.env.JWT_SECRET
 
 const multer  = require('multer')
 const storage = multer.diskStorage({
