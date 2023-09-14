@@ -1,5 +1,8 @@
 .container {
-    margin: 5vh auto;
+  margin: 0 auto;
+  padding: 5vh 0;
+  
+  .wrapper {
     background-color: rgb(241, 241, 241);
     padding: 5vh 3vw;
 
@@ -30,7 +33,7 @@
     > div:first-child {
         margin-top: 0;
     }
-
+  }
 }
 
 

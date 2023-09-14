@@ -14,7 +14,7 @@ import { UserContext } from '../../../../../../utils/Context/UserContext/UserCon
 import { Navigate } from 'react-router-dom';
 
 const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
-  const {user, ready} = useContext(UserContext);
+  const {user, ready, cookies} = useContext(UserContext);
   const [links, setLinks] = useState();
   const [linkToChange, setLinkToChange] = useState({
     _id: '',
@@ -26,7 +26,7 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
 
   const fetchDataLink = async () => {
     const LinkRaw = await axios
-      .get('/homelink')
+      .get('/homelink', {headers: {jwt: cookies.token}})
     setLinks(LinkRaw.data)
   }
 
@@ -53,7 +53,7 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
     links.map((item) => (
       axios.patch(`/homelink/${item._id}`, { 
         place: item.place
-      }).then(() => {
+      }, {headers: {jwt: cookies.token}}).then(() => {
         handleOpenAlert()
         changeAlertValues('success', "Modification de l'ordre réussi")
       })
@@ -84,7 +84,7 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
       await axios.patch(`/homelink/${linkToChange._id}`, {
         text: linkToChange.text,
         link: linkToChange.link
-      })
+      }, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', "Modification du lien réussi")
       fetchDataLink();
@@ -101,7 +101,7 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
         text: linkToChange.text,
         link: linkToChange.link,
         place: links.length + 1
-      })
+      }, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', "Ajout d'un nouveau lien réussi")
       fetchDataLink();
@@ -114,7 +114,7 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteLink = async (id) => {
     try {
-      await axios.delete(`/homelink/${id}`)
+      await axios.delete(`/homelink/${id}`, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', "Lien supprimé")
       fetchDataLink();

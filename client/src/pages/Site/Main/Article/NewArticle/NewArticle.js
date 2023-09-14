@@ -20,19 +20,23 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import Switch from '@mui/material/Switch';
 
+const cookieToken = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
+  acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
+  return acc;
+}, {})
 
-const rubriquesRaw = await axios.get("/rubrique-type")
+const rubriquesRaw = await axios.get("/rubrique-type", {headers: {jwt: cookieToken.token}})
 const rubriqueList = []
-Object.values(rubriquesRaw)[0].filter((rub) => rub.parent === '').map((item) => {
+Object.values(rubriquesRaw)[0]?.filter((rub) => rub.parent === '').map((item) => {
   rubriqueList.push(item)
-  Object.values(rubriquesRaw)[0].filter((rubC) => rubC.parent === item._id).map((itemC) => {
+  Object.values(rubriquesRaw)[0]?.filter((rubC) => rubC.parent === item._id).map((itemC) => {
     rubriqueList.push(itemC)
   })
 })
 
 
 const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
-  const {user, ready} = useContext(UserContext);
+  const {user, ready, cookies} = useContext(UserContext);
   const [contentType, setContentType] = useState('');
 
   const [article, setArticle] = useState({
@@ -97,7 +101,8 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
           formData, 
           {
             headers: {
-              'content-type': 'multipart/form-data'
+              'content-type': 'multipart/form-data',
+              jwt: cookies.token
             }
           })
           setIdArticle(newArticle.data._id)
@@ -135,7 +140,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
             updated_at: new Date(),
             type: contentType,
             important: user?.roles.includes('Administrateur') ? article.important : false,
-          })
+          }, {headers: {jwt: cookies.token}})
           setIdArticle(newActuality.data._id)
           handleOpenAlert()
           changeAlertValues('success', 'Actualité ajoutée')
@@ -177,7 +182,8 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
           formData, 
           {
             headers: {
-              'content-type': 'multipart/form-data'
+              'content-type': 'multipart/form-data',
+              jwt: cookies.token
             }
           })
           setIdArticle(newArticle.data._id)

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import ListRoundedIcon from '@mui/icons-material/ListRounded';
 
-const MenuItemLinkDropdown = ({title,list, mobile}) => {
+const MenuItemLinkDropdown = ({title, list, mobile}) => {
     
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -41,13 +41,20 @@ const MenuItemLinkDropdown = ({title,list, mobile}) => {
               }}
             >
               <span>
-                {list.map((item, index) => (
-                  <Link to={`rubrique/${item.link}`} key={index} style={{textDecoration: "none"}}>
-                    <MenuItem onClick={handleClose} sx={{color: "#000"}}>
-                      {item.title}
+                {
+                  !!list ?
+                    list?.map((item, index) => (
+                      <Link to={`rubrique/${item.link}`} key={index} style={{textDecoration: "none"}}>
+                        <MenuItem onClick={handleClose} sx={{color: "#000"}}>
+                          {item.title}
+                        </MenuItem>
+                      </Link>
+                    ))
+                  :
+                    <MenuItem disabled sx={{color: "#000"}}>
+                      Il n'y a pas de rubrique disponible...
                     </MenuItem>
-                  </Link>
-                ))}
+                }
               </span>
             </Menu>
         </>

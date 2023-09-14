@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./ListUsers.module.scss"
 import axios from 'axios'
 
@@ -18,10 +18,12 @@ import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import Pagination from '@mui/material/Pagination';
+import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 
 const nbItemPerPage = 10;
 
 const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
+  const {cookies} = useContext(UserContext)
   const [users, setUsers] = useState()
 
   const [dialogOpened, setDialogOpened] = useState(false)
@@ -31,9 +33,9 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
   const [maxPage, setMaxPage] = useState(0)
 
   const fetchUsers = async () => {
-    const usersRaw = await axios.get('/user')
+    const usersRaw = await axios.get('/user', {headers: {jwt: cookies.token}})
     setUsers(usersRaw.data)
-    setMaxPage(Math.ceil(usersRaw.data.length / 10))
+    setMaxPage(Math.ceil(usersRaw.data?.length / 10))
   }
 
   useEffect(() => {
@@ -53,7 +55,7 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteUser = async () => {
     try {
-      await axios.delete(`/user/${userToDelete}`)
+      await axios.delete(`/user/${userToDelete}`, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', 'Utilisateur supprimé')
       fetchUsers();

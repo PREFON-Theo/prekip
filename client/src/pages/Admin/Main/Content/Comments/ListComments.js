@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./ListComments.module.scss"
 import axios from 'axios'
 
@@ -16,10 +16,12 @@ import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import Pagination from '@mui/material/Pagination';
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 const nbItemPerPage = 10;
 
 const ListComments = ({handleOpenAlert, changeAlertValues}) => {
+  const {cookies} = useContext(UserContext)
   const [comments, setComments] = useState()
   const [users, setUsers] = useState()
   const [contents, setContents] = useState()
@@ -31,18 +33,18 @@ const ListComments = ({handleOpenAlert, changeAlertValues}) => {
   const [maxPage, setMaxPage] = useState(0)
 
   const fetchComments = async () => {
-    const commentsRaw = await axios.get('/comment')
+    const commentsRaw = await axios.get('/comment', {headers: {jwt: cookies.token}})
     setComments(commentsRaw.data)
     setMaxPage(Math.ceil(commentsRaw.data.length / 10))
   }
 
   const fetchUsers = async () => {
-    const usersRaw = await axios.get('/user')
+    const usersRaw = await axios.get('/user', {headers: {jwt: cookies.token}})
     setUsers(usersRaw.data)
   }
 
   const fetchContents = async () => {
-    const contentsRaw = await axios.get('/article')
+    const contentsRaw = await axios.get('/article', {headers: {jwt: cookies.token}})
     setContents(contentsRaw.data)
   }
 
@@ -65,7 +67,7 @@ const ListComments = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/comment/${commentToDelete}`)
+      await axios.delete(`/comment/${commentToDelete}`, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', 'Comment supprimé')
       fetchComments();

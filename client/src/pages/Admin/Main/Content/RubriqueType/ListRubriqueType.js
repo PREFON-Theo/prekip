@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./ListRubriqueType.module.scss"
 import axios from 'axios'
 
@@ -18,10 +18,12 @@ import { Link } from 'react-router-dom';
 import ModeEditRoundedIcon from '@mui/icons-material/ModeEditRounded';
 
 import Pagination from '@mui/material/Pagination';
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 const nbItemPerPage = 10;
 
 const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
+  const {cookies} = useContext(UserContext)
   const [rubriqueTypes, setRubriqueTypes] = useState()
 
   const [dialogOpened, setDialogOpened] = useState(false)
@@ -31,9 +33,9 @@ const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
   const [maxPage, setMaxPage] = useState(0)
 
   const fetchRubriques = async () => {
-    const rubriqueTypeRaw = await axios.get('/rubrique-type')
+    const rubriqueTypeRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}})
     setRubriqueTypes(rubriqueTypeRaw.data)
-    setMaxPage(Math.ceil(rubriqueTypeRaw.data.length / 10))
+    setMaxPage(Math.ceil(rubriqueTypeRaw.data?.length / 10 || 0))
   }
 
   useEffect(() => {
@@ -53,7 +55,7 @@ const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/rubrique-type/${rubriqueToDelete}`)
+      await axios.delete(`/rubrique-type/${rubriqueToDelete}`, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', 'Rubrique supprimé')
       fetchRubriques();
@@ -91,28 +93,34 @@ const ListRubriqueType = ({handleOpenAlert, changeAlertValues}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rubriqueTypes?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
-                <TableCell className={styles.semi_width_first}>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
-                <TableCell className={styles.semi_width_second}>{item.link}</TableCell>
-                <TableCell className={styles.semi_width_second}>{item.parent === "" ? "-" : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title === undefined ? <span style={{fontStyle: 'italic'}}>Non disponible</span> : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title}</TableCell>
-                <TableCell className={styles.semi_width_first}>{item.imgLink === undefined || item.imgLink === "" ? "-" : <a href={item.imgLink} target='_blank'>{item.imgLink.length > 20 ? `${item.imgLink.substring(0,20)}...`  : item.imgLink}</a>}</TableCell>
-                <TableCell>
-                  <Link to={`/rubrique/${item.link}`}>
-                    <Button variant='contained' color="warning" sx={{margin: '10px'}}>
-                      <ArrowForwardRoundedIcon/>
-                    </Button>
-                  </Link>
-                  <Link to={`/admin/rubrique/edit/${item._id}`}>
-                    <Button variant='contained' color="primary" sx={{margin: '10px'}}>
-                      <ModeEditRoundedIcon/>
-                    </Button>
-                  </Link>
-                  <Button color='error' sx={{margin: '10px'}} variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {
+              !!rubriqueTypes
+              ?
+              rubriqueTypes?.slice((page-1)*nbItemPerPage, page*nbItemPerPage).map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
+                  <TableCell className={styles.semi_width_first}>{item.description?.length > 25 ? `${item.description.substring(0,25)}...` : item.description?.length === 0 ? "-" : item.description}</TableCell>
+                  <TableCell className={styles.semi_width_second}>{item.link}</TableCell>
+                  <TableCell className={styles.semi_width_second}>{item.parent === "" ? "-" : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title === undefined ? <span style={{fontStyle: 'italic'}}>Non disponible</span> : rubriqueTypes?.filter((rt) => rt._id === item.parent)[0]?.title}</TableCell>
+                  <TableCell className={styles.semi_width_first}>{item.imgLink === undefined || item.imgLink === "" ? "-" : <a href={item.imgLink} target='_blank'>{item.imgLink.length > 20 ? `${item.imgLink.substring(0,20)}...`  : item.imgLink}</a>}</TableCell>
+                  <TableCell>
+                    <Link to={`/rubrique/${item.link}`}>
+                      <Button variant='contained' color="warning" sx={{margin: '10px'}}>
+                        <ArrowForwardRoundedIcon/>
+                      </Button>
+                    </Link>
+                    <Link to={`/admin/rubrique/edit/${item._id}`}>
+                      <Button variant='contained' color="primary" sx={{margin: '10px'}}>
+                        <ModeEditRoundedIcon/>
+                      </Button>
+                    </Link>
+                    <Button color='error' sx={{margin: '10px'}} variant="contained" onClick={() => dialogApears(item._id)}><DeleteForeverRoundedIcon/></Button>
+                  </TableCell>
+                </TableRow>
+              ))
+              :
+              <TableRow><TableCell>Aucune rubrique disponible...</TableCell></TableRow>
+            }
           </TableBody>
         </Table>
       </TableContainer>

@@ -7,12 +7,12 @@ import { UserContext } from '../../../../../utils/Context/UserContext/UserContex
 
 
 const HomeLinks = () => {
-  const { user } = useContext(UserContext)
+  const { user, cookies } = useContext(UserContext)
   const [links, setLinks] = useState()
 
   const fetchDataLink = async () => {
     const LinkRaw = await axios
-      .get('/homelink')
+      .get('/homelink', {headers: {jwt: cookies.token}})
     setLinks(LinkRaw.data)
   }
 

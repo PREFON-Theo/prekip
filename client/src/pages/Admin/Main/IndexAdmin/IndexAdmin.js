@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import styles from "./IndexAdmin.module.scss"
 import ItemIndex from './ItemIndex/ItemIndex'
 import axios from 'axios'
+import { UserContext } from '../../../../utils/Context/UserContext/UserContext'
 
 const IndexAdmin = () => {
+  const {cookies} = useContext(UserContext)
   const [userStats, setUserStats] = useState();
   const [typeOfContentGlobal, setTypeOfContentGlobal] = useState();
   const [typeOfContentMonthly, setTypeOfContentGlobalMonthly] = useState();
@@ -11,18 +13,18 @@ const IndexAdmin = () => {
 
   const fetchUsers = async () => {
 
-    const usersStats = await axios.get('/user/stats')
+    const usersStats = await axios.get('/user/stats', {headers: {jwt: cookies.token}})
     setUserStats({
-      user: usersStats.data.user,
-      modo: usersStats.data.modo,
-      admin: usersStats.data.admin,
-      total: usersStats.data.total
+      user: usersStats.data?.user,
+      modo: usersStats.data?.modo,
+      admin: usersStats.data?.admin,
+      total: usersStats.data?.total
     })
   }
 
   const fetchContentsGlobal = async () => {
     
-    const contentsStats = await axios.get('/article/stats/global')
+    const contentsStats = await axios.get('/article/stats/global', {headers: {jwt: cookies.token}})
     setTypeOfContentGlobal(
       {
         article: contentsStats.data.article,
@@ -35,7 +37,7 @@ const IndexAdmin = () => {
 
   const fetchContentsMonthly = async () => {
     
-    const contentsStats = await axios.get('/article/stats/this-month')
+    const contentsStats = await axios.get('/article/stats/this-month', {headers: {jwt: cookies.token}})
     setTypeOfContentGlobalMonthly(
       {
         article: contentsStats.data.article,
@@ -48,12 +50,12 @@ const IndexAdmin = () => {
 
   const fetchForums = async () => {
     
-    const forumsStats = await axios.get('/forum/stats/global')
+    const forumsStats = await axios.get('/forum/stats/global', {headers: {jwt: cookies.token}})
     setForumsStats(
       {
-        opened: forumsStats?.data.opened,
-        closed: forumsStats?.data.closed,
-        total: forumsStats?.data.total
+        opened: forumsStats?.data?.opened,
+        closed: forumsStats?.data?.closed,
+        total: forumsStats?.data?.total
       }
     )
   }

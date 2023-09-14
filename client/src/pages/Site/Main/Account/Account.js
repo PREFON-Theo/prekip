@@ -9,7 +9,7 @@ import axios from 'axios';
 
 
 const Account = ({ handleOpenAlert, changeAlertValues }) => {
-  const {user, ready, setUser} = useContext(UserContext)
+  const {user, ready, setUser, cookies} = useContext(UserContext)
   const [userInfor, setUserInfor] = useState({
     firstname: "",
     lastname: "",
@@ -48,13 +48,13 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
             axios.patch(`/user/${user?._id}`, {
               ...userInfor,
               password: password
-            })
+            }, {headers: {jwt: cookies.token}})
             handleOpenAlert()
             changeAlertValues("success", "Informations modifiées")
-            setUser({
+            setUser((usr) => ({...usr, 
               firstname: userInfor.firstname,
               lastname: userInfor.lastname
-            })
+            }))
           }
         }
         else {
@@ -63,13 +63,13 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
       }
       else {
         if(user._id){
-          axios.patch(`/user/${user?._id}`, userInfor)
+          axios.patch(`/user/${user?._id}`, userInfor, {headers: {jwt: cookies.token}})
           handleOpenAlert()
           changeAlertValues("success", "Informations modifiées")
-          setUser({
+          setUser((usr) => ({...usr, 
             firstname: userInfor.firstname,
             lastname: userInfor.lastname
-          })
+          }))
         }
       }
       

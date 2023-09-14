@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./RubriquePage.module.scss"
 import axios from 'axios';
 
@@ -11,10 +11,12 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Navigate, useParams } from 'react-router-dom';
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 
 const RubriquePage = ({handleOpenAlert, changeAlertValues}) => {
   const { id } = useParams();
+  const {cookies} = useContext(UserContext)
   const [rubriqueInfo, setRubriqueInfo] = useState({
     title: "",
     description: "",
@@ -29,14 +31,14 @@ const RubriquePage = ({handleOpenAlert, changeAlertValues}) => {
   const [isParent, setIsParent] = useState(false)
   
   const fetchRubriques = async () => {
-    const rubriquesRaw = await axios.get('/rubrique-type')
+    const rubriquesRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}})
     setRubriqueTypes(rubriquesRaw.data)
   }
 
   const fetchRubrique = async () => {
-    const rubriqueRaw = await axios.get(`/rubrique-type/${id}`)
+    const rubriqueRaw = await axios.get(`/rubrique-type/${id}`, {headers: {jwt: cookies.token}})
     setRubriqueInfo(rubriqueRaw.data)
-    setIsParent(rubriqueRaw.data.parent === "" ? true : false)
+    setIsParent(rubriqueRaw.data?.parent === "" ? true : false)
   }
 
   useEffect(() => {
@@ -66,7 +68,7 @@ const RubriquePage = ({handleOpenAlert, changeAlertValues}) => {
           link: rubriqueInfo.link,
           parent: rubriqueInfo.parent,
           imgLink: rubriqueInfo.imgLink
-        })
+        }, {headers: {jwt: cookies.token}})
         handleOpenAlert()
         changeAlertValues('success', 'Rubrique créée')
         setRedirection(true)
@@ -99,17 +101,17 @@ const RubriquePage = ({handleOpenAlert, changeAlertValues}) => {
 
           {/* Titre */}
           <Paper elevation={2} sx={{marginBottom: '30px'}}>
-            <TextField required value={rubriqueInfo?.title} sx={{width: '100%'}} label="Titre" variant="outlined" onChange={e => setRubriqueInfo(prev => ({...prev, title: e.target.value}))}/>
+            <TextField required disabled={!!!rubriqueInfo} value={rubriqueInfo?.title} sx={{width: '100%'}} label="Titre" variant="outlined" onChange={e => setRubriqueInfo(prev => ({...prev, title: e.target.value}))}/>
           </Paper>
 
           {/* Description */}
           <Paper elevation={2} sx={{marginBottom: '30px'}}>
-            <TextField required value={rubriqueInfo?.description} sx={{width: '100%'}} label="Description" variant="outlined" onChange={e => setRubriqueInfo(prev => ({...prev, description: e.target.value}))}/>
+            <TextField required disabled={!!!rubriqueInfo} value={rubriqueInfo?.description} sx={{width: '100%'}} label="Description" variant="outlined" onChange={e => setRubriqueInfo(prev => ({...prev, description: e.target.value}))}/>
           </Paper>
 
           {/* Lien */}
           <Paper elevation={2} sx={{marginBottom: '30px'}}>
-            <TextField required value={rubriqueInfo?.link} sx={{width: '100%'}} label="Lien" variant="outlined" onChange={(e) => handleChangeLink(e)}/>
+            <TextField required disabled={!!!rubriqueInfo} value={rubriqueInfo?.link} sx={{width: '100%'}} label="Lien" variant="outlined" onChange={(e) => handleChangeLink(e)}/>
           </Paper>
 
           {
@@ -124,19 +126,19 @@ const RubriquePage = ({handleOpenAlert, changeAlertValues}) => {
 
           {/* Lien de l'image*/}
           <Paper elevation={2} sx={{marginBottom: '30px'}}>
-            <TextField required value={rubriqueInfo?.imgLink} sx={{width: '100%'}} label="Lien" variant="outlined" onChange={e => setRubriqueInfo(prev => ({...prev, imgLink: e.target.value}))}/>
+            <TextField required disabled={!!!rubriqueInfo} value={rubriqueInfo?.imgLink} sx={{width: '100%'}} label="URL de l'image" variant="outlined" onChange={e => setRubriqueInfo(prev => ({...prev, imgLink: e.target.value}))}/>
           </Paper>
 
           {/* Valid */}
           <FormControlLabel
-            control={<Switch value={isParent} checked={isParent} onChange={(e) => setIsParent(!isParent)}/>} label={`Rubrique parent ? : ${isParent === true ? "Oui" : "Non"}`}
+            control={<Switch disabled={!!!rubriqueInfo} value={isParent} checked={isParent} onChange={(e) => setIsParent(!isParent)}/>} label={`Rubrique parent ? : ${isParent === true ? "Oui" : "Non"}`}
           />
 
           {isParent ?
             <></>
           :
             <Paper elevation={2} sx={{marginBottom: '40px'}}>
-              <FormControl fullWidth>
+              <FormControl disabled={!!!rubriqueInfo} fullWidth>
                 <InputLabel id="demo-multiple-checkbox-label">Enfant de la rubrique :</InputLabel>
                 <Select
                   labelId="demo-multiple-checkbox-label"
@@ -167,7 +169,7 @@ const RubriquePage = ({handleOpenAlert, changeAlertValues}) => {
           
 
           <Paper elevation={2} sx={{width: '100%', marginTop: "20px"}}>
-            <Button variant='contained' color='warning' sx={{width: "100%"}} onClick={handleSubmitForm}>Modifier</Button>
+            <Button disabled={!!!rubriqueInfo} variant='contained' color='warning' sx={{width: "100%"}} onClick={handleSubmitForm}>Modifier</Button>
           </Paper>
 
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./NewRubrique.module.scss"
 import axios from 'axios';
 
@@ -11,9 +11,11 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Navigate } from 'react-router-dom';
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 
 const NewRubrique = ({handleOpenAlert, changeAlertValues}) => {
+  const {cookies} = useContext(UserContext)
   const [newRubrique, setNewRubrique] = useState({
     title: "",
     description: "",
@@ -28,7 +30,7 @@ const NewRubrique = ({handleOpenAlert, changeAlertValues}) => {
   const [isParent, setIsParent] = useState(false)
   
   const fetchRubriques = async () => {
-    const rubriquesRaw = await axios.get('/rubrique-type')
+    const rubriquesRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}})
     setRubriqueTypes(rubriquesRaw.data)
   }
 
@@ -58,7 +60,7 @@ const NewRubrique = ({handleOpenAlert, changeAlertValues}) => {
           link: newRubrique.link,
           parent: newRubrique.parent,
           imgLink: newRubrique.imgLink
-        })
+        }, {headers: {jwt: cookies.token}})
         handleOpenAlert()
         changeAlertValues('success', 'Rubrique créée')
         setRedirection(true)
@@ -115,7 +117,7 @@ const NewRubrique = ({handleOpenAlert, changeAlertValues}) => {
 
           {/* Lien de l'image*/}
           <Paper elevation={2} sx={{marginBottom: '30px'}}>
-            <TextField required value={newRubrique.imgLink} sx={{width: '100%'}} label="Lien" variant="outlined" onChange={e => setNewRubrique(prev => ({...prev, imgLink: e.target.value}))}/>
+            <TextField required value={newRubrique.imgLink} sx={{width: '100%'}} label="URL de l'image" variant="outlined" onChange={e => setNewRubrique(prev => ({...prev, imgLink: e.target.value}))}/>
           </Paper>
 
           {/* Valid */}
@@ -137,9 +139,15 @@ const NewRubrique = ({handleOpenAlert, changeAlertValues}) => {
                   onChange={e => setNewRubrique(prev => ({...prev, parent: e.target.value}))}
                   required
                 >
-                  {rubriqueTypes?.filter((rub) => rub.parent === '').map((item, index) => (
-                    <MenuItem key={index} value={item._id}>{item.title}</MenuItem>
-                  ))}
+                  {
+                    !!rubriqueTypes
+                    ?
+                    rubriqueTypes?.filter((rub) => rub.parent === '').map((item, index) => (
+                      <MenuItem key={index} value={item._id}>{item.title}</MenuItem>
+                    ))
+                    :
+                    <MenuItem disabled>Aucune rubrique disponible...</MenuItem>
+                  }
                 </Select>
               </FormControl>
             </Paper>

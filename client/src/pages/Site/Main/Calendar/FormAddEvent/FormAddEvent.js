@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import styles from "./FormAddEvent.module.scss"
 
 import TextField from '@mui/material/TextField';
@@ -22,6 +22,7 @@ import Checkbox from '@mui/material/Checkbox';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import 'dayjs/locale/fr'
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 const workingDays = [
   {
@@ -52,6 +53,7 @@ const workingDays = [
 ];
 
 const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, changeAlertValues, actualisateData}) => {
+  const {cookies} = useContext(UserContext)
   const [eventInfo, setEventInfo] = useState({
     title: '',
     description: '',
@@ -101,7 +103,7 @@ const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, 
           }
 
           await axios
-            .post('/event/many', listOfEvents)
+            .post('/event/many', listOfEvents, {headers: {jwt: cookies.token}})
             handleOpenAlert()
             handleCloseForm()
             changeAlertValues('success', 'Évènement(s) ajouté(s)')
@@ -137,7 +139,7 @@ const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, 
             }
   
             await axios
-              .post('/event/many', listOfEvents)
+              .post('/event/many', listOfEvents, {headers: {jwt: cookies.token}})
               handleOpenAlert()
               handleCloseForm()
               changeAlertValues('success', 'Évènement(s) ajouté(s)')
@@ -170,7 +172,7 @@ const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, 
             type: eventTypeSelected,
             startDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(9) : eventInfo.startDate,
             finishDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(18) : eventInfo.finishDate
-          })
+          }, {headers: {jwt: cookies.token}})
           handleOpenAlert()
           handleCloseForm()
           changeAlertValues('success', 'Évènement ajouté')

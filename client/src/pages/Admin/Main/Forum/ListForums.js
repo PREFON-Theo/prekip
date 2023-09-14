@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./ListForums.module.scss"
 import axios from 'axios'
 
@@ -16,10 +16,12 @@ import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import Pagination from '@mui/material/Pagination';
+import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 
 const nbItemPerPage = 10;
 
 const ListForums = ({handleOpenAlert, changeAlertValues}) => {
+  const {cookies} = useContext(UserContext)
   const [forums, setForums] = useState()
   const [users, setUsers] = useState()
 
@@ -30,13 +32,13 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
   const [maxPage, setMaxPage] = useState(0)
 
   const fetchForums = async () => {
-    const forumsRaw = await axios.get('/forum')
+    const forumsRaw = await axios.get('/forum', {headers: {jwt: cookies.token}})
     setForums(forumsRaw.data)
-    setMaxPage(Math.ceil(forumsRaw.data.length / nbItemPerPage))
+    setMaxPage(Math.ceil(forumsRaw.data?.length / nbItemPerPage))
   }
 
   const fetchUsers = async () => {
-    const usersRaw = await axios.get('/user')
+    const usersRaw = await axios.get('/user', {headers: {jwt: cookies.token}})
     setUsers(usersRaw.data)
   }
 
@@ -58,8 +60,8 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/forum/${forumToDelete}`)
-      await axios.delete(`/answer/forum/${forumToDelete}`)
+      await axios.delete(`/forum/${forumToDelete}`, {headers: {jwt: cookies.token}})
+      await axios.delete(`/answer/forum/${forumToDelete}`, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', 'Forum supprimé')
       fetchForums();

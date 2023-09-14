@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import styles from "./ListContents.module.scss"
 import axios from 'axios'
 
@@ -15,11 +15,14 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
+
 import Pagination from '@mui/material/Pagination';
 
 const nbItemPerPage = 10;
 
 const ListContents = ({handleOpenAlert, changeAlertValues}) => {
+  const {cookies} = useContext(UserContext)
   const [articles, setArticles] = useState()
   const [categories, setCategories] = useState()
   const [users, setUsers] = useState()
@@ -31,18 +34,18 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
   const [maxPage, setMaxPage] = useState(0)
 
   const fetchArticles = async () => {
-    const articlesRaw = await axios.get('/article')
+    const articlesRaw = await axios.get('/article', {headers: {jwt: cookies.token}})
     setArticles(articlesRaw.data)
-    setMaxPage(Math.ceil(articlesRaw.data.length / 10))
+    setMaxPage(Math.ceil(articlesRaw.data?.length / 10))
   }
 
   const fetchCategories = async () => {
-    const categoriesRaw = await axios.get('/rubrique-type')
+    const categoriesRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}})
     setCategories(categoriesRaw.data)
   }
 
   const fetchUsers = async () => {
-    const usersRaw = await axios.get('/user')
+    const usersRaw = await axios.get('/user', {headers: {jwt: cookies.token}})
     setUsers(usersRaw.data)
   }
 
@@ -68,9 +71,9 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/article/${articleToDelete}`)
-      await axios.delete(`/like/article/${articleToDelete}`)
-      await axios.delete(`/comment/article/${articleToDelete}`)
+      await axios.delete(`/article/${articleToDelete}`, {headers: {jwt: cookies.token}})
+      await axios.delete(`/like/article/${articleToDelete}`, {headers: {jwt: cookies.token}})
+      await axios.delete(`/comment/article/${articleToDelete}`, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', 'Contenu supprimé')
       fetchArticles();
@@ -107,7 +110,7 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
                 <TableCell>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
                 <TableCell className={styles.semi_width_first}>{item.preview?.length > 25 ? `${item.preview.substring(0,25)}...` : item.preview?.length === 0 ? "-" : item.preview}</TableCell>
                 <TableCell className={styles.semi_width_second}>{item.created_at === null ? "-" : new Date(item.created_at).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell className={styles.semi_width_first}>{item.category === "" ? "-" : categories?.filter((cat) => cat._id === item.category)[0]?.title}</TableCell>
+                <TableCell className={styles.semi_width_first}>{item.category === "" ? "-" : categories?.filter((cat) => cat._id === item.category)[0]?.title || <span style={{fontStyle: "italic"}}>Non disponible</span>}</TableCell>
                 <TableCell className={styles.semi_width_second}>
                   {item.author === "" 
                     ? "-" 

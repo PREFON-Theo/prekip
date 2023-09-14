@@ -23,10 +23,6 @@ import FormNotConnected from './FormNotConnected/FormNotConnected'
 import { Paper } from '@mui/material'
 
 
-const usersList = await axios.get('/user')
-const listOfUsers = usersList.data
-
-
 const eventTypesList = [
   {
     title: "Télétravail",
@@ -42,7 +38,7 @@ const eventTypesList = [
 const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) => {
 
   
-  const { user } = useContext(UserContext)
+  const { user, cookies } = useContext(UserContext)
 
   const [events, setEvents] = useState([])
 
@@ -57,15 +53,18 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
   const [dateSelected, setDateSelected] = useState()
 
   const [eventsOfTheDaySelected, setEventsOfTheDaySelected] = useState()
+  const [listOfUsers, setListOfUsers] = useState()
   
   const fetchData = async () => {
+    const usersList = await axios.get('/user', {headers: {jwt: cookies.token}})
+    setListOfUsers(usersList.data)
     setEvents([])
-    const eventData = await axios.get('/event')
+    const eventData = await axios.get('/event', {headers: {jwt: cookies.token}})
     let objTT = {};
     let objRE = {};
     let objOther = {};
 
-    eventData.data.map((item) => (
+    eventData.data?.map((item) => (
       item.type === 'teletravail' ?
         objTT = {...objTT, 
           [`${item.startDate.substring(0,10)}T00:00:00.000Z`]: {
@@ -73,7 +72,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
             evId: `${item.startDate.substring(0,10)}T00:00:00.000Z`,
             start: new Date(item.startDate.substring(0,10)),
             description: `Évènements du jour ${`${item.startDate.substring(0,10)}T00:00:00.000Z`}`,
-            owner: `${isNaN(objTT[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) ? "" : `${objTT[`${item.startDate.substring(0,10)}T00:00:00.000Z`].owner}, `} ${listOfUsers?.filter((et) => et._id === item.owner)[0]?.firstname === undefined ? '' : `${listOfUsers?.filter((et) => et._id === item.owner)[0]?.firstname} ${listOfUsers?.filter((et) => et._id === item.owner)[0]?.lastname}` }`
+            owner: `${isNaN(objTT[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) ? "" : `${objTT[`${item.startDate.substring(0,10)}T00:00:00.000Z`].owner}, `} ${usersList.data?.filter((et) => et._id === item.owner)[0]?.firstname === undefined ? '' : `${usersList.data?.filter((et) => et._id === item.owner)[0]?.firstname} ${usersList.data?.filter((et) => et._id === item.owner)[0]?.lastname}` }`
             
           } 
         }
@@ -155,7 +154,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
     setOpenEditEvent(false)
     setDayInformations(day)
     setOpenDialog(true)
-    const eventsOfThisDay = await axios.get(`/event/day/${date}`)
+    const eventsOfThisDay = await axios.get(`/event/day/${date}`, {headers: {jwt: cookies.token}})
     setEventsOfTheDaySelected(eventsOfThisDay.data)
   }
 
@@ -215,7 +214,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
                   eventsOfTheDaySelected === undefined ?
                     "Chargement..."
                   :
-                  eventsOfTheDaySelected.length === 0 ?
+                  eventsOfTheDaySelected?.length === 0 ?
                     "Pas d'évènements pour ce jour"
                   :
                   <>
