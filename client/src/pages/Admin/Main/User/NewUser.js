@@ -93,7 +93,7 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
               leavingDate: newUser.leavingDate,
               valid: newUser.valid,
             }, {headers: {jwt: cookies.token}})
-            if(userCreation.respond.status === 409){
+            if(userCreation.respond?.status === 409){
               setEmailAlreadyUsed(true)
               handleOpenAlert()
               changeAlertValues('error', 'Erreur, le mail est déjà utilisé')
