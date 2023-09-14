@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from './RecentArticle.module.scss'
 import { Link } from "react-router-dom"
 import axios from 'axios'
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 
 const RecentArticle = () => {
-
+  const {cookies} = useContext(UserContext)
   const [article, setArticle] = useState()
 
   
   const fetchData = async () => {
-    const articleRaw = await axios.get("/article/lastest-important-article")
-    setArticle(articleRaw.data[0])
+    const articleRaw = await axios.get("/article/lastest-important-article", {headers: {jwt: cookies.token}})
+    setArticle(articleRaw.data === null ? {} : articleRaw?.data[0])
   } 
 
   useEffect(() => {

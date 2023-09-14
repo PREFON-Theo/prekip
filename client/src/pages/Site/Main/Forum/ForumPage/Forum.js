@@ -16,11 +16,8 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import IconButton from '@mui/material/IconButton';
 
-const usersList = await axios.get('/user')
-const listOfUsers = usersList.data
-
 const Forum = ({handleOpenAlert, changeAlertValues}) => {
-  const { user } = useContext(UserContext);
+  const { user, cookies } = useContext(UserContext);
   const [redirection, setRedirection] = useState(false);
   const [lastForum, setLastForum] = useState([]);
   const [forumInfo, setForumInfo] = useState();
@@ -29,21 +26,24 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
   const [answers, setAnswers] = useState([]);
   const [lenghtToLoad, setLengthToLoad] = useState(5);
   const [lengthOfForums, setLengthOfForums] = useState(0);
+  const [listOfUsers, setListOfUsers] = useState()
 
   const [openDr, setOpenDr] = useState(false);
 
   const fetchAllForums = async () => {
-    await axios
-      .get(`/forum`)
-      .then((res) => {
-        setLengthOfForums(res.data.length)
-      })
+    const frms = await axios
+      .get(`/forum`, {headers: {jwt: cookies.token}})
+    setLengthOfForums(frms?.data?.length)
+
+    const usrs = await axios
+      .get('/user', {headers: {jwt: cookies.token}})
+    setListOfUsers(usrs.data)
   }
 
   const fetchLastForums = async () => {
     fetchAllForums();
     await axios
-      .get(`/forum/last/${lenghtToLoad}`)
+      .get(`/forum/last/${lenghtToLoad}`, {headers: {jwt: cookies.token}})
       .then((res) => {
         setLastForum(res.data)
       })
@@ -59,13 +59,13 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
 
   const fetchDataForum = async (id) => {
     await axios
-      .get(`/forum/${id}`)
+      .get(`/forum/${id}`, {headers: {jwt: cookies.token}})
       .then((res) => setForumInfo(res.data))
   }
 
   const fetchDataAnswers = async (id) => {
     await axios
-      .get(`/answer/forum/${id}`)
+      .get(`/answer/forum/${id}`, {headers: {jwt: cookies.token}})
       .then((res) => setAnswers(res.data))
   }
 
@@ -82,11 +82,11 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
       .post(`/answer/`, {
         text: answerText,
         user_id: user,
-        forum_id: forumInfo._id,
-      })
+        forum_id: forumInfo?._id,
+      }, {headers: {jwt: cookies.token}})
       .then(() => handleOpenAlert())
       .then(() => changeAlertValues('success', 'Commentaire ajouté'))
-      .then(() => fetchDataAnswers(forumInfo._id))
+      .then(() => fetchDataAnswers(forumInfo?._id))
       .then(() => setAnswerText(''))
   }
   
@@ -94,21 +94,21 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
     await axios
       .patch(`/answer/${answer._id}`, {
         vote: up ? parseInt(answer.vote) + 1 : parseInt(answer.vote) - 1
-    }).then(() => fetchDataAnswers(answer.forum_id))
+    }, {headers: {jwt: cookies.token}}).then(() => fetchDataAnswers(answer.forum_id))
   }
 
   const handleCloseForum = async (id, forumClosed) => {
     await axios
       .patch(`/forum/${id}`, {
         closed: !forumClosed
-      })
+      }, {headers: {jwt: cookies.token}})
       .then(() => fetchDataForum(id))
       .then(() => fetchLastForums())
   }
 
   const deleteForum = async (id) => {
-    await axios.delete(`/forum/${forumInfo._id}`)
-    await axios.delete(`/answer/forum/${forumInfo._id}`)
+    await axios.delete(`/answer/forum/${forumInfo?._id}`, {headers: {jwt: cookies.token}})
+    await axios.delete(`/forum/${forumInfo?._id}`, {headers: {jwt: cookies.token}})
     .then(() => {
       setRedirection(true)
       fetchLastForums()
@@ -135,7 +135,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
         <div className={styles.left}>
           <h4>Listes des sujets :</h4>
           {
-            lastForum.length === 0 ?
+            lastForum?.length === 0 ?
               <div>Il n'y a aucun sujet</div>
             :
             <>
@@ -178,7 +178,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
             <div className={styles.left_semi_width}>
               <h4>Listes des sujets :</h4>
               {
-                lastForum.length === 0 ?
+                lastForum?.length === 0 ?
                   <div>Il n'y a aucun sujet</div>
                 :
                 <>
@@ -235,13 +235,13 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
               <div className={styles.wrapper}>
                 {
                   user ?
-                    forumInfo.author === user?._id ?
+                    (forumInfo?.author === user?._id) || user.roles.includes('Administrateur') || user.roles.includes('Modérateur') ?
                     <div className={styles.button_manage}>
-                      <Button variant='contained' color='info' sx={{marginLeft: '10px'}} onClick={() => handleCloseForum(forumInfo._id, forumInfo.closed)}>{forumInfo.closed ? 'Réouvrir le forum' : 'Clôturer le forum'}</Button>
-                      <Link to={`/edit-forum/${forumInfo._id}`} style={{marginLeft: '10px'}}>
+                      <Button variant='contained' color='info' sx={{marginLeft: '10px'}} onClick={() => handleCloseForum(forumInfo?._id, forumInfo?.closed)}>{forumInfo?.closed ? 'Réouvrir le forum' : 'Clôturer le forum'}</Button>
+                      <Link to={`/edit-forum/${forumInfo?._id}`} style={{marginLeft: '10px'}}>
                         <Button variant='contained' color='warning'>Modifier le forum</Button>
                       </Link>
-                      <Button variant='contained' color='error' onClick={() => deleteForum(forumInfo._id)}>Supprimer le forum</Button>
+                      <Button variant='contained' color='error' onClick={() => deleteForum(forumInfo?._id)}>Supprimer le forum</Button>
                     </div>
                     :
                       <></>
@@ -256,7 +256,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
                   </div>
                   <h1>{forumInfo?.closed ? "[Fermé]":''}{forumInfo?.title}</h1>
                   <div className={styles.description}>{forumInfo?.description}</div>
-                  <div className={styles.author}>Posté le {new Date(forumInfo?.created_at).toLocaleDateString('fr-FR')}, par {`${listOfUsers.filter((usr) => usr._id === forumInfo?.author)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === forumInfo?.author)[0]?.lastname}`}</div>
+                  <div className={styles.author}>Posté le {new Date(forumInfo?.created_at).toLocaleDateString('fr-FR')}, par {`${listOfUsers?.filter((usr) => usr._id === forumInfo?.author)[0]?.firstname} ${listOfUsers?.filter((usr) => usr._id === forumInfo?.author)[0]?.lastname}`}</div>
                 </div>
 
                 <div className={styles.wrapper_answers}>
@@ -299,7 +299,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
                                   <div className={styles.txt}>{item.text}</div>
                                   </div>
                                 <div className={styles.a}>
-                                  Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.created_at).toLocaleDateString('fr-FR')}
+                                  Par {`${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.created_at).toLocaleDateString('fr-FR')}
                                 </div>
                               </div>
 
@@ -323,7 +323,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
                                     <div className={styles.txt}>{item.text}</div>
                                     </div>
                                   <div className={styles.a}>
-                                    Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.created_at).toLocaleDateString('fr-FR')}
+                                    Par {`${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.created_at).toLocaleDateString('fr-FR')}
                                   </div>
                                 </div>
                               </div>

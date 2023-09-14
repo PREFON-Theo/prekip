@@ -2,45 +2,110 @@ const express = require('express');
 const router = express.Router();
 const Forum = require('../models/Forum')
 
+const jwt = require('jsonwebtoken');
+const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
+
 //Get all - OK
 router.get('/', async (req, res) => {
-  const getForum = await Forum.find()
-  res.json(getForum);
+  try {
+    const token = req.headers.jwt;
+    if(token) {
+      jwt.verify(token, jwtSecret, {}, async (err, user) => {
+        if(err || user.id === undefined) {
+          return res.status(403).json("Unauthorized")
+        }
+        const getForum = await Forum.find()
+        res.json(getForum);
+        
+      })
+    }
+    else {
+      res.status(401).json("JSON Web Token not found")
+    }
+  }
+  catch (error) {
+    res.status(400).json(error)
+  }
 }) 
 
 
 //Get last - OK
 router.get('/last/:length', async (req, res) => {
-  const getForum = await Forum.find().sort({created_at: -1}).limit(req.params.length)
-  res.json(getForum)
+  try {
+    const token = req.headers.jwt;
+    if(token) {
+      jwt.verify(token, jwtSecret, {}, async (err, user) => {
+        if(err || user.id === undefined) {
+          return res.status(403).json("Unauthorized")
+        }
+        const getForum = await Forum.find().sort({created_at: -1}).limit(req.params.length)
+        res.json(getForum)
+        
+      })
+    }
+    else {
+      res.status(401).json("JSON Web Token not found")
+    }
+  }
+  catch (error) {
+    res.status(400).json(error)
+  }
 })
 
 
 
 //Get one - OK
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {  
   try {
-      const ForumInfo = await Forum.findOne({_id: req.params.id})
-      res.status(200).json(ForumInfo)
+    const token = req.headers.jwt;
+    if(token) {
+      jwt.verify(token, jwtSecret, {}, async (err, user) => {
+        if(err || user.id === undefined) {
+          return res.status(403).json("Unauthorized")
+        }
+        const ForumInfo = await Forum.findOne({_id: req.params.id})
+        res.status(200).json(ForumInfo)
+        
+      })
+    }
+    else {
+      res.status(401).json("JSON Web Token not found")
+    }
   }
-  catch (e){
-      res.status(400).json(e)
+  catch (error) {
+    res.status(400).json(error)
   }
 })
 
-router.get('/stats/global', async (req, res) => {
+router.get('/stats/global', async (req, res) => { 
   try {
-    const openedTopic = await Forum.find({closed: false})
-    const closedTopic = await Forum.find({closed: true})
-
-    res.status(200).json({
-      opened: openedTopic.length,
-      closed: closedTopic.length,
-      total: openedTopic.length + closedTopic.length
-    })
+    const token = req.headers.jwt;
+    if(token) {
+      jwt.verify(token, jwtSecret, {}, async (err, user) => {
+        if(err || user.id === undefined) {
+          return res.status(403).json("Unauthorized")
+        }
+        else if(user.roles.includes('Administrateur')){
+          const openedTopic = await Forum.find({closed: false})
+          const closedTopic = await Forum.find({closed: true})
+        
+          res.status(200).json({
+            opened: openedTopic.length,
+            closed: closedTopic.length,
+            total: openedTopic.length + closedTopic.length
+          })
+        }
+        else {
+          res.status(403).json('Unauthorized')
+        }
+      })
+    }
+    else {
+      res.status(401).json("JSON Web Token not found")
+    }
   }
-  catch (err) {
-    res.status(400).json(e)
+  catch (error) {
+    res.status(400).json(error)
   }
 })
 
@@ -48,21 +113,30 @@ router.get('/stats/global', async (req, res) => {
 //Add one forum - OK
 router.post('/', async (req, res) => {
   try {
-      const {title, description, author, closed, created_at, updated_at} = req.body
-      const forumCreation = await Forum.create({
-        title,
-        description,
-        author,
-        closed,
-        created_at,
-        updated_at
+    const token = req.headers.jwt;
+    if(token) {
+      jwt.verify(token, jwtSecret, {}, async (err, user) => {
+        if(err || user.id === undefined) {
+          return res.status(403).json("Unauthorized")
+        }
+        const {title, description, author, closed, created_at, updated_at} = req.body
+        const forumCreation = await Forum.create({
+          title,
+          description,
+          author,
+          closed,
+          created_at,
+          updated_at
+        })
+        res.status(200).json(forumCreation)
       })
-      res.status(200).json(forumCreation)
+    }
+    else {
+      res.status(401).json("JSON Web Token not found")
+    }
   }
   catch (error) {
-      res.status(400).json({
-          error: error
-      });
+    res.status(400).json(error)
   }
   
 })
@@ -70,38 +144,70 @@ router.post('/', async (req, res) => {
 
 
 //Update one forum - OK
-router.patch('/:id', (req, res) => {
+router.patch('/:id', (req, res) => {  
   try {
-      Forum.updateOne({_id: req.params.id}, req.body).then(() => {
-          res.status(200).json({
-              message: `Forum ${req.params.id} updated`
+    const token = req.headers.jwt;
+    if(token) {
+      jwt.verify(token, jwtSecret, {}, async (err, user) => {
+        const frm = await Forum.findOne({_id: req.params.id})
+        const author = frm.author
+        if(err || user.id === undefined) {
+          return res.status(403).json("Unauthorized")
+        }
+        else if(user.roles.includes('Administrateur') || user.id === author){
+          Forum.updateOne({_id: req.params.id}, req.body).then(() => {
+              res.status(200).json({
+                  message: `Forum ${req.params.id} updated`
+              })
           })
+        }
+        else {
+          res.status(403).json('Unauthorized')
+        }
       })
+    }
+    else {
+      res.status(401).json("JSON Web Token not found")
+    }
   }
   catch (error) {
-      res.status(400).json({
-          error: error
-      });
+    res.status(400).json(error)
   }
 })
 
 //Delete one forum - OK
 router.delete('/:id', (req, res) => {
   try {
-      Forum.deleteOne({_id: req.params.id}).then(() => {
-          res.status(200).json({
-              message: `Forum ${req.params.id} deleted`
-          })
-      }).catch((error) => {
-          res.status(400).json({
-              error: error
+    const token = req.headers.jwt;
+    if(token) {
+      jwt.verify(token, jwtSecret, {}, async (err, user) => {
+        const frm = await Forum.findOne({_id: req.params.id})
+        const author = frm.author
+        if(err || user.id === undefined) {
+          return res.status(403).json("Unauthorized")
+        }
+        else if(user.roles.includes('Administrateur') || user.id === author){
+          Forum.deleteOne({_id: req.params.id}).then(() => {
+              res.status(200).json({
+                  message: `Forum ${req.params.id} deleted`
+              })
+          }).catch((error) => {
+              res.status(400).json({
+                  error: error
+              });
           });
-      });
+        }
+        else {
+          res.status(403).json('Unauthorized')
+        }
+      })
+    }
+    else {
+      res.status(401).json("JSON Web Token not found")
+    }
   }
   catch (error) {
-      res.status(400).json({
-          error: error
-      });
+    res.status(400).json(error)
   }
 });
 

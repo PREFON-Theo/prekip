@@ -31,7 +31,7 @@ const eventTypesList = [
 ]
 
 const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOpenAlert, changeAlertValues, actualisateData}) => {
-  const {ready} = useContext(UserContext);
+  const {ready, cookies} = useContext(UserContext);
   const [eventInfo, setEventInfo] = useState({
     title: '',
     description: '',
@@ -47,19 +47,19 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
 
 
   const fetchData = async () => {
-    const eventData = await axios.get('/event/' + idEventToEdit)
+    const eventData = await axios.get(`/event/${idEventToEdit}`, {headers: {jwt: cookies.token}})
     setEventInfo({
-      title: eventData.data.title,
-      description: eventData.data.description,
-      startDate: dayjs(eventData.data.startDate),
-      finishDate: dayjs(eventData.data.finishDate),
-      type: eventData.data.type,
-      owner: eventData.data.owner
+      title: eventData.data?.title,
+      description: eventData.data?.description,
+      startDate: dayjs(eventData.data?.startDate),
+      finishDate: dayjs(eventData.data?.finishDate),
+      type: eventData.data?.type,
+      owner: eventData.data?.owner
     })
-    setEventTypeSelected(eventData.data.type)
+    setEventTypeSelected(eventData.data?.type)
 
     if(user){
-      if(eventData.data.owner === user._id || user.roles.includes('Modérateur') || user.roles.includes('Administrateur')){
+      if(eventData.data?.owner === user._id || user.roles.includes('Modérateur') || user.roles.includes('Administrateur')){
         setAuthorizedToEdit(true)
       }
       else {
@@ -85,7 +85,7 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
             description: eventTypeSelected === "teletravail" ? "" : eventInfo.description,
             startDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(9) : eventInfo.startDate,
             finishDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(18) : eventInfo.finishDate
-          })
+          }, {headers: {jwt: cookies.token}})
           handleOpenAlert()
           handleCloseForm()
           changeAlertValues('success', 'Évènement modifié')
@@ -104,7 +104,7 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
     try {
       if(authorizedToEdit){
         await axios
-          .delete('/event/' + idEventToEdit)
+          .delete(`/event/${idEventToEdit}`, {headers: {jwt: cookies.token}})
           handleOpenAlert()
           handleCloseForm()
           changeAlertValues('success', 'Évènement supprimé')

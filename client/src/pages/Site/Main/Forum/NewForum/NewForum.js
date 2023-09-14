@@ -22,7 +22,7 @@ import FormControl from '@mui/material/FormControl';
 
 
 const NewForum = ({ handleOpenAlert, changeAlertValues }) => {
-  const {user, ready} = useContext(UserContext);
+  const {user, ready, cookies} = useContext(UserContext);
 
   const [forum, setForum] = useState({
     title: '',
@@ -55,7 +55,7 @@ const NewForum = ({ handleOpenAlert, changeAlertValues }) => {
       else {
 
         axios
-          .post('/forum', forum)
+          .post('/forum', forum, {headers: {jwt: cookies.token}})
           .then((res) => setIdForum(res.data._id))
           .then(() => handleOpenAlert())
           .then(() => changeAlertValues('success', 'Article ajouté'))

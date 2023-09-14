@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./NewUser.module.scss"
 import axios from 'axios';
 
@@ -19,6 +19,7 @@ import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import { Navigate } from 'react-router-dom';
 import "dayjs/locale/fr"
+import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 
 const rolesData = [
   {name:"User", label: "Utilisateur"},
@@ -27,6 +28,7 @@ const rolesData = [
 ]
 
 const NewUser = ({handleOpenAlert, changeAlertValues}) => {
+  const {cookies} = useContext(UserContext)
   const [newUser, setNewUser] = useState({
     firstname: "",
     lastname: "",
@@ -81,7 +83,7 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
         }
         else {
           try {
-            await axios.post('/user/register', {
+            const userCreation = await axios.post('/user/register', {
               firstname: newUser.firstname,
               lastname: newUser.lastname,
               email: newUser.email,
@@ -90,21 +92,21 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
               joiningDate: newUser.joiningDate,
               leavingDate: newUser.leavingDate,
               valid: newUser.valid,
-            })
-            handleOpenAlert()
-            changeAlertValues('success', 'Utilisateur créé')
-            setRedirection(true)
-          }
-          catch (err) {
-            if(err.response.data.error.code === 11000){
+            }, {headers: {jwt: cookies.token}})
+            if(userCreation.respond.status === 409){
               setEmailAlreadyUsed(true)
               handleOpenAlert()
               changeAlertValues('error', 'Erreur, le mail est déjà utilisé')
             }
             else {
               handleOpenAlert()
-              changeAlertValues('error', 'Erreur lors de la création')
+              changeAlertValues('success', 'Utilisateur créé')
+              setRedirection(true)
             }
+          }
+          catch (err) {
+            handleOpenAlert()
+            changeAlertValues('error', 'Erreur lors de la création')
           }
         }
       }

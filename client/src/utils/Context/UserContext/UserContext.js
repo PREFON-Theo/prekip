@@ -6,10 +6,15 @@ export const UserContext = createContext({})
 export const UserContextProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [ready, setReady] = useState("waiting");
+    
+    const cookies = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
+      acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
+      return acc;
+    }, {})
 
     useEffect(() => {
       if (!user) {
-        axios.get('/user/profil')
+        axios.get('/user/profil', {headers: {jwt: cookies.token}})
         .then(({data}) => {
           if(data === null) {
             setReady("no")
@@ -19,10 +24,13 @@ export const UserContextProvider = ({children}) => {
             setReady("yes")
           }
         })
+        .catch((err) => {
+          console.log(err)
+        })
       }
     })
     return (
-      <UserContext.Provider value={{user, setUser, ready, setReady}}>
+      <UserContext.Provider value={{user, setUser, ready, setReady, cookies}}>
         {children}
       </UserContext.Provider>
     );

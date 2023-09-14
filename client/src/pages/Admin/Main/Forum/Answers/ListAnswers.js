@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./ListAnswers.module.scss"
 import axios from 'axios'
 
@@ -16,10 +16,12 @@ import { Dialog } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import Pagination from '@mui/material/Pagination';
+import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 
 const nbItemPerPage = 10;
 
 const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
+  const {cookies} = useContext(UserContext)
   const [answers, setAnswers] = useState()
   const [users, setUsers] = useState()
   const [forums, setForums] = useState()
@@ -31,18 +33,18 @@ const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
   const [maxPage, setMaxPage] = useState(0)
 
   const fetchAnswers = async () => {
-    const answersRaw = await axios.get('/answer')
+    const answersRaw = await axios.get('/answer', {headers: {jwt: cookies.token}})
     setAnswers(answersRaw.data)
-    setMaxPage(Math.ceil(answersRaw.data.length / 10))
+    setMaxPage(Math.ceil(answersRaw.data?.length / 10) || 0)
   }
 
   const fetchUsers = async () => {
-    const usersRaw = await axios.get('/user')
+    const usersRaw = await axios.get('/user', {headers: {jwt: cookies.token}})
     setUsers(usersRaw.data)
   }
 
   const fetchForums = async () => {
-    const forumRaw = await axios.get('/forum')
+    const forumRaw = await axios.get('/forum', {headers: {jwt: cookies.token}})
     setForums(forumRaw.data)
   }
 
@@ -65,7 +67,7 @@ const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/answer/${answerToDelete}`)
+      await axios.delete(`/answer/${answerToDelete}`, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', 'Réponse supprimée')
       fetchAnswers();

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import styles from "./UserPage.module.scss"
 import axios from 'axios';
 
@@ -19,6 +19,7 @@ import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import { Navigate, useParams } from 'react-router-dom';
 import "dayjs/locale/fr"
+import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 
 const rolesData = [
   {name:"User", label: "Utilisateur"},
@@ -28,6 +29,7 @@ const rolesData = [
 
 const UserPage = ({handleOpenAlert, changeAlertValues}) => {
   const {id} = useParams();
+  const {cookies} = useContext(UserContext)
   const [userInfo, setUserInfo] = useState({
     firstname: "",
     lastname: "",
@@ -49,7 +51,7 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
 
   const fetchUser = async () => {
     try {
-      const userData = await axios.get(`/user/one/${id}`);
+      const userData = await axios.get(`/user/one/${id}`, {headers: {jwt: cookies.token}});
       setUserInfo({
         firstname: userData.data.firstname,
         lastname: userData.data.lastname,
@@ -108,7 +110,7 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
               joiningDate: userInfo.joiningDate,
               leavingDate: userInfo.leavingDate,
               valid: userInfo.valid,
-            })
+            }, {headers: {jwt: cookies.token}})
             handleOpenAlert()
             changeAlertValues('success', 'Utilisateur créé')
             setRedirection(true)
@@ -330,7 +332,7 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
           
 
           <Paper elevation={2} sx={{width: '100%', marginTop: "20px"}}>
-            <Button variant='contained' color="warning" sx={{width: "100%"}} onClick={handleSubmitForm}>Ajouter</Button>
+            <Button variant='contained' color="warning" sx={{width: "100%"}} onClick={handleSubmitForm}>Modifier</Button>
           </Paper>
 
         </div>

@@ -23,17 +23,20 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import ModeEditRoundedIcon from '@mui/icons-material/ModeEditRounded';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
+const cookieToken = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
+  acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
+  return acc;
+}, {})
 
-const usersList = await axios.get('/user')
-const rubriquesRaw = await axios.get('/rubrique-type')
-const rubriquesList = rubriquesRaw.data
-const listOfUsers = usersList.data
+const rubriquesRaw = await axios.get('/rubrique-type', {headers: {jwt: cookieToken.token}})
+const rubriquesList = rubriquesRaw.data || []
 
 const parse = require('html-react-parser');
 
 const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
+  const { user, ready, cookies } = useContext(UserContext);
+  
   const { id } = useParams();
-  const { user, ready } = useContext(UserContext);
   const [redirectionGoto, setRedirectGoto] = useState(false)
   const [contentLiked, setContentLiked] = useState(false)
   const [nbLike, setNbLike] = useState(0)
@@ -64,6 +67,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
   )
 
   const [comments, setComments] = useState()
+  const [listOfUsers, setListOfUsers] = useState()
 
   useEffect( () => {
     window.scrollTo(0, 0);
@@ -73,8 +77,10 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
 
   const fetchData = async () => {
     try {
+      const usersList = await axios.get('/user', {headers: {jwt: cookies.token}})
+      setListOfUsers(usersList.data)
       const articleData = await axios
-        .get(`/article/${id}`)
+        .get(`/article/${id}`, {headers: {jwt: cookies.token}})
         setContentType(articleData.data.type)
         articleData.data.type === pathnameOfThisPage.split('/')[1] ? <></> : setRedirectionError(true)
         setArticle({
@@ -88,12 +94,12 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
           image: articleData.data.image,
           file: articleData.data.file,
           important: articleData.data.important,
-          authorName: `${listOfUsers.filter((usr) => usr._id === articleData.data.author)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === articleData.data.author)[0]?.lastname}`,
+          authorName: `${usersList.data.filter((usr) => usr._id === articleData.data.author)[0]?.firstname} ${usersList.data.filter((usr) => usr._id === articleData.data.author)[0]?.lastname}`,
           created_at: new Date(articleData.data.created_at).toLocaleDateString('fr-FR'),
           updated_at: new Date(articleData.data.updated_at).toLocaleDateString('fr-FR'),
-          updatorName: `${listOfUsers.filter((usr) => usr._id === articleData.data.updated_by)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === articleData.data.updated_by)[0]?.lastname}`,
+          updatorName: `${usersList.data.filter((usr) => usr._id === articleData.data.updated_by)[0]?.firstname} ${usersList.data.filter((usr) => usr._id === articleData.data.updated_by)[0]?.lastname}`,
         });
-        const commentData = await axios.get(`/comment/article/${id}`)
+        const commentData = await axios.get(`/comment/article/${id}`, {headers: {jwt: cookies.token}})
         setComments(commentData.data);
     }
 
@@ -104,9 +110,9 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
   }
 
   const getLikes = async () => {
-    let list = await axios.get(`/like/article/${id}`)
-    setListOfLikes(list.data)
-    setNbLike(list.data.length)
+    let list = await axios.get(`/like/article/${id}`, {headers: {jwt: cookies.token}})
+    setListOfLikes(list?.data)
+    setNbLike(list?.data?.length || 0)
   }
 
   useEffect(() => {
@@ -128,7 +134,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
         if(contentLiked) {
           setNbLike(nbLike-1)
           setContentLiked(false)
-          await axios.delete(`/like/user/${user._id}/${id}`)
+          await axios.delete(`/like/user/${user._id}/${id}`, {headers: {jwt: cookies.token}})
         }
         else {
           setNbLike(nbLike+1)
@@ -136,7 +142,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
           await axios.post('/like', {
             user_id: user._id,
             article_id: id
-          })
+          }, {headers: {jwt: cookies.token}})
         }
       }
       else {
@@ -159,7 +165,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
           user_id: user,
           article_id: id,
           date: new Date()
-        })
+        }, {headers: {jwt: cookies.token}})
         handleOpenAlert()
         changeAlertValues('success', 'Commentaire ajouté')
         fetchData()
@@ -174,7 +180,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
   const deleteCom = async (id) => {
     try {
       await axios
-        .delete(`/comment/${id}`)
+        .delete(`/comment/${id}`, {headers: {jwt: cookies.token}})
         handleOpenAlert()
         changeAlertValues('success', 'Commentaire supprimé')
         fetchData()
@@ -193,9 +199,9 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
         handleOpenAlert()
         changeAlertValues("warning", "Vous n'êtes pas autorisé à accédez à cette page")
       }
-      await axios.delete(`/article/${id}`)
-      await axios.delete(`/like/article/${id}`)
-      await axios.delete(`/comment/article/${id}`)
+      await axios.delete(`/like/article/${id}`, {headers: {jwt: cookies.token}})
+      await axios.delete(`/comment/article/${id}`, {headers: {jwt: cookies.token}})
+      await axios.delete(`/article/${id}`, {headers: {jwt: cookies.token}})
       setRedirectGoto(true)
       handleOpenAlert()
       changeAlertValues('success', "Contenu supprimé")
@@ -337,7 +343,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
                       <div><IconButton aria-label='Supprimer' onClick={() => deleteCom(item._id)}><DeleteRoundedIcon color='error'/></IconButton></div>  
                     </div>
                     <div className={styles.a}>
-                      Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
+                      Par {`${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
                 </div>
@@ -349,14 +355,14 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
                     <div className={styles.t}>
                       <div>{item.text}</div>
                       {
-                        user?.roles.includes('Administrateur') || user?.roles.includes('Modérateur') ?
+                        user?.roles.includes('Administrateur') || user?.roles.includes('Modérateur') || user?._id === item.user_id ?
                           <div><IconButton aria-label='Supprimer' onClick={() => deleteCom(item._id)}><DeleteRoundedIcon color='error'/></IconButton></div>
                         :
                           <></>
                       }
                     </div>
                     <div className={styles.a}>
-                      Par {`${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
+                      Par {`${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.firstname} ${listOfUsers?.filter((usr) => usr._id === item.user_id)[0]?.lastname}`} le {new Date(item.date).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
                   {/* <div className={styles.second}></div> */}
@@ -378,7 +384,7 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
             </div>
             <div style={{margin: "20px 0 0 auto"}}>
               <ButtonGroup sx={{width: '100%'}}>
-                <Button variant='outlined' sx={{width: '50%'}} color="primary" onClick={() => setDialogOpened(false)()}>Annuler</Button>
+                <Button variant='outlined' sx={{width: '50%'}} color="primary" onClick={() => setDialogOpened(false)}>Annuler</Button>
                 <Button variant='contained' sx={{width: '50%'}} color="error" onClick={() => deleteArticle()}>Supprimer</Button>
               </ButtonGroup>
             </div>
