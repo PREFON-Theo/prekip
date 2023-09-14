@@ -100,7 +100,7 @@ router.get('/profil', (req, res) => {
       })
     }
     else {
-      res.status(401).json("JSON Web Token not found")
+      res.json(null)
     }
   }
   catch (error) {

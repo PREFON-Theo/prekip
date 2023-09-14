@@ -23,14 +23,6 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import ModeEditRoundedIcon from '@mui/icons-material/ModeEditRounded';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
-const cookieToken = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
-  acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
-  return acc;
-}, {})
-
-const rubriquesRaw = await axios.get('/rubrique-type', {headers: {jwt: cookieToken.token}})
-const rubriquesList = rubriquesRaw.data || []
-
 const parse = require('html-react-parser');
 
 const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
@@ -49,6 +41,17 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
   const pathnameOfThisPage = useLocation().pathname;
 
   const [dialogOpened, setDialogOpened] = useState(false);
+
+  const [rubrique, setRubrique] = useState();
+  
+  const fetchRubriques = async () => {
+    const rubriqueRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}});
+    setRubrique(rubriqueRaw.data);
+  }
+
+  useEffect(() => {
+    fetchRubriques();
+  },[])
 
 
 
@@ -227,8 +230,8 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
           :
             <Breadcrumbs aria-label="breadcrumb">
               <Typography>{contentType === "reference " ? "Contenu de référence" : "Rubrique"}</Typography>
-              <Link to={`/rubrique/${rubriquesList.filter((rub) => rub._id === article.category)[0]?.link}`} className={styles.link_to_rubrique}>
-                {rubriquesList.filter((rub) => rub._id === article.category)[0]?.title}
+              <Link to={`/rubrique/${rubrique?.filter((rub) => rub._id === article.category)[0]?.link}`} className={styles.link_to_rubrique}>
+                {rubrique?.filter((rub) => rub._id === article.category)[0]?.title}
               </Link>
               <Typography color="text.primary">Article</Typography>
             </Breadcrumbs>

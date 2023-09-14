@@ -1,33 +1,37 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./Homepage.module.scss"
 import RecentArticle from './RecentArticle/RecentArticle';
 import Feed from './Feed/Feed'
 import ArticlesCategories from './ArticlesCategories/ArticlesCategories';
 import HomeLinks from './HomeLinks/HomeLinks';
 import axios from 'axios';
-
-const cookies = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
-  acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
-  return acc;
-}, {})
-
-const rubriqueRaw = await axios.get('/rubrique-type/parents', {headers: {jwt: cookies.token}});
-const rubriqueData = rubriqueRaw.data;
-
-rubriqueData?.map((item, index) => {
-  axios
-    .get(`/article/type/reference/category/${item._id}`, {headers: {jwt: cookies.token}})
-    .then((res) => {
-      rubriqueData[index] = {
-        ...item,
-        reference: res.data
-      }
-    })
-})
-
+import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 
 
 const Homepage = () => {
+  const {cookies} = useContext(UserContext)
+  const [rubrique, setRubrique] = useState();
+  
+  const fetchRubriques = async () => {
+    const rubriqueRaw = await axios.get('/rubrique-type/parents', {headers: {jwt: cookies.token}});
+    setRubrique(rubriqueRaw.data);
+
+    rubriqueRaw.data?.map((item, index) => {
+      axios
+        .get(`/article/type/reference/category/${item._id}`, {headers: {jwt: cookies.token}})
+        .then((res) => {
+          rubriqueRaw.data[index] = {
+            ...item,
+            reference: res.data
+          }
+        })
+    })
+  }
+
+  useEffect(() => {
+    fetchRubriques();
+  },[])
+
   return (
     <>
       <div className={styles.container}>
@@ -40,7 +44,7 @@ const Homepage = () => {
           </div>
           <div className={styles.artcat}>
             <div className={styles.left}>
-              {rubriqueData?.map((item, index) => (
+              {rubrique?.map((item, index) => (
                 <ArticlesCategories key={index} item={item}/>
               ))}
             </div>

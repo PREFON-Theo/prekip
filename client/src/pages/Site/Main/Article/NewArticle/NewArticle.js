@@ -20,20 +20,6 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import Switch from '@mui/material/Switch';
 
-const cookieToken = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
-  acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
-  return acc;
-}, {})
-
-const rubriquesRaw = await axios.get("/rubrique-type", {headers: {jwt: cookieToken.token}})
-const rubriqueList = []
-Object.values(rubriquesRaw)[0]?.filter((rub) => rub.parent === '').map((item) => {
-  rubriqueList.push(item)
-  Object.values(rubriquesRaw)[0]?.filter((rubC) => rubC.parent === item._id).map((itemC) => {
-    rubriqueList.push(itemC)
-  })
-})
-
 
 const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
   const {user, ready, cookies} = useContext(UserContext);
@@ -54,6 +40,24 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
   );
   const [idArticle, setIdArticle] = useState(null);
   const [articlePosted, setArticlePosted] = useState(false);
+
+  const [rubrique, setRubrique] = useState();
+  
+  const fetchRubriques = async () => {
+    const rubriqueRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}});
+    const rubriqueList = []
+    Object.values(rubriqueRaw)[0]?.filter((rub) => rub.parent === '').map((item) => {
+      rubriqueList.push(item)
+      Object.values(rubriqueRaw)[0]?.filter((rubC) => rubC.parent === item._id).map((itemC) => {
+        rubriqueList.push(itemC)
+      })
+    })
+    setRubrique(rubriqueList);
+  }
+
+  useEffect(() => {
+    fetchRubriques();
+  },[])
 
   useEffect(() => {
     let html = convertToHTML(editorState.getCurrentContent());
@@ -248,7 +252,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                     label="Catégorie de l'article"
                     onChange={e => setArticle(prevValues => ({...prevValues, category: e.target.value}) )}
                   >
-                    {rubriqueList.map((item, index) => (
+                    {rubrique?.map((item, index) => (
                       <MenuItem key={index} value={item._id} sx={{textAlign: 'left', paddingLeft: item.parent === '' ? '' : "30px", fontWeight : item.parent === '' ? 'bold' : ''}}>{item.title}</MenuItem>
                     ))}
                   </Select>
@@ -359,7 +363,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                       label="Catégorie du contenu"
                       onChange={e => setArticle(prevValues => ({...prevValues, category: e.target.value}) )}
                     >
-                      {rubriqueList.map((item, index) => (
+                      {rubrique?.map((item, index) => (
                         <MenuItem key={index} value={item._id} sx={{textAlign: 'left', paddingLeft: item.parent === '' ? '' : "30px", fontWeight : item.parent === '' ? 'bold' : ''}}>{item.title}</MenuItem>
                       ))}
                     </Select>

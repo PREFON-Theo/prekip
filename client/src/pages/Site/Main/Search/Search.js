@@ -8,13 +8,6 @@ import DangerousRoundedIcon from '@mui/icons-material/DangerousRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 
-const cookieToken = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
-  acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
-  return acc;
-}, {})
-
-const rubriquesRaw = await axios.get("/rubrique-type", {headers: {jwt: cookieToken.token}});
-const rubriqueData = rubriquesRaw.data;
 
 const typeData = [
   {
@@ -45,10 +38,22 @@ const Search = () => {
   const [authorSelected, setAuthorSelected] = useState('')
   const [typeSelected, setTypeSelected] = useState('')
   const [authorData, setAuthorData] = useState();
+
+  const [rubrique, setRubrique] = useState();
+  
+  const fetchRubriques = async () => {
+    const rubriqueRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}});
+    setRubrique(rubriqueRaw.data);
+  }
+
+  useEffect(() => {
+    fetchRubriques();
+  },[])
   
 
   const fetchArticles = async () => {
     try {
+
       let query = ''
       const dateParam = params.get('date') !== undefined && params.get('date') !== null ? `date=${params.get('date')}` : '';
       const categoryParam = params.get('category') !== undefined && params.get('category') !== null ? `category=${params.get('category')}` : '';
@@ -123,9 +128,9 @@ const Search = () => {
               onChange={e => changeFilter("Category", e.target.value)}
             >
               {
-                !!rubriqueData
+                !!rubrique
                 ?
-                rubriqueData?.map((item, index) => (
+                rubrique?.map((item, index) => (
                   <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
                 ))
                 :

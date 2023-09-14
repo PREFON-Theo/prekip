@@ -19,14 +19,10 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 import { TextField, Box } from '@mui/material'
 
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
-import AssessmentRoundedIcon from '@mui/icons-material/AssessmentRounded';
-import ForumRoundedIcon from '@mui/icons-material/ForumRounded';
 import Dialog from '@mui/material/Dialog';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-import ListRoundedIcon from '@mui/icons-material/ListRounded';
 
 
 const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => {

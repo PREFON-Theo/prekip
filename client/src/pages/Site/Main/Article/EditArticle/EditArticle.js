@@ -21,17 +21,20 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import Switch from '@mui/material/Switch';
 
-const cookieToken = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
-  acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
-  return acc;
-}, {})
-
-const rubriquesRaw = await axios.get("/rubrique-type", {headers: {jwt: cookieToken.token}})
-const rubriqueList = rubriquesRaw.data || []
-
 const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
   const {user, ready, cookies} = useContext(UserContext);
   const { id } = useParams();
+
+  const [rubrique, setRubrique] = useState();
+  
+  const fetchRubriques = async () => {
+    const rubriqueRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}});
+    setRubrique(rubriqueRaw.data);
+  }
+
+  useEffect(() => {
+    fetchRubriques();
+  },[])
 
   const [redirection, setRedirection] = useState(false)
 
@@ -156,7 +159,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
                 label="Catégorie de l'article"
                 onChange={e => setArticle(prevValues => ({...prevValues, category: e.target.value}) )}
               >
-                {rubriqueList.map((item, index) => (
+                {rubrique?.map((item, index) => (
                   item.parent === "" 
                   ? 
                     <MenuItem key={index} value={item._id} sx={{textAlign: 'left', fontWeight: 'bold'}}>{item.title}</MenuItem>
