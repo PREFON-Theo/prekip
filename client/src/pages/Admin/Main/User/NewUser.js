@@ -53,6 +53,7 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
       target: { value },
     } = event;
     setNewUser(prev => ({...prev, roles: typeof value === 'string' ? value.split(',') : value}));
+    console.log(typeof value === 'string' ? value.split(',') : value)
   };
 
   const handleSubmitForm = async () => {
@@ -83,6 +84,7 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
         }
         else {
           try {
+            console.log(newUser.roles)
             const userCreation = await axios.post('/user/register', {
               firstname: newUser.firstname,
               lastname: newUser.lastname,

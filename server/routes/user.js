@@ -201,7 +201,7 @@ router.post('/register', async (req, res) => {
           return res.status(403).json("Unauthorized")
         }
         else if(user.roles.includes('Administrateur')){
-          const {firstname, lastname, email, password, role, joiningDate, leavingDate, valid} = req.body
+          const {firstname, lastname, email, password, roles, joiningDate, leavingDate, valid} = req.body
           const findEmailUsed = await User.findOne({email: email})
           if(findEmailUsed === null){
             const userCreation = await User.create({
@@ -209,7 +209,7 @@ router.post('/register', async (req, res) => {
                 lastname,
                 email,
                 password:bcrypt.hashSync(password, bcryptSecret),
-                role,
+                roles,
                 joiningDate,
                 leavingDate,
                 valid
