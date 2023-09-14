@@ -21,8 +21,13 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import Switch from '@mui/material/Switch';
 
-const rubriquesRaw = await axios.get("/rubrique-type")
-const rubriqueList = rubriquesRaw.data
+const cookieToken = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
+  acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
+  return acc;
+}, {})
+
+const rubriquesRaw = await axios.get("/rubrique-type", {headers: {jwt: cookieToken.token}})
+const rubriqueList = rubriquesRaw.data || []
 
 const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
   const {user, ready, cookies} = useContext(UserContext);

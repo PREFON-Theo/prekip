@@ -59,12 +59,12 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
     const usersList = await axios.get('/user', {headers: {jwt: cookies.token}})
     setListOfUsers(usersList.data)
     setEvents([])
-    const eventData = await axios.get('/event')
+    const eventData = await axios.get('/event', {headers: {jwt: cookies.token}})
     let objTT = {};
     let objRE = {};
     let objOther = {};
 
-    eventData.data.map((item) => (
+    eventData.data?.map((item) => (
       item.type === 'teletravail' ?
         objTT = {...objTT, 
           [`${item.startDate.substring(0,10)}T00:00:00.000Z`]: {
@@ -154,7 +154,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
     setOpenEditEvent(false)
     setDayInformations(day)
     setOpenDialog(true)
-    const eventsOfThisDay = await axios.get(`/event/day/${date}`)
+    const eventsOfThisDay = await axios.get(`/event/day/${date}`, {headers: {jwt: cookies.token}})
     setEventsOfTheDaySelected(eventsOfThisDay.data)
   }
 
@@ -214,7 +214,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
                   eventsOfTheDaySelected === undefined ?
                     "Chargement..."
                   :
-                  eventsOfTheDaySelected.length === 0 ?
+                  eventsOfTheDaySelected?.length === 0 ?
                     "Pas d'évènements pour ce jour"
                   :
                   <>

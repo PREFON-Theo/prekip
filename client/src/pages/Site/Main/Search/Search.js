@@ -8,7 +8,12 @@ import DangerousRoundedIcon from '@mui/icons-material/DangerousRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 
-const rubriquesRaw = await axios.get("/rubrique-type");
+const cookieToken = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
+  acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
+  return acc;
+}, {})
+
+const rubriquesRaw = await axios.get("/rubrique-type", {headers: {jwt: cookieToken.token}});
 const rubriqueData = rubriquesRaw.data;
 
 const typeData = [
@@ -117,9 +122,15 @@ const Search = () => {
               label="Filtre des rubriques"
               onChange={e => changeFilter("Category", e.target.value)}
             >
-              {rubriqueData.map((item, index) => (
-                <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
-              ))}
+              {
+                !!rubriqueData
+                ?
+                rubriqueData?.map((item, index) => (
+                  <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
+                ))
+                :
+                <MenuItem disabled sx={{textAlign: 'left'}}>Aucune rubrique disponible...</MenuItem>
+              }
             </Select>
           </FormControl>
 
@@ -131,9 +142,15 @@ const Search = () => {
               label="Filtre des auteurs"
               onChange={e => changeFilter("Author", e.target.value)}
             >
-              {authorData?.map((item, index) => (
-                <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.firstname} {item.lastname}</MenuItem>
-              ))}
+              {
+                !!authorData
+                ?
+                authorData?.map((item, index) => (
+                  <MenuItem key={index} value={item._id} sx={{textAlign: 'left'}}>{item.firstname} {item.lastname}</MenuItem>
+                ))
+                :
+                <MenuItem disabled sx={{textAlign: 'left'}}>Aucun utilisateur disponible...</MenuItem>
+              }
             </Select>
           </FormControl>
 
@@ -145,9 +162,15 @@ const Search = () => {
               label="Filtre des type de contenu"
               onChange={e => changeFilter("Type", e.target.value)}
             >
-              {typeData.map((item, index) => (
-                <MenuItem key={index} value={item.value} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
-              ))}
+              {
+                !!typeData
+                ?
+                typeData.map((item, index) => (
+                  <MenuItem key={index} value={item.value} sx={{textAlign: 'left'}}>{item.title}</MenuItem>
+                ))
+                :
+                <MenuItem disabled sx={{textAlign: 'left'}}>Aucun type de contenu disponible...</MenuItem>
+              }
             </Select>
           </FormControl>
 

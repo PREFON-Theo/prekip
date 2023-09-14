@@ -42,9 +42,9 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
   const [maxPage, setMaxPage] = useState(0)
 
   const fetchEvents = async () => {
-    const eventsRaw = await axios.get('/event')
+    const eventsRaw = await axios.get('/event', {headers: {jwt: cookies.token}})
     setEvents(eventsRaw.data)
-    setMaxPage(Math.ceil(eventsRaw.data.length / 10))
+    setMaxPage(Math.ceil(eventsRaw.data?.length / 10 || 0))
   }
 
   const fetchUsers = async () => {
@@ -70,7 +70,7 @@ const ListEvents = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/event/${eventToDelete}`)
+      await axios.delete(`/event/${eventToDelete}`, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', 'Évènement supprimé')
       fetchEvents();

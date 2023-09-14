@@ -20,12 +20,16 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import Switch from '@mui/material/Switch';
 
+const cookieToken = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
+  acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
+  return acc;
+}, {})
 
-const rubriquesRaw = await axios.get("/rubrique-type")
+const rubriquesRaw = await axios.get("/rubrique-type", {headers: {jwt: cookieToken.token}})
 const rubriqueList = []
-Object.values(rubriquesRaw)[0].filter((rub) => rub.parent === '').map((item) => {
+Object.values(rubriquesRaw)[0]?.filter((rub) => rub.parent === '').map((item) => {
   rubriqueList.push(item)
-  Object.values(rubriquesRaw)[0].filter((rubC) => rubC.parent === item._id).map((itemC) => {
+  Object.values(rubriquesRaw)[0]?.filter((rubC) => rubC.parent === item._id).map((itemC) => {
     rubriqueList.push(itemC)
   })
 })

@@ -11,10 +11,10 @@ const cookies = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v
   return acc;
 }, {})
 
-const rubriqueRaw = await axios.get('/rubrique-type/parents');
+const rubriqueRaw = await axios.get('/rubrique-type/parents', {headers: {jwt: cookies.token}});
 const rubriqueData = rubriqueRaw.data;
 
-rubriqueData.map((item, index) => {
+rubriqueData?.map((item, index) => {
   axios
     .get(`/article/type/reference/category/${item._id}`, {headers: {jwt: cookies.token}})
     .then((res) => {

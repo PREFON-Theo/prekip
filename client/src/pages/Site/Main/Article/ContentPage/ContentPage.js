@@ -23,9 +23,13 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import ModeEditRoundedIcon from '@mui/icons-material/ModeEditRounded';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
+const cookieToken = document.cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
+  acc[decodeURIComponent(v[0]?.trim())] = decodeURIComponent(v[1]?.trim() || '');
+  return acc;
+}, {})
 
-const rubriquesRaw = await axios.get('/rubrique-type')
-const rubriquesList = rubriquesRaw.data
+const rubriquesRaw = await axios.get('/rubrique-type', {headers: {jwt: cookieToken.token}})
+const rubriquesList = rubriquesRaw.data || []
 
 const parse = require('html-react-parser');
 

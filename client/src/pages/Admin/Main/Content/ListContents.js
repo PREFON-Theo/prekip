@@ -40,7 +40,7 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
   }
 
   const fetchCategories = async () => {
-    const categoriesRaw = await axios.get('/rubrique-type')
+    const categoriesRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}})
     setCategories(categoriesRaw.data)
   }
 
@@ -110,7 +110,7 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
                 <TableCell>{item.title?.length > 25 ? `${item.title.substring(0,25)}...` : item.title?.length === 0 ? "-" : item.title}</TableCell>
                 <TableCell className={styles.semi_width_first}>{item.preview?.length > 25 ? `${item.preview.substring(0,25)}...` : item.preview?.length === 0 ? "-" : item.preview}</TableCell>
                 <TableCell className={styles.semi_width_second}>{item.created_at === null ? "-" : new Date(item.created_at).toLocaleDateString('fr-FR')}</TableCell>
-                <TableCell className={styles.semi_width_first}>{item.category === "" ? "-" : categories?.filter((cat) => cat._id === item.category)[0]?.title}</TableCell>
+                <TableCell className={styles.semi_width_first}>{item.category === "" ? "-" : categories?.filter((cat) => cat._id === item.category)[0]?.title || <span style={{fontStyle: "italic"}}>Non disponible</span>}</TableCell>
                 <TableCell className={styles.semi_width_second}>
                   {item.author === "" 
                     ? "-" 

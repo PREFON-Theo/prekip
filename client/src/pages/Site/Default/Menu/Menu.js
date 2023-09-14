@@ -1,4 +1,4 @@
-import React, { useContext, useState  } from 'react'
+import React, { useContext, useEffect, useState  } from 'react'
 import styles from "./Menu.module.scss"
 import {UserContext} from "../../../../utils/Context/UserContext/UserContext"
 import { Link, createSearchParams, useNavigate } from "react-router-dom"
@@ -28,13 +28,13 @@ import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import ListRoundedIcon from '@mui/icons-material/ListRounded';
 
-const RubriquesRaw = await axios.get("/rubrique-type/parents")
-const RubriqueList = RubriquesRaw.data
 
 const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => {
-  const {user, setUser, setReady} = useContext(UserContext)
+  const {user, setUser, setReady, cookies} = useContext(UserContext)
   const [textToSearch, setTextToSearch] = useState('')
   const [openSearch, setOpenSearch] = useState(false)
+
+  const [rubriqueList, setRubriqueList] = useState();
 
   const [anchorElLeft, setAnchorElLeft] = React.useState(null);
   const openLeft = Boolean(anchorElLeft);
@@ -44,6 +44,11 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
   const handleCloseLeft = () => {
     setAnchorElLeft(null);
   };
+
+  const fetchRubriques = async () => {
+    const rubriquesRaw = await axios.get("/rubrique-type/parents", {headers: {jwt: cookies.token}})
+    setRubriqueList(rubriquesRaw.data)
+  }
 
   const [anchorElRight, setAnchorElRight] = React.useState(null);
   const openRight = Boolean(anchorElRight);
@@ -81,7 +86,12 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
     handleOpenAlert();
     changeAlertValues('success', "Vous êtes déconnecté");
     setReady("no")
-}
+  }
+
+
+  useEffect(() => {
+    fetchRubriques();
+  }, [])
 
   return (
     <>
@@ -161,7 +171,7 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
               </Link>
             </div>
             <div className={styles.item_middlemenu}>
-              <MenuItemLinkDropdown title="Rubriques" mobile={false} list={RubriqueList}/>
+              <MenuItemLinkDropdown title="Rubriques" mobile={false} list={rubriqueList}/>
             </div>
             <div className={styles.item_middlemenu}>
               <MenuItemLink title="Calendrier" link="/calendar"/>
@@ -212,7 +222,7 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
               }}
             >
               <span>
-                {RubriqueList.map((item, index) => (
+                {rubriqueList?.map((item, index) => (
                   <Link to={`rubrique/${item.link}`} key={index} style={{textDecoration: "none"}}>
                     <MenuItem onClick={handleCloseLeft} sx={{color: "#000"}}>
                       {item.title}
