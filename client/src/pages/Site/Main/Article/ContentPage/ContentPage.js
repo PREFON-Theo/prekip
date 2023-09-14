@@ -199,10 +199,9 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
         handleOpenAlert()
         changeAlertValues("warning", "Vous n'êtes pas autorisé à accédez à cette page")
       }
-      console.log("first")
-      await axios.delete(`/article/${id}`, {headers: {jwt: cookies.token}})
       await axios.delete(`/like/article/${id}`, {headers: {jwt: cookies.token}})
       await axios.delete(`/comment/article/${id}`, {headers: {jwt: cookies.token}})
+      await axios.delete(`/article/${id}`, {headers: {jwt: cookies.token}})
       setRedirectGoto(true)
       handleOpenAlert()
       changeAlertValues('success', "Contenu supprimé")

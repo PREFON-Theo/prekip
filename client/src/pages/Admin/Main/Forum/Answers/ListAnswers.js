@@ -33,9 +33,9 @@ const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
   const [maxPage, setMaxPage] = useState(0)
 
   const fetchAnswers = async () => {
-    const answersRaw = await axios.get('/answer')
+    const answersRaw = await axios.get('/answer', {headers: {jwt: cookies.token}})
     setAnswers(answersRaw.data)
-    setMaxPage(Math.ceil(answersRaw.data.length / 10))
+    setMaxPage(Math.ceil(answersRaw.data?.length / 10) || 0)
   }
 
   const fetchUsers = async () => {
@@ -67,7 +67,7 @@ const ListAnswers = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/answer/${answerToDelete}`)
+      await axios.delete(`/answer/${answerToDelete}`, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', 'Réponse supprimée')
       fetchAnswers();

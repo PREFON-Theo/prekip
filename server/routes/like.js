@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Like = require('../models/Like')
+const Article = require('../models/Article')
 
 const jwt = require('jsonwebtoken');
 const jwtSecret = 'JNaZcAPqBr4dPqiMhwavDjZCgABEQKLJyj6Cq8aJukvoXGHi'
@@ -126,10 +127,12 @@ router.delete('/article/:article_id', (req, res) => {
     const token = req.headers.jwt;
     if(token) {
       jwt.verify(token, jwtSecret, {}, async (err, user) => {
+        const art = await Article.findOne({_id: req.params.article_id})
+        const author = art.author
         if(err || user.id === undefined) {
           return res.status(403).json("Unauthorized")
         }
-        else if(user.roles.includes('Administrateur')){
+        else if(user.roles.includes('Administrateur') || user.id === author){
           Like.deleteMany({article_id: req.params.article_id}).then(() => {
             res.status(200).json({
               message: `Likes on article ${req.params.article_id} deleted`

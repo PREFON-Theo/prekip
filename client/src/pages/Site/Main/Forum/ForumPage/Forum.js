@@ -68,7 +68,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
 
   const fetchDataAnswers = async (id) => {
     await axios
-      .get(`/answer/forum/${id}`)
+      .get(`/answer/forum/${id}`, {headers: {jwt: cookies.token}})
       .then((res) => setAnswers(res.data))
   }
 
@@ -86,7 +86,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
         text: answerText,
         user_id: user,
         forum_id: forumInfo?._id,
-      })
+      }, {headers: {jwt: cookies.token}})
       .then(() => handleOpenAlert())
       .then(() => changeAlertValues('success', 'Commentaire ajouté'))
       .then(() => fetchDataAnswers(forumInfo?._id))
@@ -97,7 +97,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
     await axios
       .patch(`/answer/${answer._id}`, {
         vote: up ? parseInt(answer.vote) + 1 : parseInt(answer.vote) - 1
-    }).then(() => fetchDataAnswers(answer.forum_id))
+    }, {headers: {jwt: cookies.token}}).then(() => fetchDataAnswers(answer.forum_id))
   }
 
   const handleCloseForum = async (id, forumClosed) => {
@@ -110,8 +110,8 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
   }
 
   const deleteForum = async (id) => {
+    await axios.delete(`/answer/forum/${forumInfo?._id}`, {headers: {jwt: cookies.token}})
     await axios.delete(`/forum/${forumInfo?._id}`, {headers: {jwt: cookies.token}})
-    await axios.delete(`/answer/forum/${forumInfo?._id}`)
     .then(() => {
       setRedirection(true)
       fetchLastForums()
