@@ -37,7 +37,7 @@ router.get('/article/:articleId', async (req, res) => {
       })
     }
     else {
-      res.json(null)
+      res.status(401).json("JSON Web Token not found")
     }
   }
   catch (error) {
@@ -63,7 +63,7 @@ router.post('/', async (req, res) => {
       })
     }
     else {
-      res.json(null)
+      res.status(401).json("JSON Web Token not found")
     }
   }
   catch (error) {
@@ -97,7 +97,7 @@ router.delete('/user/:userId/:articleId', (req, res) => {
       })
     }
     else {
-      res.json(null)
+      res.status(401).json("JSON Web Token not found")
     }
   }
   catch (error) {
@@ -145,7 +145,7 @@ router.delete('/article/:article_id', (req, res) => {
       })
     }
     else {
-      res.json(null)
+      res.status(401).json("JSON Web Token not found")
     }
   }
   catch (error) {

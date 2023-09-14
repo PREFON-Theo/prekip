@@ -16,9 +16,6 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import IconButton from '@mui/material/IconButton';
 
-const usersList = await axios.get('/user')
-const listOfUsers = usersList.data
-
 const Forum = ({handleOpenAlert, changeAlertValues}) => {
   const { user, cookies } = useContext(UserContext);
   const [redirection, setRedirection] = useState(false);

@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
       })
     }
     else {
-      res.json(null)
+      res.status(401).json("JSON Web Token not found")
     }
   }
   catch (error) {
@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
       })
     }
     else {
-      res.json(null)
+      res.status(401).json("JSON Web Token not found")
     }
   }
   catch (error) {
@@ -73,7 +73,7 @@ router.get('/forum/:forum_id', async (req, res) => {
       })
     }
     else {
-      res.json(null)
+      res.status(401).json("JSON Web Token not found")
     }
   }
   catch (error) {
@@ -102,7 +102,7 @@ router.post('/', async (req, res) => {
       })
     }
     else {
-      res.json(null)
+      res.status(401).json("JSON Web Token not found")
     }
   }
   catch (error) {
@@ -129,7 +129,7 @@ router.patch('/:id', (req, res) => {
       })
     }
     else {
-      res.json(null)
+      res.status(401).json("JSON Web Token not found")
     }
   }
   catch (error) {
@@ -162,7 +162,7 @@ router.delete('/:id', (req, res) => {
       })
     }
     else {
-      res.json(null)
+      res.status(401).json("JSON Web Token not found")
     }
   }
   catch (error) {
@@ -195,7 +195,7 @@ router.delete('/forum/:forum_id', (req, res) => {
         })
       }
       else {
-        res.json(null)
+        res.status(401).json("JSON Web Token not found")
       }
     }
     catch (error) {

@@ -93,7 +93,7 @@ app.post('/article/with-file', upload.any('image'), async (req, res) => {
       })
     }
     else {
-      res.json(null)
+      res.status(401).json("JSON Web Token not found")
     }
   }
   catch (error) {
