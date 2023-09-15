@@ -14,23 +14,25 @@ const Homepage = () => {
   
   const fetchRubriques = async () => {
     const rubriqueRaw = await axios.get('/rubrique-type/parents', {headers: {jwt: cookies.token}});
-    setRubrique(rubriqueRaw.data);
-
-    rubriqueRaw.data?.map((item, index) => {
-      axios
-        .get(`/article/type/reference/category/${item._id}`, {headers: {jwt: cookies.token}})
-        .then((res) => {
-          rubriqueRaw.data[index] = {
-            ...item,
-            reference: res.data
-          }
-        })
-    })
+    let rubtriqueList = rubriqueRaw.data;
+    for (let r = 0; r < rubriqueRaw.data?.length; r++) {
+      const referenceRaw = await axios.get(`/article/type/reference/category/${rubriqueRaw.data[r]._id}`, {headers: {jwt: cookies.token}})
+      const reference = referenceRaw.data
+      rubtriqueList[r] = {
+        ...rubtriqueList[r],
+        reference
+      }
+    }
+    setRubrique(rubtriqueList);
   }
 
   useEffect(() => {
     fetchRubriques();
   },[])
+
+  useEffect(() => {
+    console.log(rubrique)
+  },[rubrique])
 
   return (
     <>
@@ -44,9 +46,15 @@ const Homepage = () => {
           </div>
           <div className={styles.artcat}>
             <div className={styles.left}>
-              {rubrique?.map((item, index) => (
-                <ArticlesCategories key={index} item={item}/>
-              ))}
+              {
+                !!rubrique
+                ?
+                  rubrique.map((item, index) => (
+                    <ArticlesCategories key={index} item={item}/>
+                  ))
+                :
+                  <>rien</>
+                }
             </div>
             <div className={styles.right}></div>
           </div>
