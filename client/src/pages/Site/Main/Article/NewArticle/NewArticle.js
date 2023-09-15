@@ -315,7 +315,6 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                 Ajouter un fichier
                 <input
                   type="file"
-                  //onChange={(e) => setArticle(prevValues => ({...prevValues, file: e.target.files[0]}))}
                   onChange={(e) => checkIfFileIsCorrect(e.target.files[0], "file")}
                   hidden
                   accept='.pdf'
@@ -336,7 +335,6 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                 Ajouter une image
                 <input
                   type="file"
-                  //onChange={(e) => setArticle(prevValues => ({...prevValues, image: e.target.files[0]}))}
                   onChange={(e) => checkIfFileIsCorrect(e.target.files[0], "image")}
                   hidden
                   accept='.jpg, .jpeg, .png'
