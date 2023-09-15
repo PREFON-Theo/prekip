@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, Children } from 'react'
 import styles from "./NewArticle.module.scss"
 import { Navigate } from 'react-router-dom';
 
 
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState } from 'draft-js';
-import { convertToHTML } from 'draft-convert'
+import { EditorState, convertToRaw } from 'draft-js';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import draftToHtml from 'draftjs-to-html';
 
 
 import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
@@ -51,12 +51,6 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
     const rubriqueRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}});
     const rubriqueList = []
     user?.divisions.map((item) => rubriqueList.push(rubriqueRaw.data?.filter((rl) => rl._id === item)[0]))
-    /*Object.values(rubriqueRaw)[0]?.filter((rub) => rub.parent === '').map((item) => {
-      rubriqueList.push(item)
-      Object.values(rubriqueRaw)[0]?.filter((rubC) => rubC.parent === item._id).map((itemC) => {
-        rubriqueList.push(itemC)
-      })
-    })*/
     setRubrique(rubriqueList);
   }
 
@@ -65,7 +59,12 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
   },[])
 
   useEffect(() => {
-    let html = convertToHTML(editorState.getCurrentContent());
+    console.log(article.content)
+  }, [article.content])
+
+  useEffect(() => {
+    let html = draftToHtml(convertToRaw(editorState.getCurrentContent()))
+    console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())))
     setArticle(prevValues => ({...prevValues, content: html}))
   }, [editorState]);
 
@@ -356,7 +355,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                   editorClassName="editorClassName"
                   editorState={editorState}
                   onEditorStateChange={setEditorState}
-                  placeholder='Reseignez votre article ici'
+                  placeholder='Renseignez votre article ici'
                 />
               </div>
               
@@ -383,7 +382,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                     editorClassName="editorClassName"
                     editorState={editorState}
                     onEditorStateChange={setEditorState}
-                    placeholder='Reseignez votre article ici'
+                    placeholder='Renseignez votre article ici'
                   />
                 </div>
                 
@@ -444,7 +443,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                     editorClassName="editorClassName"
                     editorState={editorState}
                     onEditorStateChange={setEditorState}
-                    placeholder='Reseignez les informations ici'
+                    placeholder='Renseignez les informations ici'
                   />
                 </div>
                 

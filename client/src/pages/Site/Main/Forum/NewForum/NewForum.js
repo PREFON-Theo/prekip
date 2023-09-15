@@ -3,21 +3,15 @@ import styles from "./NewForum.module.scss"
 import { Navigate } from 'react-router-dom';
 
 
-import { Editor } from "react-draft-wysiwyg";
-import { EditorState } from 'draft-js';
-import { convertToHTML } from 'draft-convert'
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import { UserContext } from '../../../../../utils/Context/UserContext/UserContext';
 import axios from 'axios';
 
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import FormControl from '@mui/material/FormControl';
+
 
 
 

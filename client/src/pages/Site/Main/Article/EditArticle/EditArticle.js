@@ -4,8 +4,8 @@ import { Navigate, useParams } from 'react-router-dom';
 
 
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState, ContentState, convertFromHTML } from 'draft-js';
-import { convertToHTML } from 'draft-convert'
+import { EditorState, ContentState, convertFromHTML, convertToRaw } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
@@ -91,7 +91,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
   
 
   useEffect(() => {
-    let html = convertToHTML(editorState.getCurrentContent());
+    let html = draftToHtml(convertToRaw(editorState.getCurrentContent()))
     setArticle(prevValues => ({...prevValues, content: html}))
   }, [editorState]);
 
