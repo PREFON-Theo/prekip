@@ -14,17 +14,31 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
     firstname: "",
     lastname: "",
     email: "",
+    roles: [],
+    divisions: []
   })
   const [confirmPassword, setConfirmPassword] = useState("");
   const [password, setPassword] = useState("");
   const [displayErrorPassword, setDisplayErrorPassword] = useState(false)
 
+  const [rubriqueList, setRubriqueList] = useState();
+
+  const fetchRubriques = async () => {
+    const rubriquesRaw = await axios.get("/rubrique-type", {headers: {jwt: cookies.token}})
+    setRubriqueList(rubriquesRaw.data)
+  }
+
+  useEffect(() => {
+    fetchRubriques()
+  }, [])
 
   useEffect(() => {
     setUserInfor({
       firstname: user?.firstname,
       lastname: user?.lastname,
-      email: user?.email
+      email: user?.email,
+      roles: user?.roles,
+      divisions: user?.divisions
     })
   }, [user])
 
@@ -93,6 +107,23 @@ const Account = ({ handleOpenAlert, changeAlertValues }) => {
         </div>
         <div className={styles.one}>
           <TextField value={userInfor.email} label="Adresse mail" type='email' variant="outlined" onChange={e => setUserInfor(prevValues => ({...prevValues, email: e.target.value}) )} sx={{width: '100%'}}/>
+        </div>
+        <div className={styles.one}>
+          {userInfor.roles.length === 0 ? '' : userInfor.roles.length === 1 ? `Rôle: ${userInfor.roles}` : `Rôles: ${userInfor.roles}`}
+        </div>
+        <div className={styles.one}>
+          {
+            userInfor.divisions.length === 0 
+            ?
+              ''
+            :
+             userInfor.divisions.length === 1 
+             ?
+              `Pôle: ${userInfor.divisions.map((userInfor) => rubriqueList?.filter((rl) => rl._id === userInfor)[0]?.title)}` 
+              :
+               `Pôles: ${userInfor.divisions.map((userInfor) => rubriqueList?.filter((rl) => rl._id === userInfor)[0]?.title)}`
+          }
+          
         </div>
 
         <div className={styles.one_password}>

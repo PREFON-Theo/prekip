@@ -31,11 +31,15 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
 
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(0)
+  const [rubriqueList, setRubriqueList] = useState();
 
   const fetchUsers = async () => {
     const usersRaw = await axios.get('/user', {headers: {jwt: cookies.token}})
     setUsers(usersRaw.data)
     setMaxPage(Math.ceil(usersRaw.data?.length / 10))
+
+    const rubriquesRaw = await axios.get("/rubrique-type", {headers: {jwt: cookies.token}})
+    setRubriqueList(rubriquesRaw.data)
   }
 
   useEffect(() => {
@@ -90,6 +94,7 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
               <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Date d'arrivée</TableCell>
               <TableCell className={styles.semi_width_first} sx={{fontWeight: 'bold'}}>Date de départ</TableCell>
               <TableCell className={styles.semi_width_second} sx={{fontWeight: 'bold'}}>Roles</TableCell>
+              <TableCell className={styles.semi_width_second} sx={{fontWeight: 'bold'}}>Pôle(s)</TableCell>
               <TableCell className={styles.semi_width_second} sx={{fontWeight: 'bold'}}>Compte valide ?</TableCell>
               <TableCell sx={{fontWeight: 'bold'}}>Actions</TableCell>
             </TableRow>
@@ -102,6 +107,7 @@ const ListUsers = ({handleOpenAlert, changeAlertValues}) => {
                 <TableCell className={styles.semi_width_first} sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.joiningDate === null ? "-" : new Date(item.joiningDate).toLocaleDateString('fr-FR')}</TableCell>
                 <TableCell className={styles.semi_width_first} sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.leavingDate === null ? "-" : new Date(item.leavingDate).toLocaleDateString('fr-FR')}</TableCell>
                 <TableCell className={styles.semi_width_second} sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.roles[0]} {item.roles[1]} {item.roles[2]}</TableCell>
+                <TableCell className={styles.semi_width_second} sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.divisions.map((item) => rubriqueList?.filter((rl) => rl._id === item)[0]?.title + ' / ')}</TableCell>
                 <TableCell className={styles.semi_width_second} sx={{filter: !item.valid ? "opacity(50%)" : ""}}>{item.valid === true ? <VerifiedRoundedIcon color='success'/> : <DoDisturbOnRoundedIcon color='error'/>}</TableCell>
                 <TableCell>
                   <Link to={`/admin/user/page/${item._id}`} style={{margin: '10px'}}>

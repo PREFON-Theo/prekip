@@ -30,7 +30,8 @@ router.get('/', async (req, res) => {
               roles: item.roles,
               joiningDate: item.joiningDate,
               leavingDate: item.leavingDate,
-              valid: item.valid
+              valid: item.valid,
+              divisions: item.divisions
             })
           })
           res.status(200).json(userList);
@@ -67,7 +68,8 @@ router.get('/one/:id', async (req, res) => {
             roles: UserInfo.roles,
             joiningDate: UserInfo.joiningDate,
             leavingDate: UserInfo.leavingDate,
-            valid: UserInfo.valid
+            valid: UserInfo.valid,
+            divisions: UserInfo.divisions
           })
           
         }
@@ -95,8 +97,8 @@ router.get('/profil', (req, res) => {
         if(err || user.id === undefined) {
           return res.status(403).json("Unauthorized")
         }
-        const {_id, firstname, lastname, email, roles, joiningDate, leavingDate, valid} = await User.findById(user.id); 
-        res.json({_id, firstname, lastname, email, roles, joiningDate, leavingDate, valid})
+        const {_id, firstname, lastname, email, roles, joiningDate, leavingDate, valid, divisions} = await User.findById(user.id); 
+        res.json({_id, firstname, lastname, email, roles, joiningDate, leavingDate, valid, divisions})
       })
     }
     else {
@@ -166,6 +168,7 @@ router.patch('/:id', (req, res) => {
 
           if(!user.roles.includes('Administrateur')){
             delete body.roles
+            delete body.divisions
             delete body.joiningDate
             delete body.leavingDate
             delete body.valid
@@ -201,7 +204,7 @@ router.post('/register', async (req, res) => {
           return res.status(403).json("Unauthorized")
         }
         else if(user.roles.includes('Administrateur')){
-          const {firstname, lastname, email, password, roles, joiningDate, leavingDate, valid} = req.body
+          const {firstname, lastname, email, password, roles, joiningDate, leavingDate, valid, divisions} = req.body
           const findEmailUsed = await User.findOne({email: email})
           if(findEmailUsed === null){
             const userCreation = await User.create({
@@ -212,7 +215,8 @@ router.post('/register', async (req, res) => {
                 roles,
                 joiningDate,
                 leavingDate,
-                valid
+                valid,
+                divisions
             })
             res.status(200).json(userCreation)
           }

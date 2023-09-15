@@ -38,7 +38,8 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
     roles: [],
     joiningDate: "",
     leavingDate: "",
-    valid: false
+    valid: false,
+    divisions: []
   })
 
   const [missingValue, setMissingValue] = useState(false)
@@ -48,12 +49,30 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
 
   const [redirection, setRedirection] = useState(false);
 
-  const handleChange = (event) => {
+  const [rubriqueList, setRubriqueList] = useState();
+
+
+  const fetchRubriques = async () => {
+    const rubriquesRaw = await axios.get("/rubrique-type/parents", {headers: {jwt: cookies.token}})
+    setRubriqueList(rubriquesRaw.data)
+  }
+
+  useEffect(() => {
+    fetchRubriques();
+  }, [])
+
+  const handleChangeRoles = (event) => {
     const {
       target: { value },
     } = event;
     setNewUser(prev => ({...prev, roles: typeof value === 'string' ? value.split(',') : value}));
-    console.log(typeof value === 'string' ? value.split(',') : value)
+  };
+
+  const handleChangeDivisions = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setNewUser(prev => ({...prev, divisions: typeof value === 'string' ? value.split(',') : value}));
   };
 
   const handleSubmitForm = async () => {
@@ -69,6 +88,7 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
       || newUser.password === "" 
       || newUser.confirmPassword === ""
       || newUser.roles.length === 0
+      || newUser.divisions.length === 0
       || newUser.joiningDate === ""
     ){
       setMissingValue(true)
@@ -84,12 +104,19 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
         }
         else {
           try {
+            let divisionArr = []
+            newUser.divisions.map((item, index) => {
+              divisionArr.push(rubriqueList.filter((rl) => rl.title === item)[0]._id)
+            })
+
+
             const userCreation = await axios.post('/user/register', {
               firstname: newUser.firstname,
               lastname: newUser.lastname,
               email: newUser.email,
               password: newUser.password,
               roles: newUser.roles,
+              divisions: divisionArr,
               joiningDate: newUser.joiningDate,
               leavingDate: newUser.leavingDate,
               valid: newUser.valid,
@@ -185,14 +212,14 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
           {/* Dropdown Roles */}
           <Paper elevation={2} sx={{marginBottom: '40px'}}>
             <FormControl fullWidth>
-              <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
+              <InputLabel id="demo-multiple-checkbox-label">Liste des roles</InputLabel>
               <Select
                 labelId="demo-multiple-checkbox-label"
                 id="demo-multiple-checkbox"
                 multiple
                 value={newUser.roles}
-                onChange={handleChange}
-                input={<OutlinedInput label="Tag" />}
+                onChange={handleChangeRoles}
+                input={<OutlinedInput label="Liste des roles" />}
                 renderValue={(selected) => selected.join(', ')}
                 required
               >
@@ -200,6 +227,30 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
                   <MenuItem key={index} value={item.label} label={item.label}>
                     <Checkbox checked={newUser.roles.indexOf(item.label) > -1} />
                     <ListItemText primary={item.label} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Paper>
+
+          {/* Dropdown Pôles */}
+          <Paper elevation={2} sx={{marginBottom: '40px'}}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-multiple-checkbox-label">Liste des pôles</InputLabel>
+              <Select
+                labelId="demo-multiple-checkbox-label"
+                id="demo-multiple-checkbox"
+                multiple
+                value={newUser.divisions}
+                onChange={handleChangeDivisions}
+                input={<OutlinedInput label="Liste des pôles" />}
+                renderValue={(selected) => selected.join(', ')}
+                required
+              >
+                {rubriqueList?.map((item, index) => (
+                  <MenuItem key={index} label={item.title} value={item.title}>
+                    <Checkbox checked={newUser.divisions.indexOf(item.title) > -1} />
+                    <ListItemText primary={item.title} label={item.title}/>
                   </MenuItem>
                 ))}
               </Select>

@@ -148,7 +148,6 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
 
 
   const showDialog = async (day, date) => {
-    console.log(day)
     setDateSelected(new Date(date).toLocaleDateString())
     setOpenAddEvent(false)
     setOpenEditEvent(false)
