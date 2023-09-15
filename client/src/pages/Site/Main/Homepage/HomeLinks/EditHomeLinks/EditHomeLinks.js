@@ -60,10 +60,10 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
     ))
   }
 
-  const openDialog = (type) => {
+  const openDialog = (type, itemToEdit) => {
     setMode(type)
     if(type === 'edit'){
-      setupLinkEdition();
+      setupLinkEdition(itemToEdit);
     }
     else if (type === 'new'){
       setupLinkAddition()
@@ -77,6 +77,11 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
 
   const setupLinkAddition = () => {
     setDialogOpenned(true)
+    setLinkToChange({
+      _id: '',
+      text: '',
+      link: ''
+    })
   }
 
   const editOneLink = async () => {
@@ -150,7 +155,7 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
                   </h1>
                 :
                   <h1>
-                      Edition du lien {linkToChange?.text}
+                      Ajout d'un nouveau lien
                   </h1>
                 }
                 <div className={styles.container_inputs}>
@@ -191,7 +196,7 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
                         <div></div>
                         <div>{item.text}</div>
                         <div>
-                          <div onClick={() => openDialog('edit')}><EditRoundedIcon/></div>
+                          <div onClick={() => openDialog('edit', item)}><EditRoundedIcon/></div>
                           <div onClick={() => deleteLink(item._id)}><DeleteForeverRoundedIcon color='error'/></div>
                         </div>
                       </div>
