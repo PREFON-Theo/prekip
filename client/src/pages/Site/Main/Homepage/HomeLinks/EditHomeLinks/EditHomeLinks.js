@@ -199,7 +199,7 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
                   ))
                 }
               </SortableList>
-              <Button variant='contained' color='warning' onClick={() => handleEditOrder()}>Enregister</Button>
+              <Button variant='contained' color='warning' onClick={() => handleEditOrder()}>Enregistrer</Button>
             </div>
           </>
     }

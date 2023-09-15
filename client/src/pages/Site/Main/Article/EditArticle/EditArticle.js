@@ -66,7 +66,6 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
     }
     else if (ready === "yes"){
       if(!user?.roles.includes("Administrateur") && !user?.roles.includes("Modérateur") && user?._id !== articleRaw.data.author){
-        console.log("non")
         setRedirection(true)
         handleOpenAlert()
         changeAlertValues("warning", "Vous n'êtes pas autorisé à accédez à cette page")

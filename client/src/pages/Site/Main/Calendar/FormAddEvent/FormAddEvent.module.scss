@@ -14,7 +14,7 @@ div.container {
     div.container_inputs {
         margin-bottom: 5vh;
 
-        div.input_event_type, div.input_title, .input_description, .input_dates, .tag_users {
+        div.input_event_type, div.input_title, .input_description, .input_dates, .tag_users , .input_dates_re{
             margin-bottom: 2vh;
         }
 
@@ -40,8 +40,6 @@ div.container {
                 display: flex;
                 justify-content: space-between;
                 width: 100%;
-                >div {
-                }
             }
         }
         

@@ -39,7 +39,8 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
     roles: [],
     joiningDate: "",
     leavingDate: "",
-    valid: false
+    valid: false,
+    divisions: []
   })
   const [missingValue, setMissingValue] = useState(false)
   const [diffPassword, setDiffPassword] = useState(false)
@@ -49,9 +50,19 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
   const [redirection, setRedirection] = useState(false);
   const [redirectionErr, setRedirectionErr] = useState(false);
 
-  const fetchUser = async () => {
+  const [rubriqueList, setRubriqueList] = useState();
+
+  const fetchData = async () => {
     try {
+      const rubriquesRaw = await axios.get("/rubrique-type/parents", {headers: {jwt: cookies.token}})
+      setRubriqueList(rubriquesRaw.data)
+
       const userData = await axios.get(`/user/one/${id}`, {headers: {jwt: cookies.token}});
+      let divisionArr = []
+      userData.data.divisions.map((item, index) => {
+        divisionArr.push(rubriquesRaw.data.filter((rl) => rl._id === item)[0].title)
+      })
+
       setUserInfo({
         firstname: userData.data.firstname,
         lastname: userData.data.lastname,
@@ -59,23 +70,33 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
         roles: userData.data.roles,
         joiningDate: userData.data.joiningDate,
         leavingDate: userData.data.leavingDate,
-        valid: userData.data.valid
+        valid: userData.data.valid,
+        divisions: divisionArr
       })
     }
-    catch (err) { 
+    catch (err) {
+      console.log(err)
       setRedirectionErr(true)
     }
   }
 
-  useEffect(() => {
-    fetchUser()
-  }, [  ])
 
-  const handleChange = (event) => {
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const handleChangeRoles = (event) => {
     const {
       target: { value },
     } = event;
     setUserInfo(prev => ({...prev, roles: typeof value === 'string' ? value.split(',') : value}));
+  };
+
+  const handleChangeDivisions = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setUserInfo(prev => ({...prev, divisions: typeof value === 'string' ? value.split(',') : value}));
   };
 
 
@@ -90,6 +111,7 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
       || userInfo.lastname === "" 
       || userInfo.email === "" 
       || userInfo.roles.length === 0
+      || userInfo.divisions.length === 0
       || userInfo.joiningDate === ""
     ){
       //manque de valeur
@@ -102,17 +124,24 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
       else {
         if(userInfo.password === '' && userInfo.confirmPassword === ''){
           try {
+            let divisionArr = []
+            userInfo.divisions.map((item, index) => {
+              divisionArr.push(rubriqueList.filter((rl) => rl.title === item)[0]._id)
+            })
+
+
             await axios.patch(`/user/${id}`, {
               firstname: userInfo.firstname,
               lastname: userInfo.lastname,
               email: userInfo.email,
               roles: userInfo.roles,
+              divisions: divisionArr,
               joiningDate: userInfo.joiningDate,
               leavingDate: userInfo.leavingDate,
               valid: userInfo.valid,
             }, {headers: {jwt: cookies.token}})
             handleOpenAlert()
-            changeAlertValues('success', 'Utilisateur créé')
+            changeAlertValues('success', 'Utilisateur modifié')
             setRedirection(true)
           }
           catch (err) {
@@ -127,22 +156,29 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
           }
           else {
             try {
+              let divisionArr = []
+              userInfo.divisions.map((item, index) => {
+                divisionArr.push(rubriqueList.filter((rl) => rl.title === item)[0]._id)
+              })
+
+              
               await axios.patch(`user/${id}`, {
                 firstname: userInfo.firstname,
                 lastname: userInfo.lastname,
                 email: userInfo.email,
                 password: userInfo.password,
                 roles: userInfo.roles,
+                divisions: divisionArr,
                 joiningDate: userInfo.joiningDate,
                 leavingDate: userInfo.leavingDate,
                 valid: userInfo.valid,
-              })
+              }, {headers: {jwt: cookies.token}})
               handleOpenAlert()
-              changeAlertValues('success', 'Utilisateur créé')
+              changeAlertValues('success', 'Utilisateur modifié')
               setRedirection(true)
             }
             catch (err) {
-              if(err.response.data.error.code === 11000){
+              if(err.response.data.error?.code === 11000){
                 setEmailAlreadyUsed(true)
                 handleOpenAlert()
                 changeAlertValues('error', 'Erreur, le mail est déjà utilisé')
@@ -230,14 +266,14 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
           {/* Dropdown Roles TODO rechercher le label dans rolesData et convertir en name*/}
           <Paper elevation={2} sx={{marginBottom: '40px'}}>
             <FormControl fullWidth>
-              <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
+              <InputLabel id="demo-multiple-checkbox-label">Liste des roles</InputLabel>
               <Select
                 labelId="demo-multiple-checkbox-label"
                 id="demo-multiple-checkbox"
                 multiple
                 value={userInfo.roles}
-                onChange={handleChange}
-                input={<OutlinedInput label="Tag" />}
+                onChange={handleChangeRoles}
+                input={<OutlinedInput label="Liste des roles" />}
                 renderValue={(selected) => selected.join(', ')}
                 required
               >
@@ -245,6 +281,30 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
                   <MenuItem key={index} value={item.label} label={item.label}>
                     <Checkbox checked={userInfo.roles.indexOf(item.label) > -1} />
                     <ListItemText primary={item.label} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Paper>
+
+          {/* Dropdown Pôles */}
+          <Paper elevation={2} sx={{marginBottom: '40px'}}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-multiple-checkbox-label">Liste des pôles</InputLabel>
+              <Select
+                labelId="demo-multiple-checkbox-label"
+                id="demo-multiple-checkbox"
+                multiple
+                value={userInfo.divisions}
+                onChange={handleChangeDivisions}
+                input={<OutlinedInput label="Liste des pôles" />}
+                renderValue={(selected) => selected.join(', ')}
+                required
+              >
+                {rubriqueList?.map((item, index) => (
+                  <MenuItem key={index} label={item.title} value={item.title}>
+                    <Checkbox checked={userInfo.divisions.indexOf(item.title) > -1} />
+                    <ListItemText primary={item.title} label={item.title}/>
                   </MenuItem>
                 ))}
               </Select>

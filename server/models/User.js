@@ -16,7 +16,11 @@ const UserSchema = Schema({
     valid: {
         type: Boolean,
         default: true
-    }
+    },
+    divisions: {
+        type: Array,
+        default: []
+    },
 })
 
 const UserModel = mongoose.model('User', UserSchema);

@@ -66,7 +66,7 @@ const NewRubrique = ({handleOpenAlert, changeAlertValues}) => {
         setRedirection(true)
       }
       catch (err) {
-        if(err.response.data.error.code === 11000){
+        if(err.response.data.error?.code === 11000){
           setLinkAlreadtExists(true)
           handleOpenAlert()
           changeAlertValues('error', 'Erreur, le lien est déjà utilisé')

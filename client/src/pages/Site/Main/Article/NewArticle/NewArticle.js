@@ -46,12 +46,13 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
   const fetchRubriques = async () => {
     const rubriqueRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}});
     const rubriqueList = []
-    Object.values(rubriqueRaw)[0]?.filter((rub) => rub.parent === '').map((item) => {
+    user?.divisions.map((item) => rubriqueList.push(rubriqueRaw.data?.filter((rl) => rl._id === item)[0]))
+    /*Object.values(rubriqueRaw)[0]?.filter((rub) => rub.parent === '').map((item) => {
       rubriqueList.push(item)
       Object.values(rubriqueRaw)[0]?.filter((rubC) => rubC.parent === item._id).map((itemC) => {
         rubriqueList.push(itemC)
       })
-    })
+    })*/
     setRubrique(rubriqueList);
   }
 
