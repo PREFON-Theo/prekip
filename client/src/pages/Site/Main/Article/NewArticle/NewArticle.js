@@ -24,6 +24,7 @@ import Switch from '@mui/material/Switch';
 const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
   const {user, ready, cookies} = useContext(UserContext);
   const [contentType, setContentType] = useState('');
+  const sizeMax = 3;
 
   const [article, setArticle] = useState({
     title: '',
@@ -40,6 +41,9 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
   );
   const [idArticle, setIdArticle] = useState(null);
   const [articlePosted, setArticlePosted] = useState(false);
+
+  const [fileError, setFileError] = useState("")
+  const [imageError, setImageError] = useState("")
 
   const [rubrique, setRubrique] = useState();
   
@@ -121,6 +125,40 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
       changeAlertValues('error', err)
     }
   }
+
+  const checkIfFileIsCorrect = (file, type) => {
+    if(type === 'image'){
+      setImageError('')
+      if(file?.size / 1000000 > sizeMax){
+        setImageError(`${imageError} L'image est trop lourde (${file.size/1000000}Mo). `)
+      }
+      else if (!["image/png", "image/jpg", "image/jpeg"].includes(file?.type)){
+        setImageError(`${imageError} L'image doit être une image type: '.png', '.jpg' ou '.jpeg'.`)
+      }
+      else {
+        setArticle(prevValues => ({...prevValues, image: file}))
+      }
+    }
+    else if (type === "file") {
+      setFileError('')
+      if(file?.size / 1000000 > sizeMax){
+        setFileError(`${fileError} Le fichier est trop lourde (${file.size/1000000}Mo). `)
+      }
+      else if (file?.type !== "application/pdf") {
+        setFileError(`${fileError} Le fichier doit être un PDF.`)
+      }
+      else {
+        setArticle(prevValues => ({...prevValues, file: file}))
+      }
+    }
+    else {
+      handleOpenAlert()
+      changeAlertValues('error', `Error: type = ${type}`)
+    }
+  }
+    
+
+
 
   const handleAddActuality = async () => {
     try {
@@ -268,6 +306,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                   onChange={e => setArticle(prevValues => ({...prevValues, preview: e.target.value}) )}
                 />
               </div>
+              
 
               <Button
                 variant="contained"
@@ -276,15 +315,20 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                 Ajouter un fichier
                 <input
                   type="file"
-                  onChange={(e) => setArticle(prevValues => ({...prevValues, file: e.target.files[0]}))}
+                  //onChange={(e) => setArticle(prevValues => ({...prevValues, file: e.target.files[0]}))}
+                  onChange={(e) => checkIfFileIsCorrect(e.target.files[0], "file")}
                   hidden
                   accept='.pdf'
                 />
 
               </Button>
 
-              <div>{article.file?.name}</div>
+              <div>La taille du fichier ne doit pas dépasser {sizeMax}Mo</div>
 
+              <div>Fichier chargé: {article.file?.name || <span style={{fontStyle: "italic"}}>Aucun fichier chargé</span>}</div>
+
+              <div style={{color: "red"}}>{fileError}</div>
+              
               <Button
                 variant="contained"
                 component="label"
@@ -292,14 +336,19 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                 Ajouter une image
                 <input
                   type="file"
-                  onChange={(e) => setArticle(prevValues => ({...prevValues, image: e.target.files[0]}))}
+                  //onChange={(e) => setArticle(prevValues => ({...prevValues, image: e.target.files[0]}))}
+                  onChange={(e) => checkIfFileIsCorrect(e.target.files[0], "image")}
                   hidden
                   accept='.jpg, .jpeg, .png'
                 />
 
               </Button>
 
-              <div>{article.image?.name}</div>
+              <div>La taille de l'image ne doit pas dépasser {sizeMax}Mo</div>
+
+              <div>Image chargée: {article.image?.name || <span style={{fontStyle: "italic"}}>Aucune image chargée</span>}</div>
+
+              <div style={{color: "red"}}>{imageError}</div>
 
               <div className={styles.content}>
                 <Editor
