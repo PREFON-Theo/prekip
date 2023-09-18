@@ -49,6 +49,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
       content : articleRaw.data?.content,
       important : articleRaw.data?.important,
       author : articleRaw.data?.author,
+      type: articleRaw.data?.type
     })
     
     setEditorState(
@@ -87,6 +88,9 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
     category: '',
     preview: '',
     content : '',
+    important : '',
+    author : '',
+    type: '',
   })
   
 
@@ -136,7 +140,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
   return (
     <>
       {redirection ? <Navigate to={'/'}/> : <></>}
-      {articlePosted ? <Navigate to={`/article/${id}`} /> : <></>}
+      {articlePosted ? <Navigate to={`/${article.type}/${id}`} /> : <></>}
       <div className={styles.container}>
         <div className={styles.wrapper}>
           <h2>Modifier l'article</h2>
