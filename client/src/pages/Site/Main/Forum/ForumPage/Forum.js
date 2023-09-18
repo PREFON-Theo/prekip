@@ -12,6 +12,7 @@ import { UserContext } from '../../../../../utils/Context/UserContext/UserContex
 
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import AddIcon from '@mui/icons-material/Add';
 
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import IconButton from '@mui/material/IconButton';
@@ -133,6 +134,9 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
       {redirection ? <Navigate to={'/forum'}/> : <></>}
       <div className={styles.container}>
         <div className={styles.left}>
+          <Link to={'/new-forum'} style={{padding: "0 25px"}}>
+            <Button variant='contained' sx={{marginTop: '20px'}} color='success'><AddIcon sx={{verticalAlign:"bottom"}} fontSize='small'/>&nbsp;Sujet</Button>
+          </Link>
           <h4>Listes des sujets :</h4>
           {
             lastForum?.length === 0 ?

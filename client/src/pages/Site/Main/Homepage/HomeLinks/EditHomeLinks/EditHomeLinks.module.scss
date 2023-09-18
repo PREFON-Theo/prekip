@@ -1,21 +1,23 @@
 .container {
+  margin: 0 auto;
+  padding: 5vh 0;
 
-  .title {
-    display: flex;
-    justify-content: space-between;
-
-    h2 {
-      margin: auto 0;
-    }
-
-    button {
-      height: auto;
-    }
-  }
-
-  margin: 5vh auto;
+  .wrapper {
     background-color: rgb(241, 241, 241);
     padding: 5vh 3vw;
+    .title {
+      display: flex;
+      justify-content: space-between;
+
+      h2 {
+        margin: auto 0;
+      }
+
+      button {
+        height: auto;
+      }
+    }
+  }
 }
 
 div.container_dialog {

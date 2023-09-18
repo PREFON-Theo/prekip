@@ -68,32 +68,35 @@ const NewForum = ({ handleOpenAlert, changeAlertValues }) => {
     <>
       {forumPosted ? <Navigate to={`/forum`} /> : <></>}
       <div className={styles.container}>
-        <h2>Ajouter un forum</h2>
-        <div className={styles.preview}>
-          <TextField
-            required
-            label="Titre du forum"
-            sx={{width: '100%'}}
-            value={forum.title}
-            onChange={e => setForum(prevValues => ({...prevValues, title: e.target.value}) )}
-          />
-        </div>
+        <div className={styles.wrapper}>
 
-        <div className={styles.preview}>
-          <TextField
-            required
-            label="Description du forum"
-            sx={{width: '100%'}}
-            value={forum.description}
-            onChange={e => setForum(prevValues => ({...prevValues, description: e.target.value}) )}
-          />
-        </div>
+          <h2>Ajouter un forum</h2>
+          <div className={styles.preview}>
+            <TextField
+              required
+              label="Titre du forum"
+              sx={{width: '100%'}}
+              value={forum.title}
+              onChange={e => setForum(prevValues => ({...prevValues, title: e.target.value}) )}
+            />
+          </div>
 
-        
-        <div className={styles.button_submit}>
-          <Button variant="contained" color='primary' onClick={handleAddForum}>Ajouter le forum</Button>
-        </div>
+          <div className={styles.preview}>
+            <TextField
+              required
+              label="Description du forum"
+              sx={{width: '100%'}}
+              value={forum.description}
+              onChange={e => setForum(prevValues => ({...prevValues, description: e.target.value}) )}
+            />
+          </div>
 
+          
+          <div className={styles.button_submit}>
+            <Button variant="contained" color='primary' onClick={handleAddForum}>Ajouter le forum</Button>
+          </div>
+
+        </div>
       </div>
     </>
   )

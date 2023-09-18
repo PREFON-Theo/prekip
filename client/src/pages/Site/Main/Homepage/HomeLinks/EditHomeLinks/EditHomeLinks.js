@@ -177,34 +177,36 @@ const EditHomeLinks = ({handleOpenAlert, changeAlertValues}) => {
             </Dialog>
 
             <div className={styles.container}>
-              <div className={styles.title}>
-                <h2>Organisez l'ordre d'affichage des liens</h2>
-                <Button variant='contained' color='success' onClick={() => openDialog('new')}>Ajouter un lien</Button>
-              </div>
+              <div className={styles.wrapper}>
+                <div className={styles.title}>
+                  <h2>Organisez l'ordre d'affichage des liens</h2>
+                  <Button variant='contained' color='success' onClick={() => openDialog('new')}>Ajouter un lien</Button>
+                </div>
 
-              <SortableList
-                onSortEnd={onSortEnd}
-                className="list_dragg"
-                draggedItemClassName="dragged"
-              >
-                {links?.length === 0 ?
-                  "Il n'y a pas de lien, ajoutez-en"
-                :
-                  links?.map((item, index) => (
-                    <SortableItem key={index}>
-                      <div className="item_dragg">
-                        <div></div>
-                        <div>{item.text}</div>
-                        <div>
-                          <div onClick={() => openDialog('edit', item)}><EditRoundedIcon/></div>
-                          <div onClick={() => deleteLink(item._id)}><DeleteForeverRoundedIcon color='error'/></div>
+                <SortableList
+                  onSortEnd={onSortEnd}
+                  className="list_dragg"
+                  draggedItemClassName="dragged"
+                >
+                  {links?.length === 0 ?
+                    "Il n'y a pas de lien, ajoutez-en"
+                  :
+                    links?.map((item, index) => (
+                      <SortableItem key={index}>
+                        <div className="item_dragg">
+                          <div></div>
+                          <div>{item.text}</div>
+                          <div>
+                            <div onClick={() => openDialog('edit', item)}><EditRoundedIcon/></div>
+                            <div onClick={() => deleteLink(item._id)}><DeleteForeverRoundedIcon color='error'/></div>
+                          </div>
                         </div>
-                      </div>
-                    </SortableItem>
-                  ))
-                }
-              </SortableList>
-              <Button variant='contained' color='warning' onClick={() => handleEditOrder()}>Enregistrer</Button>
+                      </SortableItem>
+                    ))
+                  }
+                </SortableList>
+                <Button variant='contained' color='warning' onClick={() => handleEditOrder()}>Enregistrer</Button>
+              </div>
             </div>
           </>
     }
