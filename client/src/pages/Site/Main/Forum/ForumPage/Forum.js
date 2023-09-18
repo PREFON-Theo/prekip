@@ -136,7 +136,7 @@ const Forum = ({handleOpenAlert, changeAlertValues}) => {
           <h4>Listes des sujets :</h4>
           {
             lastForum?.length === 0 ?
-              <div>Il n'y a aucun sujet</div>
+              <div className={styles.no_content}>Il n'y a aucun sujet</div>
             :
             <>
               {lastForum?.map((item, index) => (
