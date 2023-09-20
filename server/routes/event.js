@@ -66,7 +66,7 @@ router.get('/day/:date', async (req, res) => {
           }
           const d = new Date(req.params.date)
           const dplus = new Date(req.params.date).setDate(d.getDate()+1)
-          const EventsOfThisDay = await Event.find({$and : [ {startDate: {$gte: d}}, {startDate: {$lte: dplus}}]})
+          const EventsOfThisDay = await Event.find({$and : [ {startDate: {$gte: d}}, {startDate: {$lte: dplus}}]}).sort({type: 1})
           res.status(200).json(EventsOfThisDay)            
         })
       }

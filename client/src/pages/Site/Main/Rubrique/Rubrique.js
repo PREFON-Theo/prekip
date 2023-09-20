@@ -6,6 +6,8 @@ import axios from 'axios';
 import Pagination from '@mui/material/Pagination';
 import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
 
+import GppMaybeRoundedIcon from '@mui/icons-material/GppMaybeRounded';
+
 
 // const allArticlesRaw = await axios.get('/articles')
 // const allRubriquesRaw = await axios.get('/rubrique-type')
@@ -72,15 +74,19 @@ const Rubrique = () => {
               {
                 article.filter((art) => art.category === item._id).length === 0 
                 ?
-                  <div>Il n'y a aucun article dans cette rubrique pour le moment</div>
+                  <div style={{fontStyle: "italic", color: "grey"}}>Il n'y a aucun article dans cette rubrique pour le moment</div>
                 :
                   <>
                     {article.filter((art) => art.category === item._id)
                     /*.slice((page-1)*nbItemPerPage, page*nbItemPerPage)*/
                     .map((itemC, indexC) => (
                       <Link className={styles.article} key={indexC} to={`/${itemC.type}/${itemC._id}`}>
-                        <div className={styles.title}>{itemC.title}</div>
-                        <div className={styles.infos}>par {users?.filter((us) => us._id === itemC.author)[0]?.firstname} {users?.filter((us) => us._id === itemC.author)[0]?.lastname}, le {new Date(itemC.created_at).toLocaleDateString('fr-FR')}</div>
+                        
+                        <div className={styles.title}>{itemC.important ? <GppMaybeRoundedIcon sx={{verticalAlign:"bottom", marginRight: "10px", color: "gold"}} fontSize='small'/> : <></>}{itemC.title}</div>
+                        
+                        <div className={styles.infos}>
+                          <div>par {users?.filter((us) => us._id === itemC.author)[0]?.firstname} {users?.filter((us) => us._id === itemC.author)[0]?.lastname}, le {new Date(itemC.created_at).toLocaleDateString('fr-FR')}</div>
+                        </div>
                       </Link>
                     ))}
                     {/* <div className={styles.pagination}>
@@ -91,7 +97,7 @@ const Rubrique = () => {
             </div>
           ))
           :
-             <div>Aucune rubrique disponible</div>
+             <div style={{fontStyle: "italic", color: "grey"}}>Aucune rubrique disponible</div>
         }
 
         

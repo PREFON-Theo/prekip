@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styles from "./Homepage.module.scss"
 import RecentArticle from './RecentArticle/RecentArticle';
-import Feed from './Feed/Feed'
+import FeedActualities from './FeedActualities/FeedActualities'
 import ArticlesCategories from './ArticlesCategories/ArticlesCategories';
 import HomeLinks from './HomeLinks/HomeLinks';
 import axios from 'axios';
 import { UserContext } from '../../../../utils/Context/UserContext/UserContext';
+import FeedArticles from './FeedArticles/FeedArticles';
 
 
 const Homepage = () => {
@@ -38,12 +39,13 @@ const Homepage = () => {
     <>
       <div className={styles.container}>
         
-        <Feed/>
+        <FeedActualities/>
         <div className={styles.wrapper_main_homepage}>
           <div className={styles.firstline}>
             <RecentArticle/>
             <HomeLinks/>
           </div>
+          <FeedArticles/>
           <div className={styles.artcat}>
             <div className={styles.left}>
               {

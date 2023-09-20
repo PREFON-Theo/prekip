@@ -24,6 +24,7 @@ import Search from './Search/Search';
 import ContentPage from "./Article/ContentPage/ContentPage"
 import Actualities from './Actualities/Actualities';
 import { UserContext } from '../../../utils/Context/UserContext/UserContext';
+import ArticlesList from './ArticlesList/ArticlesList';
 
 
 const Main = ({ handleOpenAlert, changeAlertValues }) => {
@@ -65,6 +66,7 @@ const handleOpenLoginForm = () => {
                             <Route path='stats' element={<StatsPrefon/>}/>
                             <Route path='rubrique/:element' element={<Rubrique/>}/>
                             <Route path='actuality-list' element={<Actualities/>}/>
+                            <Route path='article-list' element={<ArticlesList/>}/>
                             <Route path='forum' element={<Forum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                             <Route path='new-forum' element={<NewForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>
                             <Route path='edit-forum/:id' element={<EditForum handleOpenAlert={handleOpenAlert} changeAlertValues={changeAlertValues}/>}/>

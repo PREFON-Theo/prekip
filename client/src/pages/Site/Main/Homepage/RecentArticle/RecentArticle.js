@@ -26,7 +26,7 @@ const RecentArticle = () => {
         
         {
         article === undefined ?
-          <div>Il n'y a aucun article important à afficher</div> 
+          <div style={{fontStyle: "italic", color: "grey"}}>Il n'y a aucun article important à afficher</div> 
         :
           <Link to={`/article/${article?._id}`}>
 

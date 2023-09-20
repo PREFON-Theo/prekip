@@ -75,7 +75,12 @@ const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, 
   const choiceTypeOfEvent = async () => {
     setMissingElement(false)
     if(eventTypeSelected === "reunion_entreprise"){
-      handleAddEvent();
+      if(eventInfo.startDate === "" || eventInfo.finishDate === "" || eventInfo.title === "" || eventInfo.description === ""){
+        setMissingElement(true)
+      }
+      else {
+        handleAddEvent();
+      }
     }
     else if (eventTypeSelected === "teletravail"){
       if(typeOfTT === "once"){
@@ -166,17 +171,17 @@ const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, 
   
   const handleAddEvent = async () => {
     try {
-        await axios
-          .post('/event', {
-            ...eventInfo,
-            type: eventTypeSelected,
-            startDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(9) : eventInfo.startDate,
-            finishDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(18) : eventInfo.finishDate
-          }, {headers: {jwt: cookies.token}})
-          handleOpenAlert()
-          handleCloseForm()
-          changeAlertValues('success', 'Évènement ajouté')
-          actualisateData()
+      await axios
+        .post('/event', {
+          ...eventInfo,
+          type: eventTypeSelected,
+          startDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(9) : eventInfo.startDate,
+          finishDate: eventTypeSelected === "teletravail" ? eventInfo.startDate.hour(18) : eventInfo.finishDate
+        }, {headers: {jwt: cookies.token}})
+        handleOpenAlert()
+        handleCloseForm()
+        changeAlertValues('success', 'Évènement ajouté')
+        actualisateData()
     }
     catch (err) {
       handleOpenAlert()
@@ -235,8 +240,8 @@ const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, 
                         onChange={e =>  setTypeOfTT(e.target.value)}
                       >
                         <MenuItem value={"once"} sx={{textAlign: 'left'}}>Une fois</MenuItem>
-                        <MenuItem value={"allDays"} sx={{textAlign: 'left'}}>Du lundi au vendredi</MenuItem>
-                        <MenuItem value={"customized"} sx={{textAlign: 'left'}}>Personnalié</MenuItem>
+                        <MenuItem value={"allDays"} sx={{textAlign: 'left'}}>Sur une période (jours ouvrés)</MenuItem>
+                        <MenuItem value={"customized"} sx={{textAlign: 'left'}}>Personnalisée</MenuItem>
                         {/* <MenuItem value={"onceAMonth"} sx={{textAlign: 'left'}}>Tous les mois</MenuItem> */}
                         {/* <MenuItem value={"onceAYear"} sx={{textAlign: 'left'}}>Tous les ans</MenuItem> */}
                       </Select>

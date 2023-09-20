@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import styles from './Feed.module.scss'
+import styles from './FeedActualities.module.scss'
 
 import { Link } from "react-router-dom"
 import axios from 'axios'
@@ -9,7 +9,7 @@ import { UserContext } from '../../../../../utils/Context/UserContext/UserContex
 
 
 
-const Feed = () => {
+const FeedActualities = () => {
   const {cookies} = useContext(UserContext)
   const [lastArticles,setLastArticles] = useState()
 
@@ -21,6 +21,7 @@ const Feed = () => {
   useEffect(() => {
     fetchData();
   }, [])
+  
   return (
     <div className={styles.container}>
       <div className={styles.actualities_menu}>
@@ -86,4 +87,4 @@ const Feed = () => {
   )
 }
 
-export default Feed
+export default FeedActualities

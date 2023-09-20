@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, Children } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import styles from "./NewArticle.module.scss"
 import { Navigate } from 'react-router-dom';
 
@@ -57,10 +57,6 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
   useEffect(() => {
     fetchRubriques();
   },[])
-
-  useEffect(() => {
-    console.log(article.content)
-  }, [article.content])
 
   useEffect(() => {
     let html = draftToHtml(convertToRaw(editorState.getCurrentContent()))
@@ -130,10 +126,10 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
     if(type === 'image'){
       setImageError('')
       if(file?.size / 1000000 > sizeMax){
-        setImageError(`${imageError} L'image est trop lourde (${file.size/1000000}Mo). `)
+        setImageError((prev) => `${prev} L'image est trop lourde: (${file.size/1000000}Mo). `)
       }
       else if (!["image/png", "image/jpg", "image/jpeg"].includes(file?.type)){
-        setImageError(`${imageError} L'image doit être une image type: '.png', '.jpg' ou '.jpeg'.`)
+        setImageError((prev) => `${prev} L'image doit être une image type: '.png', '.jpg' ou '.jpeg'.`)
       }
       else {
         setArticle(prevValues => ({...prevValues, image: file}))
@@ -142,10 +138,10 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
     else if (type === "file") {
       setFileError('')
       if(file?.size / 1000000 > sizeMax){
-        setFileError(`${fileError} Le fichier est trop lourde (${file.size/1000000}Mo). `)
+        setFileError((prev) => `${prev} Le fichier est trop lourd: (${file.size/1000000}Mo). `)
       }
-      else if (file?.type !== "application/pdf") {
-        setFileError(`${fileError} Le fichier doit être un PDF.`)
+      else if (["application/pdf", "application/pptx", "application/docx", "application/xlsx"].includes(file?.type)) {
+        setFileError((prev) => `${prev} Le fichier doit être du type : '.pdf', '.pptx', '.docx' ou '.xlsx'.`)
       }
       else {
         setArticle(prevValues => ({...prevValues, file: file}))
@@ -286,7 +282,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={article.type}
+                    value={article.category}
                     label="Catégorie de l'article"
                     onChange={e => setArticle(prevValues => ({...prevValues, category: e.target.value}) )}
                   >
@@ -317,14 +313,14 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                   type="file"
                   onChange={(e) => checkIfFileIsCorrect(e.target.files[0], "file")}
                   hidden
-                  accept='.pdf'
+                  accept='.pdf, .pptx, .xlsx, .docx'
                 />
 
               </Button>
 
               <div>La taille du fichier ne doit pas dépasser {sizeMax}Mo</div>
 
-              <div>Fichier chargé: {article.file?.name || <span style={{fontStyle: "italic"}}>Aucun fichier chargé</span>}</div>
+              <div>Fichier chargé: {article.file?.name || <span style={{fontStyle: "italic", color: "grey"}}>Aucun fichier chargé</span>}</div>
 
               <div style={{color: "red"}}>{fileError}</div>
               
@@ -342,9 +338,9 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
               </Button>
 
-              <div>La taille de l'image ne doit pas dépasser {sizeMax}Mo</div>
+              <div>La taille de l'image ne doit pas dépasser {sizeMax}Mo, la taille affichée maximale sera de 450px</div>
 
-              <div>Image chargée: {article.image?.name || <span style={{fontStyle: "italic"}}>Aucune image chargée</span>}</div>
+              <div>Image chargée: {article.image?.name || <span style={{fontStyle: "italic", color: "grey"}}>Aucune image chargée</span>}</div>
 
               <div style={{color: "red"}}>{imageError}</div>
 
@@ -360,7 +356,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
               </div>
               
               <div className={styles.button_submit}>
-                <Button variant="contained" color='primary' onClick={handleAddArticle}>Ajouter l'article</Button>
+                <Button variant="contained" color='success' onClick={handleAddArticle}>Ajouter l'article</Button>
               </div>
             </>
             : contentType === 'actuality' ?
@@ -387,7 +383,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                 </div>
                 
                 <div className={styles.button_submit}>
-                  <Button variant="contained" color='primary' onClick={handleAddActuality}>Ajouter l'actualité</Button>
+                  <Button variant="contained" color='success' onClick={handleAddActuality}>Ajouter l'actualité</Button>
                 </div>
               </>
               :
@@ -409,31 +405,33 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                       value={article.type}
                       label="Catégorie du contenu"
                       onChange={e => setArticle(prevValues => ({...prevValues, category: e.target.value}) )}
-                    >
-                      {rubrique?.map((item, index) => (
-                        <MenuItem key={index} value={item._id} sx={{textAlign: 'left', paddingLeft: item.parent === '' ? '' : "30px", fontWeight : item.parent === '' ? 'bold' : ''}}>{item.title}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
-
-                <Button
-                  variant="contained"
-                  component="label"
-                >
-                  Ajouter un fichier
-                  <input
+                      >
+                        {rubrique?.map((item, index) => (
+                          <MenuItem key={index} value={item._id} sx={{textAlign: 'left', paddingLeft: item.parent === '' ? '' : "30px", fontWeight : item.parent === '' ? 'bold' : ''}}>{item.title}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
+  
+                  <Button
+                    variant="contained"
+                    component="label"
+                  >
+                    Ajouter un fichier
+                    <input
                     type="file"
-                    onChange={(e) => {
-                      setArticle(prevValues => ({...prevValues, file: e.target.files[0]}))
-                    }}
+                    onChange={(e) => checkIfFileIsCorrect(e.target.files[0], "file")}
                     hidden
-                    accept='.pdf'
+                    accept='.pdf, .pptx, .xlsx, .docx'
                   />
 
                 </Button>
 
-                <div>{article.file?.name}</div>
+                <div>La taille du fichier ne doit pas dépasser {sizeMax}Mo</div>
+
+                <div>Fichier chargé: {article.file?.name || <span style={{fontStyle: "italic", color: "grey"}}>Aucun fichier chargé</span>}</div>
+
+                <div style={{color: "red"}}>{fileError}</div>
 
 
                 <div className={styles.content}>
@@ -448,7 +446,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
                 </div>
                 
                 <div className={styles.button_submit}>
-                  <Button variant="contained" color='primary' onClick={handleAddReference}>Ajouter le contenu de référence</Button>
+                  <Button variant="contained" color='success' onClick={handleAddReference}>Ajouter le contenu de référence</Button>
                 </div>
               </>
               :

@@ -1,0 +1,119 @@
+.container {
+  width: 100%;
+  // height: 110px;
+  color: #0B2F83;
+  
+  .articles_menu {
+    color: #fff;
+    background-color: #b81717;
+    margin: 0 auto;
+    padding: 1% 0;
+    height: auto;
+    .four_articles_items, .three_articles_items, .two_articles_items, .one_articles_items{
+      height: 100%;
+      text-align: center;
+
+      .box_articles{
+        flex: 4;
+        border-right: 2px solid rgba(255, 255, 255, 0.467);
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        
+        .info_actu {
+          text-align: middle;
+          color: #ffffff60;
+          font-size: small;
+          text-decoration: none;
+        }
+      }
+
+      .box_more {
+        flex: 2;
+        display: flex;
+        justify-content: center;
+
+        .more{
+          margin: auto 0;
+        }
+      }
+      .more{
+        margin: auto 0;
+      }
+
+      .box_articles, .box_more {
+        height: auto;
+        width: 100%;
+        color: #fff;
+        padding: 1rem 2rem;
+          
+      }
+
+      .box_articles:hover{
+        .articles{
+          text-decoration: underline;
+
+          .info_actu {
+            text-decoration: none;
+          }
+
+        }
+      } 
+      
+      .box_more:hover {
+        text-decoration: none;
+          
+      }
+        
+    }
+  }
+
+  @media (max-width: 500px) {
+    .articles_menu {
+
+      .three_articles_items, .four_articles_items, .two_articles_items {
+        display: none;
+      }
+      .one_articles_items {
+        display: flex;
+      }
+    }
+  }
+
+  @media (min-width: 500px) {
+    .articles_menu {
+
+      .three_articles_items, .four_articles_items, .one_articles_items {
+        display: none;
+      }
+      .two_articles_items {
+        display: flex;
+      }
+    }
+  }
+
+  @media (min-width: 970px) {
+    .articles_menu {
+
+      .two_articles_items, .four_articles_items, .one_articles_items {
+        display: none;
+      }
+      .three_articles_items {
+        display: flex;
+      }
+    }
+  }
+          
+  @media (min-width: 1180px) {
+    .articles_menu {
+
+      .two_articles_items, .three_articles_items, .one_articles_items {
+        display: none;
+      }
+      .four_articles_items {
+        display: flex;
+      }
+    }
+  }
+}
