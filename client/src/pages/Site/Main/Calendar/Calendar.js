@@ -22,6 +22,8 @@ import { UserContext } from "../../../../utils/Context/UserContext/UserContext"
 import FormNotConnected from './FormNotConnected/FormNotConnected'
 import { Paper } from '@mui/material'
 
+import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded';
+
 
 const eventTypesList = [
   {
@@ -64,7 +66,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
     let objRE = {};
     let objOther = {};
 
-    eventData.data?.map((item) => (
+    eventData.data?.map((item, index) => (
       item.type === 'teletravail' ?
         objTT = {...objTT, 
           [`${item.startDate.substring(0,10)}T00:00:00.000Z`]: {
@@ -72,16 +74,17 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
             evId: `${item.startDate.substring(0,10)}T00:00:00.000Z`,
             start: new Date(item.startDate.substring(0,10)),
             description: `Évènements du jour ${`${item.startDate.substring(0,10)}T00:00:00.000Z`}`,
-            owner: `${isNaN(objTT[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) ? "" : `${objTT[`${item.startDate.substring(0,10)}T00:00:00.000Z`].owner}, `} ${usersList.data?.filter((et) => et._id === item.owner)[0]?.firstname === undefined ? '' : `${usersList.data?.filter((et) => et._id === item.owner)[0]?.firstname} ${usersList.data?.filter((et) => et._id === item.owner)[0]?.lastname}` }`
+            owner: `${isNaN(objTT[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) ? "" : `${objTT[`${item.startDate.substring(0,10)}T00:00:00.000Z`].owner}, `} ${usersList.data?.filter((et) => et._id === item.owner)[0]?.firstname === undefined ? '' : `${usersList.data?.filter((et) => et._id === item.owner)[0]?.firstname} ${usersList.data?.filter((et) => et._id === item.owner)[0]?.lastname.substring(0,1)}.` }`
             
           } 
         }
       : item.type === "reunion_entreprise" ?
         objRE = {...objRE, 
-          [`${item.startDate.substring(0,10)}T00:00:00.000Z`]: {
+          [index]: {
             count: `${isNaN(objRE[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) ? 1 : parseInt(objRE[`${item.startDate.substring(0,10)}T00:00:00.000Z`]?.count) + 1}`,
             evId: `${item.startDate.substring(0,10)}T00:00:00.000Z`,
-            start: new Date(item.startDate.substring(0,10)),
+            start: new Date(item.startDate),
+            end: new Date(item.finishDate),
             description: `Évènements du jour ${`${item.startDate.substring(0,10)}T00:00:00.000Z`}`,
           } 
         }
@@ -99,7 +102,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
     Object.values(objTT).map((item) => (
       setEvents((eve) => [...eve, {
         eventId: item.evId,
-        title: `${item.count > 1 ? `${item.count} personnes en télétravail: ${item.owner}` : `${item.owner} en télétravail`}`,
+        title: `${item.count > 1 ? `${item.count} TT : ${item.owner}` : `${item.owner} en TT`}`,
         start: new Date(dayjs(item.start).hour(9)),
         end: new Date(dayjs(item.start).hour(18)),
         description: item.description
@@ -110,8 +113,8 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
       setEvents((eve) => [...eve, {
         eventId: item.evId,
         title: `${item.count} ${item.count > 1 ? "réunions": "réunion"} d'entreprise`,
-        start: new Date(dayjs(item.start).hour(9)),
-        end: new Date(dayjs(item.start).hour(18)),
+        start: new Date(dayjs(item.start)),
+        end: new Date(dayjs(item.end)),
         description: item.description,
         color: "red"
       }])
@@ -121,8 +124,8 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
       setEvents((eve) => [...eve, {
         eventId: item.evId,
         title: `${item.count} ${item.count > 1 ? "autres": "autre"}`,
-        start: new Date(dayjs(item.start).hour(9)),
-        end: new Date(dayjs(item.start).hour(18)),
+        start: new Date(dayjs(item.start)),
+        end: new Date(dayjs(item.start)),
         description: item.description,
         color: 'black'
       }])
@@ -228,7 +231,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
                             padding: "10px"
                           }}
                         >
-                          {
+                          <FiberManualRecordRoundedIcon sx={{verticalAlign: 'bottom', color: item.type === 'teletravail' ? "#3788d8" : item.type === "reunion_entreprise" ? "red" : "black"}} fontSize="small"/> {
                           eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title === undefined ? 
                             <span style={{fontStyle: "italic"}}>type inconnu</span>
                           : eventTypesList?.filter((et) => et.internalName === item.type)[0]?.title
@@ -323,6 +326,7 @@ const Calendar = ({ handleOpenAlert, changeAlertValues, handleOpenLoginForm }) =
           dayCellClassNames={"event_case"}
           locale= 'fr'
         />
+        <div style={{margin: "10px 0"}}>Légende : <FiberManualRecordRoundedIcon sx={{verticalAlign: 'bottom', color:"#3788d8"}} fontSize="small"/> Télétravail / <FiberManualRecordRoundedIcon sx={{verticalAlign: 'bottom', color:"red"}} fontSize="small"/> Réunion d'entreprise</div>
       </div>
     </>
   )

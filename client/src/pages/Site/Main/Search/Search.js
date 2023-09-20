@@ -115,7 +115,7 @@ const Search = () => {
   return (
     <>
       <div className={style.container}>
-        <h2>Résultat pour la rechercher "{params.get('q')}":</h2>
+        <h2>Résultat(s) pour la recherche "{params.get('q')}":</h2>
         <div className={style.filters}>
 
 

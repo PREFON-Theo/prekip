@@ -59,6 +59,7 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
   
 
   const searching = async () => {
+    setTextToSearch('')
     setOpenSearch(false)
     if(textToSearch !== ''){
       return navigate({
@@ -173,8 +174,11 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
               <MenuItemLink title="Calendrier" link="/calendar"/>
             </div>
             <div className={styles.item_middlemenu}>
-              <MenuItemLink title="Chiffres" link="/stats"/>
+              <MenuItemLink title="Chiffres" link="https://app.serenytics.com/viewer/login" target="_blank"/>
             </div>
+            {/* <div className={styles.item_middlemenu}>
+              <MenuItemLink title="Chiffres" link="/stats"/>
+            </div> */}
             <div className={styles.item_middlemenu}>
               <MenuItemLink title="Forum" link="/forum"/>
             </div>
@@ -256,11 +260,17 @@ const MenuFct = ({handleOpenLoginForm,  handleOpenAlert, changeAlertValues}) => 
                     </MenuItem>
                   </Link>
 
-                  <Link to={`/stats`} style={{textDecoration: "none"}}>
+                  <Link to={'https://app.serenytics.com/viewer/login'} style={{textDecoration: "none"}} target='_blank'>
                     <MenuItem onClick={handleCloseRight} sx={{color: "#000"}}>
                       Chiffres PREFON
                     </MenuItem>
                   </Link>
+                  {/* <Link to={`/stats`} style={{textDecoration: "none"}}>
+                    <MenuItem onClick={handleCloseRight} sx={{color: "#000"}}>
+                      Chiffres PREFON
+                    </MenuItem>
+                  </Link> */}
+                  
 
                   <Link to={`/forum`} style={{textDecoration: "none"}}>
                     <MenuItem onClick={handleCloseRight} sx={{color: "#000"}}>

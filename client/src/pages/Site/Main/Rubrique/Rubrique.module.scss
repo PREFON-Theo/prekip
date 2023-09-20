@@ -1,8 +1,16 @@
 .container {
   padding: 3vh 3vw;
 
+  h2 {
+    color: #0B2F83
+  }
+
   .rubrique {
     margin: 0 auto 50px 0;
+
+    h3 {
+      color: #b81717;
+    }
     
     .article {
       display: flex;
@@ -15,13 +23,11 @@
         margin-right: 10px;
       }
 
-      .title {
-
-      }
-
       .infos {
         font-size: smaller;
         color: #00000051;
+        display: flex;
+        text-align: right;
       }
     }
 

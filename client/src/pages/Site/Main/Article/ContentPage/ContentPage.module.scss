@@ -59,16 +59,8 @@
   }
 
 
-  .article_image {
-    img {
-      max-height: 50%;
-      max-width: 50%;
-    }
-  }
-
   .comments {
     margin: 100px 0;
-    padding: 50px;
     // border: 1px solid grey
 
     .add_com {
@@ -88,8 +80,7 @@
           div:nth-child(1){
             padding-bottom: 5px;
           }
-          div:nth-child(2){
-        }
+
         }
         .a {
             text-align: end;
@@ -176,8 +167,14 @@
     width: 95%;
 
     .comments {
+      padding: 10px;
       .item_com_from_this_user::before {
         margin-left: calc(95% - 100px);
+      }
+    }
+    .article_image {
+      img {
+        width: 100%;
       }
     }
   }
@@ -188,8 +185,14 @@
     width: 90%;
 
     .comments {
+      padding: 20px;
       .item_com_from_this_user::before {
         margin-left: calc(90% - 100px);
+      }
+    }
+    .article_image {
+      img {
+        width: 450px;
       }
     }
   }
@@ -200,8 +203,14 @@
     width: 80%;
 
     .comments {
+      padding: 20px;
       .item_com_from_this_user::before {
         margin-left: calc(80% - 100px);
+      }
+    }
+    .article_image {
+      img {
+        width: 450px;
       }
     }
   }
@@ -212,8 +221,14 @@
     width: 70%;
 
     .comments {
+      padding: 30px;
       .item_com_from_this_user::before {
         margin-left: calc(70% - 100px);
+      }
+    }
+    .article_image {
+      img {
+        width: 450px;
       }
     }
   }
@@ -224,8 +239,14 @@
     width: 60%;
 
     .comments {
+      padding: 40px;
       .item_com_from_this_user::before {
         margin-left: calc(60% - 100px);
+      }
+    }
+    .article_image {
+      img {
+        width: 450px;
       }
     }
   }
@@ -236,8 +257,14 @@
     width: 50%;
 
     .comments {
+      padding: 50px;
       .item_com_from_this_user::before {
         margin-left: calc(50% - 100px);
+      }
+    }
+    .article_image {
+      img {
+        width: 450px;
       }
     }
   }

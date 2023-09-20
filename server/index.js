@@ -67,10 +67,16 @@ app.post('/article/with-file', upload.any('image'), async (req, res) => {
           let image = '';
           let file = '';
           for (let fi = 0; fi < req.files.length; fi++) {
-            if(req.files[fi].mimetype === "application/pdf"){
+            console.log(req.files[fi].mimetype)
+            if([
+              "application/pdf",
+              "application/vnd.openxmlformats-officedocument.presentationml.presentation", 
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document", 
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            ].includes(req.files[fi].mimetype)){
               file = req.files[fi];
             }
-            else {
+            else if(["image/png", "image/jpg", "image/jpeg"].includes(req.files[fi].mimetype)) {
               image = req.files[fi];
             } 
           }

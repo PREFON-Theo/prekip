@@ -14,7 +14,7 @@
     .item_result, .no_result{
       cursor: pointer;
       background-color: #fff;
-      border-radius: 24px;
+      border-radius: 10px;
       padding: 24px;
       text-align: left;
       margin: 0 0 40px 0;
@@ -40,6 +40,15 @@
   
     }
 
+    .no_result {
+      font-style: italic;
+      color: grey;
+    }
+
+    .item_result:hover{
+      // box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.372);
+    }
+
     @media (max-width: 700px){
       width: 90%;
 
@@ -55,9 +64,9 @@
     }
 
 
-    .item_result:hover {
+    /*.item_result:hover {
       transform: scale(105%);
-    }
+    }*/
   }
 
 }
