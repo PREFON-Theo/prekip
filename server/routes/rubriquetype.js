@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
         if(err || user.id === undefined) {
           return res.status(403).json("Unauthorized")
         }
-        const getRubriqueType = await RubriqueType.find()
+        const getRubriqueType = await RubriqueType.find().sort({title: 1})
         res.json(getRubriqueType);
       })
     }
@@ -36,7 +36,7 @@ router.get('/parents', async (req, res) => {
         if(err || user.id === undefined) {
           return res.status(403).json("Unauthorized")
         }
-        const getRubriqueType = await RubriqueType.find({parent: { $eq: "" }})
+        const getRubriqueType = await RubriqueType.find({parent: { $eq: "" }}).sort({title: 1})
         res.json(getRubriqueType);        
       })
     }

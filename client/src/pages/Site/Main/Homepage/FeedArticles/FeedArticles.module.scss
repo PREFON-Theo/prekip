@@ -4,8 +4,8 @@
   color: #0B2F83;
   
   .articles_menu {
-    color: #fff;
-    background-color: #b81717;
+    color: #b81717;
+    border: 2px solid #b81717;
     margin: 0 auto;
     padding: 1% 0;
     height: auto;
@@ -15,7 +15,7 @@
 
       .box_articles{
         flex: 4;
-        border-right: 2px solid rgba(255, 255, 255, 0.467);
+        border-right: 2px solid rgba(255, 0, 0, 0.467);
         text-decoration: none;
         display: flex;
         flex-direction: column;
@@ -23,7 +23,7 @@
         
         .info_actu {
           text-align: middle;
-          color: #ffffff60;
+          color: #b8171760;
           font-size: small;
           text-decoration: none;
         }
@@ -45,7 +45,7 @@
       .box_articles, .box_more {
         height: auto;
         width: 100%;
-        color: #fff;
+        color: #b81717;
         padding: 1rem 2rem;
           
       }

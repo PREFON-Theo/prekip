@@ -14,11 +14,18 @@ const RecentArticle = () => {
   const fetchData = async () => {
     const articleRaw = await axios.get("/article/lastest-important-article", {headers: {jwt: cookies.token}})
     setArticle(articleRaw.data === null ? {} : articleRaw?.data[0])
+
+    const usersRaw = await axios.get("/user", {headers: {jwt: cookies.token}})
+    setArticle((prev) => ({
+      ...prev,
+      author: `${usersRaw.data.filter((ul) => ul._id === articleRaw.data[0]?.author)[0]?.firstname} ${usersRaw.data?.filter((ul) => ul._id === articleRaw.data[0]?.author)[0]?.lastname}`
+    }))
   } 
 
   useEffect(() => {
     fetchData();
   }, [])
+
 
   return (
     <div className={styles.container}>
@@ -41,6 +48,7 @@ const RecentArticle = () => {
                   </div>
                   <div className={styles.right}>
                     <div className={styles.preview}>{article?.preview}</div>
+                    <div className={styles.author}>Par {article.author}, le {new Date(article.created_at).toLocaleDateString('fr-FR')}</div>
                     <div className={styles.more}>
                         <div>
                           En savoir plus 

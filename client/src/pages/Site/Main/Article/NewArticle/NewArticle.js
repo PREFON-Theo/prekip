@@ -60,7 +60,6 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
   useEffect(() => {
     let html = draftToHtml(convertToRaw(editorState.getCurrentContent()))
-    console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())))
     setArticle(prevValues => ({...prevValues, content: html}))
   }, [editorState]);
 

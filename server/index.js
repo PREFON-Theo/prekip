@@ -67,7 +67,6 @@ app.post('/article/with-file', upload.any('image'), async (req, res) => {
           let image = '';
           let file = '';
           for (let fi = 0; fi < req.files.length; fi++) {
-            console.log(req.files[fi].mimetype)
             if([
               "application/pdf",
               "application/vnd.openxmlformats-officedocument.presentationml.presentation", 
