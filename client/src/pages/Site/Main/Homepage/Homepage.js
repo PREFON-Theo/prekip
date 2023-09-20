@@ -31,10 +31,6 @@ const Homepage = () => {
     fetchRubriques();
   },[])
 
-  useEffect(() => {
-    console.log(rubrique)
-  },[rubrique])
-
   return (
     <>
       <div className={styles.container}>

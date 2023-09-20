@@ -63,7 +63,7 @@ const ArticlesCategories = ({item}) => {
                 </>
               :
               <>
-                <div className={styles.middle}>Rien à afficher.</div>
+                <div className={styles.middle}>Aucun contenu.</div>
                 <div className={styles.right}></div>
               </>
             :
