@@ -59,8 +59,9 @@ const EditForum = ({ handleOpenAlert, changeAlertValues }) => {
 
     }
     catch (err) {
-      handleOpenAlert()
-      changeAlertValues('error', err)
+      //handleOpenAlert()
+      //changeAlertValues('error', err)
+      console.log(err)
     }
   }
 

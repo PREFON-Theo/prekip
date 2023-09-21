@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cookieParser = require("cookie-parser")
 require('dotenv').config();
 const path = require('path')
+const fs = require('fs')
 
 const jwt = require('jsonwebtoken');
 const jwtSecret = process.env.JWT_SECRET
@@ -74,9 +75,12 @@ app.post('/article/with-file', upload.any('image'), async (req, res) => {
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             ].includes(req.files[fi].mimetype)){
               file = req.files[fi];
+              file.originalname = req.body.fileName
             }
             else if(["image/png", "image/jpg", "image/jpeg"].includes(req.files[fi].mimetype)) {
               image = req.files[fi];
+              image.originalname = req.body.imageName
+
             } 
           }
           const {title, preview, content, category, author, type, important, created_at, updated_at} = req.body
@@ -94,6 +98,123 @@ app.post('/article/with-file', upload.any('image'), async (req, res) => {
             updated_at,
           })
           res.status(200).json(articleCreation)
+        }
+      })
+    }
+    else {
+      res.status(401).json("JSON Web Token not found")
+    }
+  }
+  catch (error) {
+    res.status(400).json(error)
+  }
+    
+})
+
+app.patch('/article/with-file/:id', upload.any('image'), async (req, res) => {
+  try {
+    console.log("go---------------------------")
+    const token = req.headers.jwt;
+    if(token) {
+      jwt.verify(token, jwtSecret, {}, async (err, user) => {
+        if(err || user.id === undefined) {
+          return res.status(403).json("Unauthorized")
+        }
+        else {
+          const art = await Article.findOne({_id: req.params.id})
+          const auth = art.author
+          if(err || user.id === undefined) {
+            return res.status(403).json("Unauthorized")
+          }
+          else if(user.roles.includes('Administrateur') || user.id === auth){
+
+            let image = '';
+            let file = '';
+            for (let fi = 0; fi < req.files.length; fi++) {
+              if([
+                "application/pdf",
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation", 
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document", 
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              ].includes(req.files[fi].mimetype)){
+                file = req.files[fi];
+                file.originalname = req.body.fileName
+              }
+              else if(["image/png", "image/jpg", "image/jpeg"].includes(req.files[fi].mimetype)) {
+                image = req.files[fi];
+                image.originalname = req.body.imageName
+              } 
+            }
+
+            const originalFileImported = req.body.originalFileImported.replace(/\s+/g, ' ').trim()
+            const originalImageImported = req.body.type === "article" ? req.body.originalImageImported.replace(/\s+/g, ' ').trim() : ""
+
+            const dataToEdit = {
+              title : req.body.title,
+              preview : req.body.preview,
+              content : req.body.content,
+              category : req.body.category,
+              author : req.body.author,
+              type : req.body.type,
+              important : req.body.important,
+              created_at : req.body.created_at,
+              updated_at : req.body.updated_at
+            }
+
+            if(file === '') { //pas de fichier dans l'input
+              //console.log("File: rien à changer")
+              file = undefined
+            }
+            else { //fichier dans l'input
+              dataToEdit.file = file
+              if(originalFileImported === ""){ // pas de fichier au début
+                //console.log("File: nv fichier, file=file")
+              }
+              else {
+                console.log("File: remplacer, supprimer l'original, file=file")
+                const path = "/api/" + originalFileImported
+                //console.log(path)
+                if(fs.existsSync(path)){
+                  //console.log("File to delete:", path)
+                  fs.unlinkSync(path);
+                }
+              }
+            }
+
+            if(req.body.type === "article"){
+              if(image === '') { //pas d'image dans l'input
+                //console.log("Image: rien à changer")
+                image = undefined
+              }
+              else { //image dans l'input
+                dataToEdit.image = image
+                if(originalImageImported === ""){ // pas d'image au début
+                  //console.log("Image: nv image, image=image")
+                }
+                else {
+                  //console.log("Image: remplacer, supprimer l'original, image=image")
+                  const path = "/api/" + originalImageImported
+                  //console.log(path)
+                  if(fs.existsSync(path)){
+                    //console.log("Image to delete:", path)
+                    fs.unlinkSync(path);
+                  }
+                }
+              }
+            }
+
+            await Article.updateOne({_id: req.params.id}, 
+            dataToEdit
+            )
+            res.status(200).json({
+              message: `Event ${req.params.id} updated`
+            })
+
+          }
+          else {
+            res.status(403).json('Unauthorized')
+          }
+
         }
       })
     }

@@ -68,8 +68,9 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
       deletionComplete();
     }
     catch (err) {
-      handleOpenAlert()
-      changeAlertValues('error', err)
+      //handleOpenAlert()
+      //changeAlertValues('error', err)
+      console.log(err)
     }
   
   }
