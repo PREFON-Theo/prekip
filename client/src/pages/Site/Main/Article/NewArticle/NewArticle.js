@@ -49,9 +49,14 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
   
   const fetchRubriques = async () => {
     const rubriqueRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}});
-    const rubriqueList = []
-    user?.divisions.map((item) => rubriqueList.push(rubriqueRaw.data?.filter((rl) => rl._id === item)[0]))
-    setRubrique(rubriqueList);
+    let rubriqueList = []
+    if(user?.roles.includes("Administrateur") || user?.roles.includes("Modérateur")){
+      setRubrique(rubriqueRaw.data)
+    }
+    else {
+      user?.divisions.map((item) => rubriqueList.push(rubriqueRaw.data?.filter((rl) => rl._id === item)[0]))
+      setRubrique(rubriqueList);
+    }
   }
 
   useEffect(() => {
@@ -99,6 +104,8 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
         formData.append('created_at', new Date())
         formData.append('updated_at', new Date())
 
+        console.log(formData)
+
         const newArticle = await axios
           .post('/article/with-file', 
           formData, 
@@ -116,12 +123,14 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
     }
     catch (err) {
-      handleOpenAlert()
-      changeAlertValues('error', err)
+      //handleOpenAlert()
+      //changeAlertValues('error', err)
+      console.log(err)
     }
   }
 
   const checkIfFileIsCorrect = (file, type) => {
+    console.log(file)
     if(type === 'image'){
       setImageError('')
       if(file?.size / 1000000 > sizeMax){
@@ -139,7 +148,12 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
       if(file?.size / 1000000 > sizeMax){
         setFileError((prev) => `${prev} Le fichier est trop lourd: (${file.size/1000000}Mo). `)
       }
-      else if (["application/pdf", "application/pptx", "application/docx", "application/xlsx"].includes(file?.type)) {
+      else if (![
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ].includes(file?.type)) {
         setFileError((prev) => `${prev} Le fichier doit être du type : '.pdf', '.pptx', '.docx' ou '.xlsx'.`)
       }
       else {
@@ -164,7 +178,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
       }
       if(article.title === '' || article.content === '<p></p>') {
         handleOpenAlert()
-        changeAlertValues('warning', "Il manque des informations pour ajouter l'article")
+        changeAlertValues('warning', "Il manque des informations pour ajouter l'actualité")
       }
       else {
         const newActuality = await axios
@@ -187,8 +201,9 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
     }
     catch (err) {
-      handleOpenAlert()
-      changeAlertValues('error', err)
+      //handleOpenAlert()
+      //changeAlertValues('error', err)
+      console.log(err)
     }
   }
 
@@ -201,7 +216,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
       }
       if(article.title === '' || article.category === '' || article.content === '<p></p>') {
         handleOpenAlert()
-        changeAlertValues('warning', "Il manque des informations pour ajouter l'article")
+        changeAlertValues('warning', "Il manque des informations pour ajouter le contenu de référence")
       }
       else {
         const formData = new FormData()
@@ -231,8 +246,9 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
 
     }
     catch (err) {
-      handleOpenAlert()
-      changeAlertValues('error', err)
+      //handleOpenAlert()
+      //changeAlertValues('error', err)
+      console.log(err)
     }
   }
 

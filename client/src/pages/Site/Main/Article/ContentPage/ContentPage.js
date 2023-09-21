@@ -154,8 +154,9 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
       }
     }
     catch (err) {
-      handleOpenAlert()
-      changeAlertValues('error', err)
+      //handleOpenAlert()
+      //changeAlertValues('error', err)
+      console.log(err)
     }
   }
 
@@ -175,8 +176,9 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
         setCommentText('')
     }
     catch (err) {
-      handleOpenAlert()
-      changeAlertValues('error', err)
+      //handleOpenAlert()
+      //changeAlertValues('error', err)
+      console.log(err)
     }
   }
 
@@ -189,8 +191,9 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
         fetchData()
     }
     catch (err) {
-      handleOpenAlert()
-      changeAlertValues('error', err)
+      //handleOpenAlert()
+      //changeAlertValues('error', err)
+      console.log(err)
     }
   }
 
@@ -211,8 +214,9 @@ const ContentPage = ({ handleOpenAlert, changeAlertValues }) => {
       setDialogOpened(false)
     }
     catch (err) {
-      handleOpenAlert()
-      changeAlertValues('error', err)
+      //handleOpenAlert()
+      //changeAlertValues('error', err)
+      console.log(err)
     }
   
   }

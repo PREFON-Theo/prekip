@@ -96,7 +96,8 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
       }
     }
     catch (err) {
-      changeAlertValues('error', err)
+      //changeAlertValues('error', err)
+      console.log(err)
     }
   }
 
@@ -112,7 +113,8 @@ const FormEditEvent = ({idEventToEdit, user, userList, handleCloseForm, handleOp
       }
     }
     catch (err) {
-      changeAlertValues('error', err)
+      //changeAlertValues('error', err)
+      console.log(err)
     }
   }
 

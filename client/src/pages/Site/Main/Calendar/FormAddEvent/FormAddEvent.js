@@ -115,8 +115,9 @@ const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, 
             actualisateData()
         }
         catch (err) {
-          handleOpenAlert()
-          changeAlertValues('error', err)
+          //handleOpenAlert()
+          //changeAlertValues('error', err)
+          console.log(err)
         }
         
       } 
@@ -151,8 +152,9 @@ const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, 
               actualisateData()
           }
           catch (err) {
-            handleOpenAlert()
-            changeAlertValues('error', err)
+            //handleOpenAlert()
+            //changeAlertValues('error', err)
+            console.log(err)
           }
         }
         else {
@@ -184,8 +186,9 @@ const FormAddEvent = ({dayInformations, user, handleCloseForm, handleOpenAlert, 
         actualisateData()
     }
     catch (err) {
-      handleOpenAlert()
-      changeAlertValues('error', err)
+      //handleOpenAlert()
+      //changeAlertValues('error', err)
+      console.log(err)
     }
   }
 
