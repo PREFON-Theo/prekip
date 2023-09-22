@@ -49,14 +49,14 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
   
   const fetchRubriques = async () => {
     const rubriqueRaw = await axios.get('/rubrique-type', {headers: {jwt: cookies.token}});
-    let rubriqueList = []
-    if(user?.roles.includes("Administrateur") || user?.roles.includes("Modérateur")){
-      setRubrique(rubriqueRaw.data)
-    }
-    else {
-      user?.divisions.map((item) => rubriqueList.push(rubriqueRaw.data?.filter((rl) => rl._id === item)[0]))
-      setRubrique(rubriqueList);
-    }
+    const rubriqueList = []
+    rubriqueRaw.data?.filter((rl) => rl.parent === '').map((item) => {
+      if(user?.roles.includes("Administrateur") || user?.roles.includes("Modérateur") || user?.divisions.includes(item._id)){
+          rubriqueList.push(item)
+          rubriqueRaw.data?.filter((srl) => srl.parent === item._id).map((subItem) => rubriqueList.push(subItem))
+      }
+    })
+    setRubrique(rubriqueList);
   }
 
   useEffect(() => {

@@ -39,7 +39,7 @@ const ArticlesCategories = ({item}) => {
                       <div key={index} className={styles.item}>
                         <Link to={`/reference/${item._id}`}>
                           {item.title}
-                          </Link>
+                        </Link>
                         {index+1 === firstSemiLength ?
                           <></>
                         :
@@ -51,7 +51,9 @@ const ArticlesCategories = ({item}) => {
                   <div className={styles.right}>
                     {item.reference?.slice(firstSemiLength, item.reference?.length).map((item, index) => (
                       <div key={index} className={styles.item}>
-                        <Link>{item.title}</Link>
+                        <Link to={`/reference/${item._id}`}>
+                          {item.title}
+                        </Link>
                         {index+1 === firstSemiLength ?
                           <></>
                         :

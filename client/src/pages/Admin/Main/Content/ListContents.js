@@ -71,9 +71,9 @@ const ListContents = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/article/${articleToDelete}`, {headers: {jwt: cookies.token}})
       await axios.delete(`/like/article/${articleToDelete}`, {headers: {jwt: cookies.token}})
       await axios.delete(`/comment/article/${articleToDelete}`, {headers: {jwt: cookies.token}})
+      await axios.delete(`/article/${articleToDelete}`, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', 'Contenu supprimé')
       fetchArticles();

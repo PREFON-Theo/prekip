@@ -60,8 +60,8 @@ const ListForums = ({handleOpenAlert, changeAlertValues}) => {
 
   const deleteContent = async () => {
     try {
-      await axios.delete(`/forum/${forumToDelete}`, {headers: {jwt: cookies.token}})
       await axios.delete(`/answer/forum/${forumToDelete}`, {headers: {jwt: cookies.token}})
+      await axios.delete(`/forum/${forumToDelete}`, {headers: {jwt: cookies.token}})
       handleOpenAlert()
       changeAlertValues('success', 'Forum supprimé')
       fetchForums();
