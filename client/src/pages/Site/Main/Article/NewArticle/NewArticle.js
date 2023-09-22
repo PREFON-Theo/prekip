@@ -265,7 +265,8 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
       }
       <div className={styles.container}>
         <div className={styles.wrapper}>
-          <h2>Ajouter un article</h2>
+          <h2>Ajouter {contentType === "article" ? "un article" : contentType === "actuality" ? "une actualité" : contentType === 'reference' ? "un contenu de référence" : ""}</h2>
+
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">Type de contenu</InputLabel>
             <Select

@@ -92,8 +92,8 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
       file: articleRaw.data?.file,
     })
     console.log(!!articleRaw.data.file?.originalname)
-    setFileName(articleRaw.data.file.originalname)
-    setImageName(articleRaw.data.image.originalname)
+    setFileName(articleRaw.data.file?.originalname)
+    setImageName(articleRaw.data.image?.originalname)
 
     if(!!articleRaw.data?.file){
       setOriginalFileImported({
@@ -384,7 +384,7 @@ const EditArticle = ({ handleOpenAlert, changeAlertValues }) => {
       }
       <div className={styles.container}>
         <div className={styles.wrapper}>
-          <h2>Modifier un article</h2>
+          <h2>Modifier {contentType === "article" ? "un article" : contentType === "actuality" ? "une actualité" : contentType === 'reference' ? "un contenu de référence" : ""}</h2>
           {
             contentType === "article" ?
             <>
