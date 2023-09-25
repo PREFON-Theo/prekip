@@ -244,15 +244,20 @@ router.post('/login', async (req, res) => {
   try {
     const userInfo = await User.findOne({email});
     if(userInfo) {
-      const checkPwd = bcrypt.compareSync(password, userInfo.password)
-      if(checkPwd) {
-        jwt.sign({id: userInfo._id, roles: userInfo.roles}, jwtSecret, {}, (err, token) => {
-          if(err) throw err;
-          res.cookie('token', token).json(userInfo)
-        })
+      if(!userInfo.valid){
+        res.json('Invalid account')
       }
       else {
-        res.json('Error password')
+        const checkPwd = bcrypt.compareSync(password, userInfo.password)
+        if(checkPwd) {
+          jwt.sign({id: userInfo._id, roles: userInfo.roles}, jwtSecret, {}, (err, token) => {
+            if(err) throw err;
+            res.cookie('token', token).json(userInfo)
+          })
+        }
+        else {
+          res.json('Error password')
+        }
       }
     }
     else {

@@ -22,6 +22,10 @@ const Login = ({handleOpenAlert, changeAlertValues}) => {
                 handleOpenAlert();
                 changeAlertValues('error', "Mail ou mot de passe incorrect");
             }
+            else if(data === 'Invalid account') {
+                handleOpenAlert();
+                changeAlertValues('error', "Compte non-valide");
+            }
             else {
                 setUser(data);
                 handleOpenAlert();

@@ -89,7 +89,7 @@ const RubriquePage = ({handleOpenAlert, changeAlertValues}) => {
   }
 
   const handleChangeLink = (e) => {
-    setRubriqueInfo(prev => ({...prev, link: e.target.value.replace(" ", "_")}))
+    setRubriqueInfo(prev => ({...prev, link: e.target.value.toLowerCase().replace(" ", "_")}))
   }
 
   return (
@@ -143,8 +143,8 @@ const RubriquePage = ({handleOpenAlert, changeAlertValues}) => {
                 <Select
                   labelId="demo-multiple-checkbox-label"
                   id="demo-multiple-checkbox"
-                  label="Enfnat de la rubrique"
-                  value={rubriqueInfo?.roles}
+                  label="Enfant de la rubrique"
+                  value={rubriqueInfo?.parent}
                   onChange={e => setRubriqueInfo(prev => ({...prev, parent: e.target.value}))}
                   required
                 >
