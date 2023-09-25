@@ -318,7 +318,11 @@ const NewUser = ({handleOpenAlert, changeAlertValues}) => {
 
           {/* Valid */}
           <FormControlLabel
-            control={<Switch value={newUser.valid} onChange={(e) => setNewUser(prev => ({...prev, valid: !newUser.valid}))}/>} label={`Compte valide: ${newUser.valid === true ? "Oui" : "Non"}`}
+            control={<Switch 
+              value={newUser.valid}
+              onChange={() => setNewUser(prev => ({...prev, valid: !newUser.valid}))}/>
+            }
+            label={`Compte valide: ${newUser.valid ? "Oui" : "Non"}`}
           />
 
           {

@@ -372,13 +372,11 @@ const UserPage = ({handleOpenAlert, changeAlertValues}) => {
 
           {/* Valid */}
           <FormControlLabel
-            control={
-              <Switch
-                checked={userInfo.valid}
-                onChange={() => setUserInfo(prev => ({...prev, valid: !userInfo.valid}))}
-              />
-            }
-            label={`Compte valide: ${userInfo.valid === true ? "Oui" : "Non"}`}
+            control={<Switch
+              checked={userInfo.valid}
+              onChange={() => setUserInfo(prev => ({...prev, valid: !userInfo.valid}))}
+            />}
+            label={`Compte valide: ${userInfo.valid ? "Oui" : "Non"}`}
           />
 
           {
