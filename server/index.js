@@ -67,6 +67,7 @@ app.post('/article/with-file', upload.any('image'), async (req, res) => {
         else {
           let image = '';
           let file = '';
+          console.log(req.image)
           for (let fi = 0; fi < req.files.length; fi++) {
             if([
               "application/pdf",
@@ -76,6 +77,7 @@ app.post('/article/with-file', upload.any('image'), async (req, res) => {
             ].includes(req.files[fi].mimetype)){
               file = req.files[fi];
               file.originalname = req.body.fileName
+              console.log(file)
             }
             else if(["image/png", "image/jpg", "image/jpeg"].includes(req.files[fi].mimetype)) {
               image = req.files[fi];

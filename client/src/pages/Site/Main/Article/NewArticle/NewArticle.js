@@ -103,6 +103,8 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
         formData.append('important', user?.roles.includes('Administrateur') ? article.important : false)
         formData.append('created_at', new Date())
         formData.append('updated_at', new Date())
+        formData.append('fileName', article.file.name)
+        formData.append('imageName', article.image.name)
 
         console.log(formData)
 
@@ -228,6 +230,7 @@ const NewArticle = ({ handleOpenAlert, changeAlertValues }) => {
         formData.append('type', contentType)
         formData.append('created_at', new Date())
         formData.append('updated_at', new Date())
+        formData.append('fileName', article.file.name)
 
         const newArticle = await axios
           .post('/article/with-file', 

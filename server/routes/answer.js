@@ -90,11 +90,10 @@ router.post('/', async (req, res) => {
         if(err || user.id === undefined) {
           return res.status(403).json("Unauthorized")
         }
-        const {text, user_id, article_id, forum_id} = req.body
+        const {text, user_id, forum_id} = req.body
         const answerCreation = await Answer.create({
           text,
           user_id,
-          article_id,
           forum_id
         })
         res.status(200).json(answerCreation)
